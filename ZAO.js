@@ -1218,17 +1218,60 @@ async function onBot({ models }) {
         if (pathname === '/bot/requests' && method === 'GET') {
           if (!_api) return _json(res, []);
           try {
+            const merge = (r) => Array.isArray(r) ? r : (r?.data || []);
+
+            // Strategy 1: try dedicated PENDING and OTHER tag queries
             const [pending, other] = await Promise.all([
               _api.getThreadList(60, null, ['PENDING']).catch(() => []),
               _api.getThreadList(60, null, ['OTHER']).catch(() => [])
             ]);
-            const merge = (r) => Array.isArray(r) ? r : (r?.data || []);
-            const requests = [...merge(pending), ...merge(other)]
-              .filter(r => r?.threadID)
+            let rawList = [...merge(pending), ...merge(other)];
+
+            // Strategy 2: if both tag queries returned nothing, fall back to fetching
+            // all threads and filtering by the `folder` field returned per thread.
+            // Facebook sometimes returns PENDING/OTHER threads only in unfiltered calls
+            // when the account hasn't loaded the requests section in a while.
+            if (rawList.length === 0) {
+              try {
+                const all = await _api.getThreadList(100, null, ['INBOX']);
+                const allList = merge(all);
+                const folderMatch = allList.filter(t => {
+                  const f = (t.folder || '').toUpperCase();
+                  return f === 'PENDING' || f === 'OTHER' || f === 'MESSAGE_REQUESTS';
+                });
+                if (folderMatch.length > 0) rawList = folderMatch;
+              } catch (_) {}
+            }
+
+            // Strategy 3: if still nothing, try a bare unfiltered fetch and look for
+            // threads that haven't been read (unreadCount > 0) and are not in INBOX.
+            if (rawList.length === 0) {
+              try {
+                const all2 = await _api.getThreadList(100, null, []);
+                const allList2 = merge(all2);
+                const pendingFolders = allList2.filter(t => {
+                  const f = (t.folder || '').toUpperCase();
+                  return f === 'PENDING' || f === 'OTHER' || f === 'MESSAGE_REQUESTS';
+                });
+                if (pendingFolders.length > 0) rawList = pendingFolders;
+              } catch (_) {}
+            }
+
+            // Deduplicate by threadID, then format
+            const seen = new Set();
+            const requests = rawList
+              .filter(r => {
+                if (!r?.threadID) return false;
+                const tid = String(r.threadID);
+                if (seen.has(tid)) return false;
+                seen.add(tid);
+                return true;
+              })
               .map(r => ({
-                threadID: String(r.threadID),
-                name:     (r.name || r.threadName || String(r.threadID)).slice(0, 60),
-                isGroup:  !!r.isGroup,
+                threadID:  String(r.threadID),
+                name:      (r.name || r.threadName || String(r.threadID)).slice(0, 60),
+                isGroup:   !!r.isGroup,
+                folder:    r.folder || 'PENDING',
                 timestamp: r.timestamp || 0
               }));
             return _json(res, requests);
@@ -2042,6 +2085,13 @@ async function onBot({ models }) {
                 _api.handleMessageRequest(String(threadID), true, (err) => err ? reject(err) : resolve());
               } catch (e) { reject(e); }
             });
+            // Send "." immediately after accepting — this overrides the Facebook
+            // default wave/greeting emoji that the platform would otherwise inject.
+            try {
+              await new Promise((resolve) => {
+                _api.sendMessage('.', String(threadID), () => resolve());
+              });
+            } catch (_) {}
             return _json(res, { ok: true, accepted: true, threadID });
           } catch (e) { return _json(res, { ok: false, error: String(e.message || e).slice(0, 300) }, 500); }
         }

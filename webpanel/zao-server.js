@@ -2436,9 +2436,10 @@ async function loadMsgRequests(){
       const id=htmlE(req.threadID||req.id||'');
       const name=htmlE(req.name||req.threadName||id);
       const isGrp=req.isGroup?'<span class="badge badge-blue">غروب</span>':'<span class="badge badge-purple">دايركت</span>';
+      const folderBadge=(req.folder||'').toUpperCase()==='OTHER'?'<span class="badge" style="background:rgba(255,160,0,.18);color:#ffa000;border:1px solid rgba(255,160,0,.3)">فلتر</span>':'<span class="badge" style="background:rgba(0,180,120,.15);color:var(--green);border:1px solid rgba(0,180,120,.3)">طلب جديد</span>';
       return '<div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);gap:10px;flex-wrap:wrap">' +
         '<div><div style="font-weight:600;color:var(--text)">'+name+'</div>' +
-        '<div style="font-size:.75rem;color:var(--text3);margin-top:2px;display:flex;gap:6px;align-items:center"><code style="font-size:.73rem">'+id+'</code>'+isGrp+'</div></div>' +
+        '<div style="font-size:.75rem;color:var(--text3);margin-top:2px;display:flex;gap:6px;align-items:center"><code style="font-size:.73rem">'+id+'</code>'+isGrp+folderBadge+'</div></div>' +
         '<div style="display:flex;gap:6px;flex-shrink:0">' +
         '<button class="btn btn-outline btn-sm" style="color:var(--green)" onclick="msgReqAction(\''+id+'\',\'accept\',\''+name+'\')">✅ قبول</button>' +
         '<button class="btn btn-outline btn-sm" style="color:var(--red)"   onclick="msgReqAction(\''+id+'\',\'decline\',\''+name+'\')">❌ رفض</button>' +
