@@ -1,0 +1,136 @@
+[ERR] [22:24:08] nkxfca ERROR formatThreadGraphQLResponse Error: No message_thread in GraphQL response - thread may not exist or access may be restricted
+12:24:08 AM[ERR] at formatThreadGraphQLResponse (/app/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:58:19)
+12:24:08 AM[ERR] at Object.getThreadInfo (/app/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:250:32)
+12:24:08 AM[ERR] at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+12:24:08 AM[ERR] at async isGroupThread (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:30:20)
+12:24:08 AM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:289:30) {
+12:24:08 AM[ERR] details: 'The GraphQL query returned successfully but contained no message_thread data'
+12:24:08 AM[ERR] }
+12:24:08 AM[ERR] [22:24:08] nkxfca ERROR getThreadInfo Error: No message_thread in GraphQL response - thread may not exist or access may be restricted
+12:24:08 AM[ERR] at formatThreadGraphQLResponse (/app/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:58:19)
+12:24:08 AM[ERR] at Object.getThreadInfo (/app/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:250:32)
+12:24:08 AM[ERR] at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+12:24:08 AM[ERR] at async isGroupThread (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:30:20)
+12:24:08 AM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:289:30) {
+12:24:08 AM[ERR] details: 'The GraphQL query returned successfully but contained no message_thread data'
+12:24:08 AM[ERR] }
+12:24:08 AM[ERR] [22:24:08] nkxfca WARN AntiSuspension Hourly message limit reached (68/25). Pausing to avoid suspension.
+12:24:09 AM[ERR] [22:24:09] nkxfca ERROR formatThreadGraphQLResponse Error: No message_thread in GraphQL response - thread may not exist or access may be restricted
+12:24:09 AM[ERR] at formatThreadGraphQLResponse (/app/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:58:19)
+12:24:09 AM[ERR] at Object.getThreadInfo (/app/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:250:32)
+12:24:09 AM[ERR] at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+12:24:09 AM[ERR] at async isGroupThread (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:30:20)
+12:24:09 AM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:289:30) {
+12:24:09 AM[ERR] details: 'The GraphQL query returned successfully but contained no message_thread data'
+12:24:09 AM[ERR] }
+12:24:09 AM[ERR] [22:24:09] nkxfca ERROR getThreadInfo Error: No message_thread in GraphQL response - thread may not exist or access may be restricted
+12:24:09 AM[ERR] at formatThreadGraphQLResponse (/app/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:58:19)
+12:24:09 AM[ERR] at Object.getThreadInfo (/app/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:250:32)
+12:24:09 AM[ERR] at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+12:24:09 AM[ERR] at async isGroupThread (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:30:20)
+12:24:09 AM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:289:30) {
+12:24:09 AM[ERR] details: 'The GraphQL query returned successfully but contained no message_thread data'
+12:24:09 AM[ERR] }
+12:24:09 AM[ERR] [22:24:09] nkxfca WARN AntiSuspension Hourly message limit reached (68/25). Pausing to avoid suspension.
+12:24:09 AM[22:24:09] nkxfca LOG Shutdown Cleaning up resources...
+12:24:09 AM[22:24:09] nkxfca LOG TokenRefresh Auto-refresh disabled
+12:24:09 AM[22:24:09] nkxfca LOG TokenRefresh Session health checks disabled
+12:24:09 AM[22:24:09] nkxfca LOG TokenRefresh Presence keepalive disabled
+12:24:09 AM[22:24:09] nkxfca LOG AutoReLogin Session monitoring stopped
+12:24:09 AM[22:24:09] nkxfca LOG AutoReLogin Auto re-login disabled and credentials cleared
+12:24:09 AM[22:24:09] nkxfca LOG Shutdown Cleanup complete
+12:24:09 AM[WATCHDOG] ZAO.js exited with code 0
+12:24:10 AM[WATCHDOG] Started ZAO.js (PID 21) — restart #0
+12:24:11 AM──ZAOFAN-SETTINGS─●
+12:24:11 AM[ SAIN ]: ZAO Is working
+12:24:11 AM[ SAIN ]: This Bot Is SAIN - ♤
+12:24:12 AM[ CONFIG ]: Missing API keys (set via env secrets or config): youtube-video.YOUTUBE_API, linkword.APIKEY, ytb-video.YOUTUBE_API, math.WOLFRAM, sauce.SAUCENAO_API, weather.OPEN_WEATHER, simsimi.APIKEY, sim.APIKEY, slap.APIKEY, manslap.APIKEY, play.YOUTUBE_API, play.SOUNDCLOUD_API, video.YOUTUBE_API, testcovid.APIKEY, simv2.APIKEY, simvoice.APIKEY, sing.YOUTUBE_API, sing.SOUNDCLOUD_API, slapv2.APIKEY, videov2.YOUTUBE_API, bannerbw.APIKEY, بنك.APIKEY
+12:24:12 AM[ SAIN ]: Loaded config
+12:24:13 AM──ZAO DATA─●
+12:24:13 AM[ SAIN ]: Connected to DB
+12:24:13 AM──LOADING FACEBOOK─●
+12:24:13 AM[ GBAN ZAO ]: Could not reach ban list, continuing startup
+12:24:13 AM[ Login ]: ── Trying Tier 1 (ZAO-STATE.json) ──
+12:24:13 AM[ Login ]: Detected JSON array format.
+12:24:13 AM[ Login ]: Validating cookie against Facebook...
+12:24:13 AM[ERR] [ Login ]: Cookie validation FAILED — session appears dead. Passing to FCA for final check...
+12:24:13 AM[ Login ]: Tier 1/ZAO-STATE.json — cookies in /app/ZAO-STATE.json could not be pre-validated, trying anyway...
+12:24:13 AMnkxfca
+12:24:13 AMDeveloped and maintained by NeoKEX
+12:24:13 AMGitHub: https://github.com/NeoKEX
+12:24:13 AMnpm: https://www.npmjs.com/package/@neoaz07/nkxfca
+12:24:13 AMBased on nkxfca (@neoaz07/nkxfca) — credits: NeoKEX Team, ws3-fca, @dongdev/fca-unofficial
+12:24:13 AM[22:24:13] nkxfca VERSION @neoaz07/nkxfca v1.0.9
+12:24:13 AM[22:24:13] nkxfca STARTUP Initializing...
+12:24:13 AM[22:24:13] nkxfca LOG Logging in...
+12:24:13 AM[22:24:13] nkxfca LOG Using desktop persona with browser: Google Chrome
+12:24:13 AM[22:24:13] nkxfca LOG Cookies set for facebook.com and messenger.com domains
+12:24:14 AM[22:24:14] nkxfca UPDATE New version available: v1.0.10. Update with: npm i @neoaz07/nkxfca@latest
+12:24:16 AM[22:24:16] nkxfca LOG Detected Facebook region: PRN
+12:24:16 AM[22:24:16] nkxfca LOG Overwrote existing appstate backup for user 61588121267395
+12:24:16 AM[22:24:16] nkxfca LOG Overwrote existing cookie backup for user 61588121267395
+12:24:16 AM[22:24:16] nkxfca LOG AppState backup stored successfully
+12:24:16 AM[22:24:16] nkxfca LOG MQTT PostSafe guard installed for anti-automation detection
+12:24:16 AM[22:24:16] nkxfca LOG Database methods initialized
+12:24:16 AM[22:24:16] nkxfca LOG AutoReLogin Auto re-login enabled with stored credentials
+12:24:16 AM[22:24:16] nkxfca LOG TokenRefresh Session health checks every 45min, keepalive every 15min
+12:24:16 AM[22:24:16] nkxfca LOG TokenRefresh Auto-refresh scheduled in 102min
+12:24:16 AM[22:24:16] nkxfca LOG AutoReLogin Session monitoring started (interval: 1800000ms)
+12:24:16 AM[22:24:16] nkxfca LOG AutoReLogin Session monitoring started
+12:24:16 AM[ Login ]: Tier 1/ZAO-STATE.json — AppState login successful ✓ (uid=61588121267395)
+12:24:16 AM[ CookiePatch ]: Anti-suspension false-positive filter applied ✓
+12:24:16 AM[ CookiePatch ]: Cookie patcher active — tier=1 method=appstate ✓
+12:24:16 AM[ Login ]: Active account — Tier 1 via ZAO-STATE.json ✓
+12:24:16 AM[ Login ]: Found AppState
+12:24:16 AM[ NKX ]: Circuit breaker controls attached.
+12:24:16 AM[ NKX ]: Warmup mode enabled for 25 minutes.
+12:24:16 AM[ NKX ]: NKX modernizer enabled.
+12:24:16 AM[22:24:16] nkxfca LOG Database synchronized successfully
+12:24:16 AM[ mongoDB ]: DB connected ✓
+12:24:16 AM━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+12:24:16 AM──LOADING LOADER─●
+12:24:16 AM──ZAO DATA─●Loaded 26 Command Aand 2 Events
+12:24:16 AM[ CALLBACKS ]: Restored 2 reply + 0 reaction callbacks — active commands resumed.
+12:24:16 AM━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+12:24:16 AM──LOADING LISTENER─●
+12:24:16 AM[ LISTENER ]: 61588121267395 - [ ZAO BOT ]
+12:24:16 AM[ HEALTH ]: Account Health Monitor started.
+12:24:16 AM[ HEALTH ]: Cookie scan every 5 min
+12:24:16 AM[ HEALTH ]: Send-fail threshold: 3 errors in 5 min → tier switch
+12:24:16 AM[22:24:16] nkxfca LOG MQTT Auto-cycle scheduled: 2793916ms
+12:24:16 AM[22:24:16] nkxfca LOG MQTT getSeqID call
+12:24:16 AM[22:24:16] nkxfca LOG MQTT Getting sequence ID...
+12:24:16 AM[ MQTT-HEALTH ]: بدأ — فحص كل 2–5 دقيقة (عشوائي)، إعادة تشغيل إذا صمت 10 دقيقة
+12:24:16 AM[ MQTT-HEALTH ]: الفحص القادم بعد 4.0 دقيقة
+12:24:16 AM[ KEEP-ALIVE ]: Session keep-alive started — Ping every 5-10 min | cookies every 30 min | dtsg every 24h
+12:24:16 AM[ KEEP-ALIVE ]: Next ping in 5 min
+12:24:16 AM━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+12:24:16 AM──PROTECTION SYSTEMS─●
+12:24:16 AM[ PROTECT ]: Stealth-Engine ✓ burst protection + night-mode + UA rotation + thread jitter
+12:24:16 AM[ PROTECT ]: Fast-Ping ✓ every 10 seconds (watchdog → /ping)
+12:24:16 AM[ PROTECT ]: Auto-Ping ✓ random 8-18 min
+12:24:16 AM[ PROTECT ]: Cookie Save ✓ every 10 min → ZAO-STATE.json & alt.json
+12:24:16 AM[ PROTECT ]: Auto-Relogin ✓ 3 attempts / 3-min cooldown (JSON/Token/String/Netscape → Email/Password fallback)
+12:24:16 AM[ PROTECT ]: Health-Monitor ✓ cookie scan every 5 min + send-fail watchdog → auto tier-switch (Tier 1→2→3)
+12:24:16 AM[ PROTECT ]: Session-Check ✓ proactive live-cookie validation every 35 min
+12:24:16 AM[ PROTECT ]: MQTT-Silence ✓ إعادة تشغيل المستمع إذا صمت > 10 دقائق
+12:24:16 AM[ PROTECT ]: MQTT-HealthCheck ✓ فحص ذكي مع backoff تصاعدي (من GoatBot)
+12:24:16 AM[ PROTECT ]: Human-Typing ✓ محاكاة الطباعة البشرية قبل كل رد
+12:24:16 AM[ PROTECT ]: Keep-Alive ✓ Ping مباشر لفيسبوك كل 8-18 دقيقة + تجديد fb_dtsg كل 48 ساعة
+12:24:16 AM[ PROTECT ]: Memory-Guard ✓ clean restart if heap > 512 MB
+12:24:16 AM[ PROTECT ]: Graceful-Exit ✓ saves cookies on SIGTERM/SIGINT
+12:24:16 AM[ PROTECT ]: Listen-Error ✓ instant listener restart + login_blocked/account_inactive/auth_error detection
+12:24:16 AM[ PROTECT ]: Settings-Watch ✓ hot-reload ZAO-SETTINGS.json
+12:24:16 AM[ PROTECT ]: Crash-Restore ✓ alt.json → ZAO-STATE.json on crash
+12:24:16 AM[ PROTECT ]: Cache-Cleanup ✓ prune userName/threadInfo/threadData maps every 2 h (max 5 000 entries)
+12:24:16 AM[ PROTECT ]: Cookie-Refresh ✓ forced credential re-login every 1440 min
+12:24:16 AM━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+12:24:16 AM[ SETTINGS ]: Watching ZAO-SETTINGS.json for changes.
+12:24:16 AM[ PANEL ]: Internal API ready on 127.0.0.1:3001
+12:24:16 AM●─𝗭𝗔𝗢 𝗙𝗔𝗡─●
+12:24:16 AM[ 𝗦𝗔𝗜𝗠 ]: 𝗬𝗢𝗨𝗡𝗚 𝗠𝗥
+12:24:17 AM━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+12:24:17 AM[22:24:17] nkxfca LOG MQTT getSeqID ok -> listenMqtt()
+12:24:17 AM[22:24:17] nkxfca LOG Connecting to MQTT... wss://edge-chat.facebook.com/chat?region=nha&sid=7493761317804392&cid=3756acfc-4f3d-4cac-a1ce-7329c0105503
+12:24:18 AM[22:24:18] nkxfca LOG MQTT getSeqID done
+12:24:18 AM[22:24:18] nkxfca LOG MQTT connected successfully

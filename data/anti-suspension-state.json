@@ -1,0 +1,25 @@
+{
+  "savedAt": 1780740246083,
+  "dailyStats": {
+    "date": "Sat Jun 06 2026",
+    "messageCount": 0,
+    "threadStats": []
+  },
+  "hourlyBucket": {
+    "hour": 10,
+    "count": 0
+  },
+  "circuitBreaker": {
+    "tripped": false,
+    "trippedAt": null,
+    "cooldownMs": 1800000,
+    "signalCount": 0,
+    "lastSignalAt": null
+  },
+  "warmup": {
+    "active": true,
+    "startedAt": 1780740239296
+  },
+  "loginAttempts": 0,
+  "sessionFingerprint": null
+}

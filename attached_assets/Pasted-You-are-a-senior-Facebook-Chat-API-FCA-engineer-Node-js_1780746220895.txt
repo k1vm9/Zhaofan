@@ -1,0 +1,252 @@
+You are a senior Facebook Chat API (FCA) engineer, Node.js/TypeScript architect, and production bot security auditor.
+
+Your task is to perform a complete deep audit of this project and upgrade it to production-grade quality.
+
+## Primary Objective
+
+Analyze the entire codebase with special focus on:
+
+* `/includes`
+* Core bot systems
+* Login/session systems
+* Message handling
+* Thread/group management
+* Command execution pipeline
+* Event listeners
+* FCA integration layer
+* Database/cache systems
+* Panel/API communication systems
+
+The `/includes` directory contains the primary bot logic and must receive the highest level of scrutiny.
+
+---
+
+# Audit Process
+
+Perform the following process THREE FULL TIMES:
+
+### Pass 1 — Static Analysis
+
+Identify:
+
+* Syntax errors
+* Runtime exceptions
+* Unhandled promises
+* Async race conditions
+* Circular dependencies
+* Memory leaks
+* Logic flaws
+* Invalid FCA API usage
+* Broken event handlers
+* Database corruption risks
+* Command loading failures
+* Thread caching issues
+* Session persistence flaws
+
+Fix every issue found.
+
+---
+
+### Pass 2 — Production Stability Analysis
+
+Identify:
+
+* Crashes that can stop the bot
+* Session-killing bugs
+* Login invalidation risks
+* Cookie/AppState corruption risks
+* FCA reconnect failures
+* Thread sync failures
+* Infinite loops
+* Event emitter leaks
+* Rate-limit risks
+* Memory exhaustion
+* Duplicate listener registration
+* Unhandled FCA errors
+* Message queue failures
+
+Fix every issue found.
+
+---
+
+### Pass 3 — Account Safety & Reliability Audit
+
+Identify anything that can:
+
+* Get the Facebook account checkpointed
+* Trigger Facebook security systems
+* Cause excessive API requests
+* Cause mass message sending
+* Cause spam behavior
+* Cause thread fetching abuse
+* Cause message request abuse
+* Cause abnormal login patterns
+* Cause session invalidation
+* Cause account restrictions
+
+Refactor the implementation to minimize detection and maximize account longevity.
+
+---
+
+# Critical Requirement
+
+The panel currently has issues with:
+
+### Group Fetching
+
+Investigate and completely repair:
+
+* Group listing
+* Thread fetching
+* Thread synchronization
+* Thread metadata loading
+* Pagination
+* Cache refresh
+* Real-time updates
+
+Groups shown in the panel must always match actual Facebook groups.
+
+---
+
+### Message Requests Fetching
+
+Investigate and completely repair:
+
+* Pending inbox retrieval
+* Message request retrieval
+* Request acceptance handling
+* Request rejection handling
+* Request synchronization
+* Panel display logic
+
+Message requests must reliably appear in the panel and stay synchronized with Facebook.
+
+---
+
+# Nickname Lock System Upgrade
+
+Enhance the nickname command.
+
+Implement:
+
+## User-Level Nickname Lock
+
+When replying to a user:
+
+* Lock that user's nickname
+* Persist the lock in storage
+* Restore nickname automatically if changed
+* Apply only to the targeted user
+
+Example:
+
+/nickname lock
+
+(replied to user)
+
+Result:
+
+* Only that user's nickname is protected.
+
+---
+
+## Group Nickname Lock
+
+Maintain existing group-wide nickname lock functionality.
+
+---
+
+## Priority Rules
+
+If a user has an individual nickname lock:
+
+* Group nickname lock MUST NOT override it.
+* User-specific lock always has higher priority.
+
+Priority:
+
+User Lock > Group Lock > Normal Nickname Behavior
+
+---
+
+# Security Hardening
+
+Implement at least 3 advanced session-preservation systems.
+
+Examples:
+
+### 1. Intelligent AppState Protection
+
+* Automatic AppState backups
+* Versioned backups
+* Corruption detection
+* Auto-restore
+
+### 2. Session Recovery Layer
+
+* Automatic FCA reconnect
+* Listener recovery
+* Event restoration
+* Thread cache rebuilding
+
+### 3. Facebook Safety Layer
+
+* Request throttling
+* Human-like delays
+* Anti-spam safeguards
+* Duplicate action prevention
+
+You may design additional systems if superior.
+
+---
+
+# Performance Optimization
+
+Optimize:
+
+* Thread caching
+* User caching
+* Command loading
+* Event dispatching
+* Database queries
+* Memory consumption
+* Startup speed
+* FCA request batching
+
+Remove unnecessary API calls wherever possible.
+
+---
+
+# Code Quality Requirements
+
+* Refactor duplicated code.
+* Improve TypeScript typings.
+* Improve maintainability.
+* Improve error handling.
+* Improve logging.
+* Improve modularity.
+* Improve scalability.
+
+---
+
+# Deliverables
+
+For every issue found:
+
+1. Explain the bug.
+2. Explain the impact.
+3. Explain how it could affect the bot/account.
+4. Show the exact fix.
+5. Apply the fix directly.
+
+Then provide:
+
+* Full audit report.
+* Critical issues report.
+* Security report.
+* Performance report.
+* Files modified.
+* Features added.
+* Remaining recommendations.
+
+Goal: produce the most stable, secure, session-resistant, account-safe, and production-ready version of this FCA bot possible while preserving existing functionality.

@@ -1,0 +1,133 @@
+[PATCH] patchedLoginHelper: still running — 5s elapsed
+[10:03:57] nkxfca LOG Detected Facebook region: PRN
+[10:03:57] nkxfca LOG Created new appstate backup for user 61590329414663
+[10:03:58] nkxfca LOG Created new cookie backup for user 61590329414663
+[10:03:58] nkxfca LOG AppState backup stored successfully
+[10:03:59] nkxfca LOG MQTT PostSafe guard installed for anti-automation detection
+[10:03:59] nkxfca LOG Database methods initialized
+[10:03:59] nkxfca LOG TokenRefresh Session health checks every 20min, keepalive every 5min, cookie refresh every 12h
+[10:03:59] nkxfca LOG TokenRefresh Auto-refresh scheduled in 120min
+[10:03:59] nkxfca LOG AppStateBackup Auto-backup started (interval: 300000ms)
+[10:03:59] nkxfca LOG AutoBackup Automatic session backup started
+[PATCH] patchedLoginHelper: callback fired — SUCCESS (took 9s)
+[FCA-DIAG] loginAsync: callback received — err=none api=present
+[ Login ]: Tier 1/sessions/ZAO-STATE.json — AppState login successful ✓  (uid=61590329414663)
+[ CookiePatch ]: Anti-suspension false-positive filter applied ✓ 
+[ CookiePatch ]: Cookie patcher active — tier=1 method=appstate ✓ 
+[ Login ]: Active account — Tier 1 via sessions/ZAO-STATE.json ✓
+[ Login ]: Found AppState 
+[ NKX ]: Circuit breaker controls attached. 
+[ NKX ]: Warmup mode enabled for 25 minutes. 
+[ E2EE ]: Keys loaded — 0 peer(s) restored. 
+[ NKX ]: E2EE key pair ready. Bot public key: MCowBQYDK2VuAyEAYNXR… 
+[ NKX ]: E2EE enabled: auto-encrypt outgoing ✓ auto-decrypt incoming ✓ 
+[ NKX ]: NKX modernizer enabled. 
+[10:03:59] nkxfca LOG AutoReLogin Auto re-login disabled and credentials cleared
+[10:03:59] nkxfca LOG TokenRefresh Auto-refresh disabled
+[10:03:59] nkxfca LOG TokenRefresh Session health checks disabled
+[10:03:59] nkxfca LOG TokenRefresh Presence keepalive disabled
+[10:03:59] nkxfca LOG TokenRefresh Cookie refresh disabled
+[ APIS ]: Extended API modules wired ✓ (pin, gcrule, friend, follow, comment, story, notes) 
+[ SEND-PIPELINE ]: Pipeline patched on api instance (nkxModernized=true) 
+[DIAG] onBot: login succeeded, loading DB controller...
+[ SQLite ]: DB connected ✓ 
+[10:03:59] nkxfca LOG Database synchronized successfully
+[ CMD-LOAD ]: Failed to load "badwords.js": mirai - Not found key language: Error in cmd format 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+──LOADING LOADER─●
+──ZAO DATA─●Loaded 95 Command Aand 2 Events 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+──LOADING LISTENER─●
+[ LISTENER ]: 61590329414663 - [ ZAO BOT ]  
+[ HEALTH ]: Account Health Monitor started. 
+[ HEALTH ]:   Cookie scan every 30 min 
+[ HEALTH ]:   Send-fail threshold: 3 errors in 5 min → tier switch 
+[10:04:00] nkxfca LOG MQTT Auto-cycle scheduled: 2352348ms
+[10:04:00] nkxfca LOG MQTT getSeqID call
+[10:04:00] nkxfca LOG MQTT Getting sequence ID...
+[ MQTT-HEALTH ]: بدأ — فحص كل 2–5 دقيقة (عشوائي)، صمت > 10 دقيقة → تأكيد مزدوج → إعادة تشغيل 
+[ MQTT-HEALTH ]: الفحص القادم بعد 4.3 دقيقة 
+[ KEEP-ALIVE ]: Session keep-alive started. Adaptive: true, Circuit quiet: false. 
+[ KEEP-ALIVE ]: priming ping in 15s. 
+[ KEEP-ALIVE ]: Next ping in 89 min (adaptive). 
+[ KEEP-ALIVE ]: Notification visit skipped (age-scaled: FRESH account). 
+[ GQL-VISIT ]: priming GraphQL visit in 9s 
+[ GQL-VISIT ]: next GraphQL visit in 77 min 
+[ SESSION-GUARD ]: Startup AppState is valid. 
+[ SESSION-GUARD ]: AppState snapshot saved (7 max): ZAO-STATE-snap-20260606-100400.json 
+[ SESSION-GUARD ]: Started — snapshot every 30 min, integrity check every 20 min. 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+──PROTECTION SYSTEMS─●
+[ PROTECT ]: Stealth-Engine   ✓  burst protection + night-mode + UA rotation + thread jitter 
+[ PROTECT ]: Auto-Ping        ✓  random 8-18 min 
+[ PROTECT ]: Cookie Save      ✓  every 10 min → ZAO-STATE.json & alt.json 
+[ PROTECT ]: Auto-Relogin     ✓  3 attempts / 3-min cooldown (JSON/Token/String/Netscape → Email/Password fallback) 
+[ PROTECT ]: Health-Monitor   ✓  cookie scan every 5 min + send-fail watchdog → auto tier-switch (Tier 1→2→3) 
+[ PROTECT ]: Session-Check    ✓  proactive live-cookie validation every 35 min 
+[ PROTECT ]: MQTT-Silence     ✓  إعادة تشغيل المستمع إذا صمت > 10 دقائق 
+[ PROTECT ]: MQTT-HealthCheck ✓  فحص ذكي مع backoff تصاعدي (من GoatBot) 
+[ PROTECT ]: Human-Typing     ✓  محاكاة الطباعة البشرية قبل كل رد 
+[ PROTECT ]: Keep-Alive       ✓  Ping مباشر لفيسبوك كل 8-18 دقيقة + تجديد fb_dtsg كل 48 ساعة 
+[ PROTECT ]: Memory-Guard     ✓  clean restart if heap > 512 MB 
+[ PROTECT ]: Graceful-Exit    ✓  two-stage drain — stop dispatch → flush motors/locks → save cookies 
+[ STEALTH-V2 ]: 🕵️ Stealth Engine V2 started — active: [L5-ua-rotation] 
+[ STEALTH-V2 ]: ⚠️  Disabled (duplicated by OPE/humanStealth): [L1-presence, L2-browse, L3-read] 
+[ STEALTH-V2 ]: 🌙 Sleep: 1:00–8:00 | 🌱 Warmup: 15 min 
+[ LABYRINTH ]: Initialising Labyrinth v4 — Signal Protocol + PIN passive mode… 
+[ PANEL ]: Internal API ready on 127.0.0.1:3001 
+[ LABYRINTH ]: Keys loaded — 8 OPK(s) available. 
+[ LABYRINTH ]: SPK is stale — rotating signed prekey. 
+[ LABYRINTH-SESSION ]: Sessions loaded — 0 signal, 0 PIN session(s). 
+[ LABYRINTH ]: ⚠ No PIN set — keys stored unencrypted. Set labyrinth.pin in ZAO-SETTINGS.json. 
+[ MQTT-E2EE-PATCH ]: parseDelta patched — E2EE intercept active. (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/mqttDeltaValue.js) 
+[ MQTT-E2EE-PATCH ]: MQTT E2EE patch v4 installed. 
+[ LABYRINTH ]: api.sendMessage wrapped for auto-encrypt. 
+[ LABYRINTH ]: All sessions dropped for thread __diagnose__. 
+[ LABYRINTH ]: Signal handshake completed for thread __diagnose__. 
+[ LABYRINTH ]: PIN session set for thread __diagnose__. 
+[ LABYRINTH ]: Global PIN set. 
+[ LABYRINTH ]: Global PIN cleared. 
+[ LABYRINTH ]: Auto-encrypt ON for thread __diagnose__. 
+[ LABYRINTH ]: Auto-encrypt OFF for thread __diagnose__. 
+[ LABYRINTH ]: All sessions dropped for thread __diagnose__. 
+[ LABYRINTH ]: Self-diagnose: 12/12 tests passed — all systems OK. 
+[ LABYRINTH ]: Labyrinth v4 ready — Signal (X3DH + Double Ratchet) + PIN passive mode. | IK: MCowBQYDK2VuAyEA… | OPKs: 7 | Global PIN: ✗ 
+[ E2EE ]: Labyrinth E2EE initialized ✓ (X3DH / Double Ratchet) 
+[ PROTECT ]: Loop-Lag-Guard   ✓  perf_hooks p95 > 500ms for 30s → stack snapshot + clean recycle 
+[ PROTECT ]: Disk-Guard       ✓  rotate large logs + prune backups; emergency cleanup at 90% disk 
+[ PROTECT ]: Network-Probe    ✓  DNS+TCP edge-mqtt.facebook.com check before tier-switch (no wasted relogins) 
+[ PROTECT ]: Command-Sandbox  ✓  30s wall-clock timeout on every command.run / handleReply / handleEvent 
+[ PROTECT ]: Error-Budget     ✓  >5 errors / 10 min on the same command → auto-disable 1h + admin notify 
+[ PROTECT ]: Cookie-Snapshot  ✓  last 5 validated snapshots in backups/ — watchdog restores instead of re-logging in 
+[ PROTECT ]: Stealth-V2       ✓  10 layers: UA rotation, warmup, sleep-mode, page-browse, presence cycling (opt-in) 
+[ PROTECT ]: Listen-Error     ✓  instant listener restart + login_blocked/account_inactive/auth_error detection 
+[ PROTECT ]: Error-Notify     ✓  Telegram / Discord webhook on session-kill or listen errors (opt-in) 
+[ PROTECT ]: GraphQL-Visit    ✓  CometNotificationsDropdownQuery every 30-120 min — looks like a real client 
+[ PROTECT ]: Auto-Uptime      ✓  external-URL ping for free hosts (opt-in via autoUptime.enable) 
+[ PROTECT ]: Sync-Groups      ✓  warm threadInfo cache from INBOX after login (idea from holo) 
+[ PROTECT ]: Refresh-Cache    ✓  live update on log:thread-admins / name / image / icon / subscribe / unsubscribe (from seiko) 
+[ PROTECT ]: Session-Guard    ✓  AppState snapshot every 30 min + cookie integrity check every 20 min + pre-relogin hook 
+[ PROTECT ]: Auto-Lock        ✓  raid guard — auto-lock after 15 non-admin cmds in 30s 
+[ PROTECT ]: Settings-Watch   ✓  hot-reload ZAO-SETTINGS.json 
+[ PROTECT ]: Crash-Restore    ✓  alt.json → ZAO-STATE.json on crash 
+[ PROTECT ]: Cache-Cleanup    ✓  prune userName/threadInfo/threadData maps every 2 h (max 5 000 entries) 
+[ PROTECT ]: Cookie-Refresh   ✓  forced credential re-login every 1440 min 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ SETTINGS ]: Watching ZAO-SETTINGS.json (via parent dir, survives atomic rename) ✓ 
+
+●─𝗭𝗔𝗢 𝗙𝗔𝗡─●
+[ 𝗦𝗔𝗜𝗠 ]:  𝗬𝗢𝗨𝗡𝗚 𝗠𝗥  
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[10:04:01] nkxfca LOG MQTT getSeqID ok -> listenMqtt()
+[10:04:01] nkxfca LOG Connecting to MQTT... wss://edge-chat.facebook.com/chat?region=nha&sid=3975059232479980&cid=96ea1fac-6f8d-406d-986b-5536e0c9e654
+[10:04:01] nkxfca LOG MQTT getSeqID done
+[10:04:01] nkxfca LOG MQTT connected successfully
+[10:04:01] nkxfca LOG MQTT Queue setup messages sent
+[2026-06-06 10:04:04] [LAUNCHER] استُقبل SIGTERM — إيقاف تشغيل ZAO...
+[2026-06-06 10:04:04] [INSTA:SHUTDOWN] SIGTERM — saving session and exiting
+[ SHUTDOWN ]: SIGTERM received — Stage 1: draining dispatcher and motors. 
+[ SHUTDOWN ]: Stage 2: flushing locks/motors/state then saving cookies. 
+[ SHUTDOWN ]: Cookies saved successfully. 
+[ SHUTDOWN ]: All state saved. Goodbye.

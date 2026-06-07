@@ -1,0 +1,61 @@
+
+[03:10:26] nkxfca ERROR getThreadInfo Error: No message_thread in GraphQL response - thread may not exist or access may be restricted
+    at formatThreadGraphQLResponse (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:58:19)
+    at Object.getThreadInfo (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:250:32)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async isGroupThread (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:30:20)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:289:30) {
+  details: 'The GraphQL query returned successfully but contained no message_thread data'
+}
+[03:10:42] nkxfca ERROR formatThreadGraphQLResponse Error: No message_thread in GraphQL response - thread may not exist or access may be restricted
+    at formatThreadGraphQLResponse (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:58:19)
+    at Object.getThreadInfo (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:250:32)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async isGroupThread (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:30:20)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:289:30) {
+  details: 'The GraphQL query returned successfully but contained no message_thread data'
+}
+[03:10:42] nkxfca ERROR getThreadInfo Error: No message_thread in GraphQL response - thread may not exist or access may be restricted
+    at formatThreadGraphQLResponse (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:58:19)
+    at Object.getThreadInfo (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:250:32)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async isGroupThread (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:30:20)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:289:30) {
+  details: 'The GraphQL query returned successfully but contained no message_thread data'
+}
+[03:11:10] nkxfca WARN sendMessage Got error 1545012. This might mean that you're not part of the conversation 61555647604248
+[03:11:10] nkxfca ERROR formatThreadGraphQLResponse Error: No message_thread in GraphQL response - thread may not exist or access may be restricted
+    at formatThreadGraphQLResponse (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:58:19)
+    at Object.getThreadInfo (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:250:32)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async isGroupThread (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:30:20)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:289:30) {
+  details: 'The GraphQL query returned successfully but contained no message_thread data'
+}
+[03:11:10] nkxfca ERROR getThreadInfo Error: No message_thread in GraphQL response - thread may not exist or access may be restricted
+    at formatThreadGraphQLResponse (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:58:19)
+    at Object.getThreadInfo (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:250:32)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async isGroupThread (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:30:20)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:289:30) {
+  details: 'The GraphQL query returned successfully but contained no message_thread data'
+}
+[ MQTT-HEALTH ]: الفحص القادم بعد 4.8 دقيقة 
+[03:11:16] nkxfca WARN sendMessage Got error 1545012. This might mean that you're not part of the conversation 61589656040033
+[03:11:26] nkxfca ERROR formatThreadGraphQLResponse Error: No message_thread in GraphQL response - thread may not exist or access may be restricted
+    at formatThreadGraphQLResponse (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:58:19)
+    at Object.getThreadInfo (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:250:32)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async isGroupThread (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:30:20)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:289:30) {
+  details: 'The GraphQL query returned successfully but contained no message_thread data'
+}
+[03:11:26] nkxfca ERROR getThreadInfo Error: No message_thread in GraphQL response - thread may not exist or access may be restricted
+    at formatThreadGraphQLResponse (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:58:19)
+    at Object.getThreadInfo (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadInfo.js:250:32)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+    at async isGroupThread (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:30:20)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:289:30) {
+  details: 'The GraphQL query returned successfully but contained no message_thread data'
+}
+[ AUTO-PING ]: Pinged keep-alive server (next in 15 min) 

@@ -1,0 +1,240 @@
+Facebook Chat Bot Full Production Audit
+
+You are a principal software engineer, security auditor, reliability engineer, and Facebook platform compliance expert.
+
+Your task is to perform a complete audit of this project, with special focus on the /includes directory because it contains the core bot logic.
+
+Primary Objectives
+
+Identify and fix:
+
+Critical Account-Killing Bugs
+
+Find any issue that could:
+
+Cause Facebook account bans
+Trigger anti-spam systems
+Trigger rate limits
+Cause automated detection
+Cause account checkpoints
+Cause account locks
+Cause shadow restrictions
+Cause message delivery restrictions
+Cause suspicious login detection
+Cause excessive API requests
+Cause automated abuse detection
+
+For every issue:
+
+Explain why it is dangerous
+Show exact affected code
+Show a fixed version
+Estimate severity:
+Critical
+High
+Medium
+Low
+Crash Bugs
+
+Find code that can cause:
+
+Unhandled exceptions
+Process termination
+Infinite loops
+Recursive loops
+Memory leaks
+Event emitter leaks
+Promise rejection crashes
+Null reference errors
+Undefined access
+Deadlocks
+Queue stalls
+Race conditions
+
+For every bug:
+
+Show reproduction scenario
+Explain root cause
+Provide fix
+Security Audit
+
+Find:
+
+Token leaks
+Session leaks
+Credential exposure
+Hardcoded secrets
+Weak encryption
+Unsafe file access
+Path traversal
+Command injection
+Remote code execution risks
+Prototype pollution
+XSS
+SSRF
+Dependency vulnerabilities
+Unsafe eval usage
+Unsafe Function constructor usage
+
+Provide secure replacements.
+
+Reliability Audit
+
+Analyze:
+
+Login handling
+Session persistence
+Reconnect logic
+Network failures
+Retry handling
+Database failures
+API failures
+Queue processing
+Event processing
+
+Identify:
+
+Single points of failure
+Data corruption risks
+Message loss scenarios
+Duplicate message scenarios
+
+Design safer implementations.
+
+Concurrency Audit
+
+Find:
+
+Shared state issues
+Race conditions
+Duplicate event processing
+Double message sending
+Double command execution
+Cache corruption
+
+Show exact fixes.
+
+Performance Audit
+
+Analyze:
+
+Hot paths
+Event handlers
+Database queries
+File operations
+Network operations
+
+Identify:
+
+O(n²) operations
+Memory waste
+Excessive API calls
+Excessive disk I/O
+Blocking operations
+
+Provide optimized implementations.
+
+Architecture Review
+
+Review:
+
+/includes
+event handlers
+command system
+middleware
+scheduler
+database layer
+cache layer
+logging layer
+
+Identify:
+
+Tight coupling
+Circular dependencies
+Code smells
+Technical debt
+
+Suggest refactoring.
+
+Anti-Ban Analysis
+
+Inspect all code for behavior that resembles:
+
+Mass messaging
+Automated reactions
+Automated friend actions
+Automated group actions
+Aggressive retries
+Message flooding
+Rapid command execution
+
+Flag anything likely to violate platform rules or increase detection risk.
+
+Error Handling Review
+
+Find code missing:
+
+try/catch
+promise rejection handling
+timeout handling
+rollback handling
+validation
+
+Add production-grade error handling.
+
+Logging Audit
+
+Ensure:
+
+Sensitive data is never logged
+Tokens are redacted
+User secrets are redacted
+
+Improve observability.
+
+Dependency Audit
+
+Review every dependency and identify:
+
+Abandoned packages
+Known vulnerabilities
+Security concerns
+Better alternatives
+Deliverables
+
+For every issue provide:
+
+File path
+Line number
+Severity
+Explanation
+Exploitation scenario
+Production impact
+Fixed code
+Why the fix works
+
+Then produce:
+
+Executive Summary
+Total Critical Issues
+Total High Issues
+Total Medium Issues
+Total Low Issues
+Top 10 Most Dangerous Issues
+
+Ranked by impact.
+
+Production Readiness Score
+
+Score from 0–100.
+
+Refactoring Roadmap
+
+Prioritized roadmap:
+
+Immediate fixes (today)
+Short-term fixes (1 week)
+Medium-term fixes (1 month)
+Long-term improvements
+
+Do not stop at obvious syntax errors. Assume the code will be deployed to production and aggressively search for reliability, security, scalability, and account-risk issues.

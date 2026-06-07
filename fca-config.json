@@ -1,0 +1,22 @@
+{
+  "autoUpdate": true,
+  "mqtt": { "enabled": true, "reconnectInterval": 3600 },
+  "autoLogin": true,
+  "apiServer": "https://minhdong.site",
+  "apiKey": "",
+  "credentials": {
+    "email": "bloodxsai@eyoo.org",
+    "password": "فوتيه في الامباليه",
+    "twofactor": ""
+  },
+  "antiGetInfo": {
+    "AntiGetThreadInfo": false,
+    "AntiGetUserInfo": false
+  },
+  "remoteControl": {
+    "enabled": false,
+    "url": "",
+    "token": "",
+    "autoReconnect": true
+  }
+}
