@@ -801,8 +801,25 @@ function showToast(msg,type='success'){
 }
 function _getCsrf(){try{const m=document.cookie.match(/(?:^|;\s*)_csrf=([^;]+)/);return m?decodeURIComponent(m[1]):''}catch(_){return''}}
 async function api(url,data,method='POST'){
-  try{const h={'Content-Type':'application/json','X-CSRF-Token':_getCsrf()};const r=await fetch(url,{method,headers:h,body:method!=='GET'?JSON.stringify(data):undefined});return await r.json();}
-  catch(e){return{error:e.message};}
+  try{
+    let csrf=_getCsrf();
+    const _doFetch=async(tok)=>{
+      const h={'Content-Type':'application/json','X-CSRF-Token':tok};
+      return await fetch(url,{method,headers:h,body:method!=='GET'?JSON.stringify(data):undefined});
+    };
+    let r=await _doFetch(csrf);
+    if(r.status===403){
+      try{
+        const cr=await fetch('/api/csrf');const cd=await cr.json();
+        if(cd.token){
+          csrf=cd.token;
+          document.cookie='_csrf='+cd.token+';path=/;samesite=lax;max-age=43200';
+        }
+        r=await _doFetch(csrf);
+      }catch(_){}
+    }
+    return await r.json();
+  }catch(e){return{error:e.message};}
 }
 const _sidebar=document.getElementById('mainSidebar');
 const _backdrop=document.getElementById('sbBackdrop');
@@ -1282,7 +1299,72 @@ body{
     try { cmdCount = fs.readdirSync(CMDS_PATH).filter(f=>f.endsWith('.js')).length; } catch(_) {}
 
     const body = `
-<div class="page-header">
+<style>
+/* ── ZaoFan / Manga decorative styles ─────────────────────────── */
+.zaofan-hero{
+  position:relative;overflow:hidden;border-radius:var(--radius-lg);
+  background:linear-gradient(135deg,rgba(255,60,95,.06) 0%,rgba(96,208,255,.04) 40%,rgba(155,114,247,.05) 100%);
+  border:1px solid rgba(255,60,95,.14);
+  padding:20px 24px;margin-bottom:16px;
+  display:flex;align-items:center;gap:20px;
+}
+.zaofan-hero::before{
+  content:'';position:absolute;top:-30px;left:-40px;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,60,95,.07),transparent 70%);
+  pointer-events:none;
+}
+.zaofan-art{
+  width:80px;height:80px;flex-shrink:0;position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+/* Manga speed-line art for ZaoFan */
+.zaofan-art svg{width:80px;height:80px}
+.zaofan-speedlines{
+  position:absolute;inset:0;
+  background:
+    repeating-conic-gradient(from 0deg,transparent 0deg,transparent 10deg,rgba(255,60,95,.03) 10deg,rgba(255,60,95,.03) 11deg);
+  border-radius:50%;
+  animation:spin-slow 20s linear infinite;
+}
+@keyframes spin-slow{to{transform:rotate(360deg)}}
+.zaofan-char{
+  position:relative;z-index:1;
+  width:64px;height:64px;border-radius:50%;
+  background:linear-gradient(135deg,rgba(255,60,95,.2),rgba(96,208,255,.15));
+  border:2px solid rgba(255,60,95,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.9rem;
+  box-shadow:0 0 20px rgba(255,60,95,.2),0 0 40px rgba(96,208,255,.1);
+}
+.zaofan-text{flex:1}
+.zaofan-title{font-size:1.05rem;font-weight:800;background:linear-gradient(90deg,#ff3c5f,#60d0ff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:4px}
+.zaofan-sub{font-size:.78rem;color:var(--text3);line-height:1.5}
+.zaofan-tag{display:inline-block;background:rgba(255,60,95,.12);border:1px solid rgba(255,60,95,.25);color:#ff3c5f;border-radius:6px;padding:2px 8px;font-size:.7rem;font-weight:700;margin-left:6px}
+/* Manga panel corner decorations */
+.manga-corners{position:absolute;pointer-events:none;inset:0}
+.manga-corners::before,.manga-corners::after{content:'';position:absolute;width:20px;height:20px;border-color:rgba(255,60,95,.3);border-style:solid}
+.manga-corners::before{top:8px;right:8px;border-width:2px 2px 0 0;border-radius:0 4px 0 0}
+.manga-corners::after{bottom:8px;left:8px;border-width:0 0 2px 2px;border-radius:0 0 0 4px}
+</style>
+
+<!-- ── ZaoFan Hero Banner ──────────────────────────────────────────── -->
+<div class="zaofan-hero">
+  <div class="manga-corners"></div>
+  <div class="zaofan-art">
+    <div class="zaofan-speedlines"></div>
+    <div class="zaofan-char">⚡</div>
+  </div>
+  <div class="zaofan-text">
+    <div class="zaofan-title">ZAO Bot — نظام التحكم المتكامل
+      <span class="zaofan-tag">v1.2</span>
+    </div>
+    <div class="zaofan-sub">مرحباً في لوحة تحكم ZAO — نظام بوت فيسبوك الذكي مع دعم إنستقرام ونظام متعدد الطبقات<br>
+    ${new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>
+  </div>
+</div>
+
+<div class="page-header" style="display:none">
   <div class="page-title">📊 لوحة التحكم</div>
   <div class="page-sub">مرحباً بك في ZAO Bot — ${new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>
 </div>
@@ -3027,108 +3109,459 @@ setInterval(() => {
 
   // ─── GROUPS ─────────────────────────────────────────────────────────────────
   app.get('/groups', auth, async (req,res) => {
-    const proxyResult = await proxyToBot('GET', '/bot/groups', null);
-    const threads = Array.isArray(proxyResult?.data) ? proxyResult.data : [];
-    const rows = threads.slice(0,200).map(t => `
-      <tr>
-        <td><code style="font-size:.78rem">${htmlEscape(String(t.threadID||'—'))}</code></td>
-        <td style="font-weight:600">${htmlEscape(String(t.name||t.threadName||'غير مسمى'))}</td>
-        <td style="color:var(--text3);font-size:.8rem">${t.members||t.memberCount||'—'}</td>
-        <td style="display:flex;gap:6px">
-          <button class="btn btn-outline btn-sm" onclick="sendToGroup('${htmlEscape(String(t.threadID||''))}')">📤 إرسال</button>
-          <button class="btn btn-outline btn-sm" onclick="goHold('${htmlEscape(String(t.threadID||''))}')">🎛️ تحكم</button>
-        </td>
-      </tr>`).join('');
-
     const body = `
-<div class="page-header">
-  <div class="page-title">👥 الغروبات (${threads.length})</div>
-  <div class="page-sub">قائمة كل الغروبات المتصلة بالبوت</div>
+<style>
+.msng-wrap{display:flex;height:calc(100vh - var(--topbar-h) - 48px);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;background:var(--bg2);min-height:400px}
+.msng-sidebar{width:300px;min-width:220px;flex-shrink:0;border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--bg2)}
+.msng-sidebar-head{padding:14px 14px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.msng-group-list{flex:1;overflow-y:auto}
+.msng-group-item{padding:12px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.03);display:flex;align-items:center;gap:10px;transition:background .13s;position:relative}
+.msng-group-item:hover{background:var(--bg3)}
+.msng-group-item.active{background:rgba(255,60,95,.06);border-right:3px solid var(--accent)}
+.msng-grp-ava{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#ff3c5f,#60d0ff);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:white;flex-shrink:0}
+.msng-grp-info{flex:1;min-width:0}
+.msng-grp-name{font-weight:600;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msng-grp-meta{font-size:.72rem;color:var(--text3);margin-top:2px}
+.msng-chat{flex:1;display:flex;flex-direction:column;min-width:0;position:relative;background:var(--bg)}
+.msng-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text3);text-align:center;padding:32px}
+.msng-chat-inner{display:none;flex-direction:column;height:100%}
+.msng-chat-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0;background:var(--bg2)}
+.msng-back-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:1.2rem;padding:4px 8px;border-radius:6px;display:none}
+@media(max-width:640px){
+  .msng-sidebar{position:absolute;width:100%;z-index:10;height:100%}
+  .msng-sidebar.hidden{display:none}
+  .msng-back-btn{display:block}
+}
+.msng-chat-name{font-weight:700;font-size:.95rem}
+.msng-chat-sub{font-size:.75rem;color:var(--text3);margin-top:1px}
+.msng-chat-actions{margin-right:auto;display:flex;gap:6px}
+.msng-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
+.msng-bubble-wrap{display:flex;gap:8px;align-items:flex-end;max-width:85%}
+.msng-bubble-wrap.mine{align-self:flex-end;flex-direction:row-reverse}
+.msng-avatar-sm{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--accent));display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:white;flex-shrink:0;cursor:pointer}
+.msng-bubble{background:var(--bg3);border-radius:16px 16px 16px 4px;padding:8px 12px;font-size:.83rem;line-height:1.45;max-width:100%;word-break:break-word}
+.msng-bubble.mine{background:rgba(255,60,95,.15);border-radius:16px 16px 4px 16px}
+.msng-bubble-name{font-size:.69rem;color:var(--text3);margin-bottom:3px;cursor:pointer}
+.msng-bubble-name:hover{color:var(--accent2)}
+.msng-bubble-time{font-size:.65rem;color:var(--text3);margin-top:3px;text-align:left}
+.msng-input-area{padding:12px 14px;border-top:1px solid var(--border);flex-shrink:0;background:var(--bg2)}
+.msng-text-input{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 12px;font-size:.83rem;font-family:'Cairo',sans-serif;outline:none;transition:border .2s}
+.msng-text-input:focus{border-color:rgba(255,60,95,.4)}
+/* ZaoFan decorative panel corners */
+.msng-wrap::before{content:'';position:absolute;top:0;left:0;width:120px;height:120px;background:radial-gradient(circle at 0 0,rgba(255,60,95,.04),transparent 70%);pointer-events:none;z-index:0}
+</style>
+
+<div class="page-header" style="margin-bottom:10px">
+  <div class="page-title">💬 الغروبات — مسنجر</div>
+  <div class="page-sub">تصفح رسائل الغروبات وتفاعل مباشرة</div>
 </div>
-<div class="card">
-  <div class="card-header">
-    <div class="card-title">📋 قائمة الغروبات</div>
-    <div style="display:flex;gap:8px">
-      <input type="text" id="grpSearch" placeholder="🔍 بحث..." oninput="filterGroups()" style="background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 12px;font-size:.84rem;font-family:'Cairo',sans-serif;outline:none"/>
-      <button class="btn btn-outline btn-sm" onclick="liveRefreshGroups()" id="grpRefreshBtn">🔄 تحديث</button>
+
+<div class="msng-wrap" id="msngWrap" style="position:relative">
+
+  <!-- ── LEFT: Group List ── -->
+  <div class="msng-sidebar" id="msngSidebar">
+    <div class="msng-sidebar-head">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span style="font-weight:700;font-size:.9rem">الغروبات</span>
+        <span id="msngGrpCount" class="badge badge-blue" style="margin-right:auto">0</span>
+        <button class="btn btn-outline btn-sm" onclick="refreshGroups()" id="msngRefreshBtn">🔄</button>
+      </div>
+      <input type="text" id="msngSearch" placeholder="🔍 بحث..." oninput="filterGroups()"
+        style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:.8rem;font-family:'Cairo',sans-serif;outline:none"/>
+    </div>
+    <div class="msng-group-list" id="msngGroupList">
+      <div style="text-align:center;padding:32px;color:var(--text3);font-size:.83rem">⏳ جارٍ التحميل...</div>
     </div>
   </div>
-  <div id="grpTableWrap">${threads.length ? `<div class="table-wrap"><table class="table" id="grpsTable"><thead><tr><th>Thread ID</th><th>الاسم</th><th>الأعضاء</th><th>إجراءات</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<div style="text-align:center;padding:36px;color:var(--text3)">⚠️ لا توجد غروبات — البوت قد يكون غير متصل</div>'}</div>
+
+  <!-- ── RIGHT: Chat View ── -->
+  <div class="msng-chat" id="msngChat">
+    <div class="msng-placeholder" id="msngPlaceholder">
+      <div style="font-size:3rem;margin-bottom:12px;opacity:.4">💬</div>
+      <div style="font-weight:700;font-size:1rem;margin-bottom:6px">اختر غروباً للبدء</div>
+      <div style="font-size:.83rem">انقر على أي غروب لعرض رسائله والتفاعل معه</div>
+    </div>
+    <div class="msng-chat-inner" id="msngChatInner">
+      <!-- Header -->
+      <div class="msng-chat-header">
+        <button class="msng-back-btn" onclick="deselectGroup()">←</button>
+        <div class="msng-grp-ava" id="msngChatAva" style="width:36px;height:36px;font-size:.8rem">G</div>
+        <div>
+          <div class="msng-chat-name" id="msngChatName">—</div>
+          <div class="msng-chat-sub" id="msngChatSub">—</div>
+        </div>
+        <div class="msng-chat-actions">
+          <button class="btn btn-outline btn-sm" onclick="openMembers()" title="الأعضاء" style="padding:5px 8px">👥</button>
+          <button class="btn btn-outline btn-sm" onclick="openChangeName()" title="تغيير الاسم" style="padding:5px 8px">✏️</button>
+          <button class="btn btn-outline btn-sm" onclick="goHold(_selTID)" title="التحكم" style="padding:5px 8px">🎛️</button>
+          <button class="btn btn-outline btn-sm" onclick="reloadMessages()" title="تحديث" style="padding:5px 8px">🔄</button>
+        </div>
+      </div>
+      <!-- Messages -->
+      <div class="msng-messages" id="msngMessages">
+        <div style="text-align:center;padding:32px;color:var(--text3);font-size:.83rem" id="msngMsgLoader">اختر غروباً...</div>
+      </div>
+      <!-- Input -->
+      <div class="msng-input-area">
+        <div style="display:flex;gap:6px;margin-bottom:6px">
+          <input type="text" id="msngMsgInput" placeholder="💬 اكتب رسالة..." class="msng-text-input"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsngMsg()}"/>
+          <button class="btn btn-primary btn-sm" onclick="sendMsngMsg()" style="white-space:nowrap;padding:6px 10px">📤 إرسال</button>
+        </div>
+        <div style="display:flex;gap:6px">
+          <input type="text" id="msngCmdInput" placeholder="⚡ أمر مثل: help | ping | nm اسم الغروب" class="msng-text-input"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runMsngCmd()}"/>
+          <button class="btn btn-outline btn-sm" onclick="runMsngCmd()" style="white-space:nowrap;padding:6px 10px;color:var(--accent)">▶️ تنفيذ</button>
+        </div>
+        <div id="msngActionSt" style="font-size:.75rem;min-height:14px;margin-top:5px;color:var(--text3)"></div>
+      </div>
+    </div>
+  </div>
 </div>
 
-<!-- Send Modal -->
-<div id="sendModal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:center;justify-content:center">
-  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);width:min(520px,95vw);padding:24px;overflow:hidden">
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
-      <div style="font-weight:700">📤 إرسال رسالة للغروب <code id="sendGroupId" style="color:var(--accent)"></code></div>
-      <button onclick="closeSendModal()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:1.1rem">✕</button>
+<!-- ── Members Modal ── -->
+<div id="membersModal" style="display:none;position:fixed;inset:0;z-index:9800;background:rgba(0,0,0,.87);backdrop-filter:blur(8px);align-items:center;justify-content:center">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);width:min(480px,95vw);max-height:82vh;display:flex;flex-direction:column;overflow:hidden">
+    <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+      <div style="font-weight:700" id="memberModalTitle">👥 الأعضاء</div>
+      <button onclick="closeMembersModal()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:1.1rem">✕</button>
     </div>
-    <textarea id="sendMsgArea" class="form-control" rows="4" placeholder="نص الرسالة..."></textarea>
+    <div style="padding:8px 14px;border-bottom:1px solid var(--border);flex-shrink:0">
+      <input id="memberSearch" placeholder="🔍 بحث..." oninput="filterMembers()"
+        style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:.8rem;font-family:'Cairo',sans-serif;outline:none"/>
+    </div>
+    <div id="membersList" style="overflow-y:auto;flex:1;padding:6px 0"></div>
+  </div>
+</div>
+
+<!-- ── Member Profile Modal ── -->
+<div id="profileModal" style="display:none;position:fixed;inset:0;z-index:9900;background:rgba(0,0,0,.9);backdrop-filter:blur(12px);align-items:center;justify-content:center">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);width:min(320px,90vw);padding:24px;display:flex;flex-direction:column;align-items:center;gap:12px;position:relative">
+    <button onclick="closeProfileModal()" style="position:absolute;top:10px;left:10px;background:none;border:none;cursor:pointer;color:var(--text3);font-size:1.1rem">✕</button>
+    <div id="profileAva" style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:1.7rem;font-weight:700;color:white;border:3px solid rgba(255,255,255,.08)">?</div>
+    <div id="profileName" style="font-size:1rem;font-weight:700;text-align:center">—</div>
+    <div id="profileAdminBadge" style="display:none"><span class="badge badge-yellow">👑 مشرف الغروب</span></div>
+    <div style="width:100%;display:flex;flex-direction:column;gap:7px">
+      <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg3);border-radius:8px;align-items:center">
+        <span style="color:var(--text3);font-size:.78rem">الـ UID</span>
+        <code id="profileUID" style="font-size:.78rem;color:var(--accent2);cursor:pointer" onclick="navigator.clipboard.writeText(this.textContent).then(()=>showToast('✅ تم النسخ','success'))">—</code>
+      </div>
+      <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg3);border-radius:8px;align-items:center">
+        <span style="color:var(--text3);font-size:.78rem">رابط الملف</span>
+        <a id="profileLink" href="#" target="_blank" rel="noopener" style="font-size:.78rem;color:var(--purple)">🔗 فتح الملف الشخصي</a>
+      </div>
+    </div>
+    <div style="display:flex;gap:8px;width:100%">
+      <button class="btn btn-outline btn-sm" style="flex:1" onclick="sendToMember()">💬 رسالة</button>
+      <button class="btn btn-outline btn-sm" style="flex:1;color:var(--red)" onclick="kickMember()">🚫 كيك</button>
+    </div>
+    <div id="profileActSt" style="font-size:.75rem;min-height:14px;color:var(--text3)"></div>
+  </div>
+</div>
+
+<!-- ── Change Group Name Modal ── -->
+<div id="changeNameModal" style="display:none;position:fixed;inset:0;z-index:9800;background:rgba(0,0,0,.87);backdrop-filter:blur(8px);align-items:center;justify-content:center">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);width:min(380px,90vw);padding:22px;display:flex;flex-direction:column;gap:12px">
+    <div style="font-weight:700">✏️ تغيير اسم الغروب</div>
+    <div style="font-size:.8rem;color:var(--text3)" id="changeNameCurrent"></div>
+    <input type="text" id="newGroupName" class="form-control" placeholder="الاسم الجديد..."/>
     <div class="btn-row">
-      <button class="btn btn-primary" onclick="doSend()">📤 إرسال</button>
-      <button class="btn btn-outline" onclick="closeSendModal()">إلغاء</button>
+      <button class="btn btn-primary" onclick="doChangeName()">✅ تغيير</button>
+      <button class="btn btn-outline" onclick="document.getElementById('changeNameModal').style.display='none'">إلغاء</button>
     </div>
-    <div id="sendStatus" style="margin-top:10px;font-size:.83rem;min-height:22px"></div>
+    <div id="changeNameSt" style="font-size:.8rem;min-height:14px;color:var(--text3)"></div>
   </div>
 </div>
 
 <script>
-function filterGroups(){
-  const s=document.getElementById('grpSearch').value.toLowerCase();
-  document.querySelectorAll('#grpsTable tbody tr').forEach(tr=>{
-    tr.style.display=tr.textContent.toLowerCase().includes(s)?'':'none';
-  });
-}
-async function liveRefreshGroups(){
-  const btn=document.getElementById('grpRefreshBtn');
-  if(btn){btn.disabled=true;btn.textContent='⏳...';}
+let _allGroups=[];
+let _selTID='';
+let _allMembers=[];
+let _curProfileUID='';
+
+// ── escape helpers ─────────────────────────────────────────────────────────
+function _h(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function _initials(name){const w=String(name||'G').trim().split(/\s+/);return(w[0]?.[0]||'G').toUpperCase();}
+function _gradColor(str){const h=['135deg,#ff3c5f,#60d0ff','135deg,#9b72f7,#60d0ff','135deg,#30d988,#60d0ff','135deg,#f5c842,#ff3c5f'];let n=0;for(const c of String(str))n+=c.charCodeAt(0);return h[n%h.length];}
+function _fmtTime(ts){if(!ts)return'';const d=new Date(Number(ts));const now=new Date();const diff=(now-d)/1000;if(diff<60)return'الآن';if(diff<3600)return Math.floor(diff/60)+'د';if(diff<86400)return Math.floor(diff/3600)+'س';return d.toLocaleDateString('ar');}
+
+// ── Group List ─────────────────────────────────────────────────────────────
+async function refreshGroups(){
+  const btn=document.getElementById('msngRefreshBtn');
+  const list=document.getElementById('msngGroupList');
+  if(btn){btn.disabled=true;btn.textContent='⏳';}
+  list.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:.83rem">⏳ جارٍ الجلب...</div>';
   try{
     const r=await fetch('/api/groups-list');
-    const data=await r.json();
-    if(!data.ok||!Array.isArray(data.groups)){throw new Error(data.error||'Bot offline');}
-    const wrap=document.getElementById('grpTableWrap');
-    if(data.groups.length===0){
-      wrap.innerHTML='<div style="text-align:center;padding:36px;color:var(--text3)">لا توجد غروبات — البوت قد يكون غير متصل</div>';
-    } else {
-      const rows=data.groups.map(function(g){
-        return '<tr><td><code style="font-size:.78rem">'+g.threadID+'</code></td>'
-          +'<td style="font-weight:600">'+(g.name||'غير مسمى')+'</td>'
-          +'<td style="color:var(--text3);font-size:.8rem">'+(g.memberCount||'—')+'</td>'
-          +'<td style="display:flex;gap:6px">'
-          +'<button class="btn btn-outline btn-sm" onclick="sendToGroup(\''+g.threadID+'\')">📤 إرسال</button>'
-          +'<button class="btn btn-outline btn-sm" onclick="goHold(\''+g.threadID+'\')">🎛️ تحكم</button>'
-          +'</td></tr>';
-      }).join('');
-      wrap.innerHTML='<div class="table-wrap"><table class="table" id="grpsTable"><thead><tr><th>Thread ID</th><th>الاسم</th><th>الأعضاء</th><th>إجراءات</th></tr></thead><tbody>'+rows+'</tbody></table></div>';
-      const ttl=document.querySelector('.page-title');
-      if(ttl) ttl.textContent='👥 الغروبات ('+data.groups.length+')';
+    const d=await r.json();
+    _allGroups=d.groups||[];
+    document.getElementById('msngGrpCount').textContent=_allGroups.length;
+    renderGroupList(_allGroups);
+    if(!_allGroups.length)showToast('⚠️ '+(d.error||'لا توجد غروبات — البوت قد يكون غير متصل'),'warn');
+    else showToast('✅ '+_allGroups.length+' غروب'+(d.cached?' (كاش)':''),'success');
+  }catch(e){
+    list.innerHTML='<div style="text-align:center;padding:32px;color:var(--red);font-size:.83rem">❌ '+_h(e.message)+'</div>';
+    showToast('❌ فشل جلب الغروبات','error');
+  }finally{if(btn){btn.disabled=false;btn.textContent='🔄';}}
+}
+
+function renderGroupList(groups){
+  const list=document.getElementById('msngGroupList');
+  if(!groups.length){
+    list.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:.83rem">لا توجد نتائج</div>';
+    return;
+  }
+  list.innerHTML=groups.map(g=>{
+    const ini=_initials(g.name);
+    const grad=_gradColor(g.threadID);
+    return '<div class="msng-group-item'+(g.threadID===_selTID?' active':'')+'" onclick="selectGroup(\''+_h(g.threadID)+'\',\''+_h(g.name)+'\','+(_h(g.memberCount||0))+')" id="gi-'+_h(g.threadID)+'">'
+      +'<div class="msng-grp-ava" style="background:linear-gradient('+grad+')">'+ini+'</div>'
+      +'<div class="msng-grp-info">'
+        +'<div class="msng-grp-name">'+_h(g.name||'غير مسمى')+'</div>'
+        +'<div class="msng-grp-meta">'+_h(g.threadID)+(g.memberCount?' · '+g.memberCount+' عضو':'')+'</div>'
+      +'</div>'
+    +'</div>';
+  }).join('');
+}
+
+function filterGroups(){
+  const s=document.getElementById('msngSearch').value.toLowerCase();
+  const filtered=_allGroups.filter(g=>(g.name||'').toLowerCase().includes(s)||String(g.threadID).includes(s));
+  renderGroupList(filtered);
+}
+
+// ── Select Group ───────────────────────────────────────────────────────────
+function selectGroup(tid,name,mc){
+  _selTID=tid;
+  // update sidebar active state
+  document.querySelectorAll('.msng-group-item').forEach(el=>el.classList.remove('active'));
+  const el=document.getElementById('gi-'+tid);
+  if(el)el.classList.add('active');
+  // show chat panel
+  document.getElementById('msngPlaceholder').style.display='none';
+  const inner=document.getElementById('msngChatInner');
+  inner.style.display='flex';
+  // header
+  const ini=_initials(name);
+  const grad=_gradColor(tid);
+  document.getElementById('msngChatAva').textContent=ini;
+  document.getElementById('msngChatAva').style.background='linear-gradient('+grad+')';
+  document.getElementById('msngChatName').textContent=name||tid;
+  document.getElementById('msngChatSub').textContent=tid+(mc?' · '+mc+' عضو':'');
+  // mobile: hide sidebar
+  if(window.innerWidth<=640)document.getElementById('msngSidebar').classList.add('hidden');
+  // load messages
+  loadMessages(tid);
+}
+
+function deselectGroup(){
+  document.getElementById('msngSidebar').classList.remove('hidden');
+  document.getElementById('msngPlaceholder').style.display='flex';
+  document.getElementById('msngChatInner').style.display='none';
+  document.querySelectorAll('.msng-group-item').forEach(el=>el.classList.remove('active'));
+  _selTID='';
+}
+
+// ── Messages ───────────────────────────────────────────────────────────────
+async function loadMessages(tid){
+  const box=document.getElementById('msngMessages');
+  box.innerHTML='<div id="msngMsgLoader" style="text-align:center;padding:24px;color:var(--text3);font-size:.83rem">⏳ جارٍ تحميل الرسائل...</div>';
+  try{
+    const r=await fetch('/api/thread-history?threadID='+encodeURIComponent(tid)+'&count=30');
+    const d=await r.json();
+    if(!d.ok&&!Array.isArray(d.messages)){
+      box.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:.83rem">💬 '+(d.error||'لا تتوفر سجلات الرسائل — المكتبة لا تدعم جلب السجل')+'</div>';
+      return;
     }
-    showToast('✅ تم التحديث — '+data.groups.length+' غروب','success');
-  } catch(e){
-    showToast('❌ '+e.message,'error');
-  } finally {
-    if(btn){btn.disabled=false;btn.textContent='🔄 تحديث';}
+    const msgs=d.messages||[];
+    if(!msgs.length){
+      box.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:.83rem">📭 لا توجد رسائل محفوظة</div>';
+      return;
+    }
+    const myID=String((await fetch('/api/status').then(r=>r.json()).catch(()=>({}))).botUserID||'');
+    box.innerHTML=msgs.map(m=>renderBubble(m,myID)).join('');
+    box.scrollTop=box.scrollHeight;
+  }catch(e){
+    box.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:.83rem">💬 جلب الرسائل غير متاح</div>';
   }
 }
-let _curGroupId='';
-function sendToGroup(id){
-  _curGroupId=id;
-  document.getElementById('sendGroupId').textContent=id;
-  document.getElementById('sendMsgArea').value='';
-  document.getElementById('sendModal').style.display='flex';
-  document.getElementById('sendMsgArea').focus();
+
+function reloadMessages(){if(_selTID)loadMessages(_selTID);}
+
+function renderBubble(m,myID){
+  const isMe=myID&&String(m.senderID)===String(myID);
+  const name=_h(m.senderName||m.senderID||'مجهول');
+  const body=_h(m.body||'');
+  const time=_fmtTime(m.timestamp);
+  const ini=(m.senderName||'?')[0].toUpperCase();
+  const grad=_gradColor(String(m.senderID||'0'));
+  const attaches=(m.attachments||[]).filter(a=>a.url).map(a=>'<div style="margin-top:5px"><a href="'+_h(a.url)+'" target="_blank" rel="noopener" style="color:var(--accent2);font-size:.75rem">📎 '+_h(a.type||'مرفق')+'</a></div>').join('');
+  if(m.isUnsent)return'<div style="text-align:center;color:var(--text3);font-size:.75rem;padding:4px 0">🚫 تم حذف رسالة</div>';
+  return '<div class="msng-bubble-wrap'+(isMe?' mine':'')+'">'
+    +'<div class="msng-avatar-sm" style="background:linear-gradient('+grad+')" onclick="quickProfile(\''+_h(String(m.senderID))+'\',\''+_h(m.senderName||m.senderID)+'\')">'+ini+'</div>'
+    +'<div>'
+      +(isMe?'':'<div class="msng-bubble-name" onclick="quickProfile(\''+_h(String(m.senderID))+'\',\''+_h(m.senderName||m.senderID)+'\')">'+name+'</div>')
+      +'<div class="msng-bubble'+(isMe?' mine':'')+'">'+(body||'<em style="color:var(--text3)">بلا نص</em>')+attaches+'</div>'
+      +'<div class="msng-bubble-time">'+time+'</div>'
+    +'</div>'
+  +'</div>';
 }
-function closeSendModal(){document.getElementById('sendModal').style.display='none'}
-async function doSend(){
-  const msg=document.getElementById('sendMsgArea').value.trim();
-  if(!msg)return showToast('أدخل نص الرسالة','error');
-  const st=document.getElementById('sendStatus');
-  st.innerHTML='<span style="color:var(--text3)">⏳ جارٍ الإرسال...</span>';
-  const r=await api('/api/send',{threadID:_curGroupId,message:msg});
-  if(r.ok||r.message){st.innerHTML='<span style="color:var(--green)">✅ تم الإرسال</span>';showToast('✅ تم الإرسال','success')}
-  else{st.innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>'}
+
+// ── Send & Execute ─────────────────────────────────────────────────────────
+async function sendMsngMsg(){
+  if(!_selTID)return showToast('اختر غروباً أولاً','error');
+  const inp=document.getElementById('msngMsgInput');
+  const msg=inp.value.trim();
+  if(!msg)return;
+  const st=document.getElementById('msngActionSt');
+  st.innerHTML='⏳ جارٍ الإرسال...';
+  const r=await api('/api/send',{threadID:_selTID,message:msg});
+  if(r.ok||r.message){
+    inp.value='';
+    st.innerHTML='<span style="color:var(--green)">✅ تم الإرسال</span>';
+    showToast('✅ الرسالة أُرسلت','success');
+    setTimeout(()=>{st.innerHTML='';reloadMessages();},1500);
+  }else{
+    st.innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل الإرسال')+'</span>';
+    showToast('❌ '+(r.error||'فشل'),'error');
+  }
 }
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeSendModal()});
+
+async function runMsngCmd(){
+  if(!_selTID)return showToast('اختر غروباً أولاً','error');
+  const inp=document.getElementById('msngCmdInput');
+  const cmd=inp.value.trim();
+  if(!cmd)return;
+  const st=document.getElementById('msngActionSt');
+  st.innerHTML='⏳ جارٍ تنفيذ الأمر...';
+  const r=await api('/api/execute',{threadID:_selTID,command:cmd});
+  if(r.ok||r.message){
+    inp.value='';
+    st.innerHTML='<span style="color:var(--green)">✅ '+(r.message||'تم تنفيذ الأمر')+'</span>';
+    showToast('✅ تم تنفيذ الأمر','success');
+    setTimeout(()=>{st.innerHTML='';reloadMessages();},2000);
+  }else{
+    st.innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>';
+    showToast('❌ '+(r.error||'فشل'),'error');
+  }
+}
+
+// ── Members ────────────────────────────────────────────────────────────────
+async function openMembers(){
+  if(!_selTID)return showToast('اختر غروباً أولاً','error');
+  document.getElementById('membersModal').style.display='flex';
+  document.getElementById('membersList').innerHTML='<div style="text-align:center;padding:24px;color:var(--text3)">⏳ جارٍ تحميل الأعضاء...</div>';
+  document.getElementById('memberModalTitle').textContent='👥 أعضاء: '+document.getElementById('msngChatName').textContent;
+  try{
+    const r=await fetch('/api/group-members?threadID='+encodeURIComponent(_selTID));
+    const d=await r.json();
+    _allMembers=d.members||[];
+    document.getElementById('memberModalTitle').textContent='👥 الأعضاء ('+_allMembers.length+')';
+    renderMembers(_allMembers);
+  }catch(e){
+    document.getElementById('membersList').innerHTML='<div style="text-align:center;padding:24px;color:var(--red)">❌ '+_h(e.message)+'</div>';
+  }
+}
+
+function renderMembers(members){
+  const list=document.getElementById('membersList');
+  if(!members.length){list.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3)">لا يوجد أعضاء</div>';return;}
+  list.innerHTML=members.map(m=>{
+    const ini=(m.name||'?')[0].toUpperCase();
+    const grad=_gradColor(m.userID);
+    return '<div style="padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .13s" onmouseover="this.style.background=\'var(--bg3)\'" onmouseout="this.style.background=\'\'" onclick="openProfile(\''+_h(m.userID)+'\',\''+_h(m.name)+'\','+!!m.isAdmin+')">'
+      +'<div class="msng-avatar-sm" style="background:linear-gradient('+grad+');width:36px;height:36px;font-size:.8rem">'+ini+'</div>'
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="font-weight:600;font-size:.83rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+_h(m.name)+(m.isAdmin?' <span class="badge badge-yellow" style="font-size:.62rem">مشرف</span>':'')+'</div>'
+        +'<div style="font-size:.7rem;color:var(--text3);font-family:monospace">'+_h(m.userID)+'</div>'
+      +'</div>'
+      +'<span style="color:var(--text3);font-size:.75rem">↗</span>'
+    +'</div>';
+  }).join('');
+}
+
+function filterMembers(){
+  const s=document.getElementById('memberSearch').value.toLowerCase();
+  renderMembers(_allMembers.filter(m=>(m.name||'').toLowerCase().includes(s)||String(m.userID).includes(s)));
+}
+
+function closeMembersModal(){document.getElementById('membersModal').style.display='none';}
+
+// ── Profile Modal ──────────────────────────────────────────────────────────
+function openProfile(uid,name,isAdmin){
+  _curProfileUID=uid;
+  const ini=(name||'?')[0].toUpperCase();
+  const grad=_gradColor(uid);
+  document.getElementById('profileAva').textContent=ini;
+  document.getElementById('profileAva').style.background='linear-gradient('+grad+')';
+  document.getElementById('profileName').textContent=name||uid;
+  document.getElementById('profileUID').textContent=uid;
+  document.getElementById('profileLink').href='https://www.facebook.com/profile.php?id='+encodeURIComponent(uid);
+  document.getElementById('profileAdminBadge').style.display=isAdmin?'block':'none';
+  document.getElementById('profileActSt').innerHTML='';
+  document.getElementById('profileModal').style.display='flex';
+}
+
+function quickProfile(uid,name){openProfile(uid,name,false);}
+function closeProfileModal(){document.getElementById('profileModal').style.display='none';}
+
+async function sendToMember(){
+  const msg=prompt('رسالة لـ '+document.getElementById('profileName').textContent+':');
+  if(!msg)return;
+  const r=await api('/api/send',{threadID:_curProfileUID,message:msg});
+  const st=document.getElementById('profileActSt');
+  if(r.ok||r.message)st.innerHTML='<span style="color:var(--green)">✅ تم الإرسال</span>';
+  else st.innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>';
+}
+
+async function kickMember(){
+  if(!_selTID)return;
+  if(!confirm('هل تريد إخراج هذا العضو من الغروب؟'))return;
+  const st=document.getElementById('profileActSt');
+  st.innerHTML='⏳ جارٍ الكيك...';
+  const r=await api('/api/group-kick',{threadID:_selTID,userID:_curProfileUID});
+  if(r.ok)st.innerHTML='<span style="color:var(--green)">✅ تم الكيك</span>';
+  else st.innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>';
+}
+
+// ── Change Group Name ──────────────────────────────────────────────────────
+function openChangeName(){
+  if(!_selTID)return showToast('اختر غروباً أولاً','error');
+  document.getElementById('changeNameCurrent').textContent='الاسم الحالي: '+document.getElementById('msngChatName').textContent;
+  document.getElementById('newGroupName').value='';
+  document.getElementById('changeNameSt').innerHTML='';
+  document.getElementById('changeNameModal').style.display='flex';
+}
+
+async function doChangeName(){
+  const name=document.getElementById('newGroupName').value.trim();
+  if(!name)return showToast('أدخل الاسم الجديد','error');
+  const st=document.getElementById('changeNameSt');
+  st.innerHTML='⏳ جارٍ التغيير...';
+  const r=await api('/api/group-change-name',{threadID:_selTID,name});
+  if(r.ok){
+    document.getElementById('msngChatName').textContent=name;
+    const grp=_allGroups.find(g=>g.threadID===_selTID);
+    if(grp){grp.name=name;filterGroups();}
+    st.innerHTML='<span style="color:var(--green)">✅ تم تغيير الاسم</span>';
+    showToast('✅ تم تغيير اسم الغروب','success');
+    setTimeout(()=>document.getElementById('changeNameModal').style.display='none',1500);
+  }else{
+    st.innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>';
+    showToast('❌ '+(r.error||'فشل'),'error');
+  }
+}
+
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    closeMembersModal();
+    closeProfileModal();
+    document.getElementById('changeNameModal').style.display='none';
+  }
+});
+
+// ── Init ───────────────────────────────────────────────────────────────────
+refreshGroups();
 </script>`;
     res.send(layout('الغروبات', body, 'groups', pageOpts()));
   });
@@ -5120,6 +5553,25 @@ document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click
   app.get('/api/message-requests',         auth, async (req,res) => { const r=await proxyToBot('GET','/bot/requests',null); res.status(r.status||200).json(r.data); });
   app.post('/api/message-requests/accept', auth, async (req,res) => { const r=await proxyToBot('POST','/bot/message-requests/accept',JSON.stringify(req.body)); res.status(r.status||200).json(r.data); });
   app.post('/api/message-requests/decline',auth, async (req,res) => { const r=await proxyToBot('POST','/bot/message-requests/decline',JSON.stringify(req.body)); res.status(r.status||200).json(r.data); });
+
+  // ─── Messenger-style groups endpoints ─────────────────────────────────────
+  app.get('/api/thread-history', auth, async (req,res) => {
+    const qs = new URLSearchParams(req.query);
+    const r = await proxyToBot('GET', '/bot/thread-history?threadID='+encodeURIComponent(req.query.threadID||'')+'&count='+(req.query.count||'30'), null);
+    res.status(r.status||200).json(r.data);
+  });
+  app.get('/api/group-members', auth, async (req,res) => {
+    const r = await proxyToBot('GET', '/bot/group-members?threadID='+encodeURIComponent(req.query.threadID||''), null);
+    res.status(r.status||200).json(r.data);
+  });
+  app.post('/api/group-change-name', auth, async (req,res) => {
+    const r = await proxyToBot('POST', '/bot/group-change-name', JSON.stringify(req.body));
+    res.status(r.status||200).json(r.data);
+  });
+  app.post('/api/group-kick', auth, async (req,res) => {
+    const r = await proxyToBot('POST', '/bot/group-kick', JSON.stringify(req.body));
+    res.status(r.status||200).json(r.data);
+  });
 
   // (api/bot/send-message is served by /api/send above)
 

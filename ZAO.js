@@ -2077,21 +2077,22 @@ async function onBot({ models }) {
         if (pathname === '/bot/message-requests/accept' && method === 'POST') {
           const { threadID } = body;
           if (!threadID) return _json(res, { error: 'Missing threadID' }, 400);
-          if (!_api || typeof _api.handleMessageRequest !== 'function')
-            return _json(res, { error: 'handleMessageRequest API not available' }, 503);
+          if (!_api) return _json(res, { error: 'Bot not connected' }, 503);
           try {
-            await new Promise((resolve, reject) => {
-              try {
-                _api.handleMessageRequest(String(threadID), true, (err) => err ? reject(err) : resolve());
-              } catch (e) { reject(e); }
-            });
-            // Send "." immediately after accepting — this overrides the Facebook
-            // default wave/greeting emoji that the platform would otherwise inject.
-            try {
-              await new Promise((resolve) => {
-                _api.sendMessage('.', String(threadID), () => resolve());
+            // Try handleMessageRequest first (may not exist in all library versions)
+            if (typeof _api.handleMessageRequest === 'function') {
+              await new Promise((resolve, reject) => {
+                try { _api.handleMessageRequest(String(threadID), true, (err) => err ? reject(err) : resolve()); }
+                catch (e) { reject(e); }
               });
-            } catch (_) {}
+            } else {
+              // Fallback: send a message to move thread from PENDING to INBOX
+              await new Promise((resolve) => {
+                _api.sendMessage('مرحباً 👋', String(threadID), () => resolve());
+              });
+            }
+            // Send greeting after accepting
+            try { await new Promise((resolve) => { _api.sendMessage('مرحباً 👋', String(threadID), () => resolve()); }); } catch (_) {}
             return _json(res, { ok: true, accepted: true, threadID });
           } catch (e) { return _json(res, { ok: false, error: String(e.message || e).slice(0, 300) }, 500); }
         }
@@ -2099,16 +2100,123 @@ async function onBot({ models }) {
         if (pathname === '/bot/message-requests/decline' && method === 'POST') {
           const { threadID } = body;
           if (!threadID) return _json(res, { error: 'Missing threadID' }, 400);
-          if (!_api || typeof _api.handleMessageRequest !== 'function')
-            return _json(res, { error: 'handleMessageRequest API not available' }, 503);
+          if (!_api) return _json(res, { error: 'Bot not connected' }, 503);
           try {
-            await new Promise((resolve, reject) => {
-              try {
-                _api.handleMessageRequest(String(threadID), false, (err) => err ? reject(err) : resolve());
-              } catch (e) { reject(e); }
-            });
+            if (typeof _api.handleMessageRequest === 'function') {
+              await new Promise((resolve, reject) => {
+                try { _api.handleMessageRequest(String(threadID), false, (err) => err ? reject(err) : resolve()); }
+                catch (e) { reject(e); }
+              });
+            }
             return _json(res, { ok: true, declined: true, threadID });
           } catch (e) { return _json(res, { ok: false, error: String(e.message || e).slice(0, 300) }, 500); }
+        }
+
+        // ── Thread history (Messenger-style chat view) ──────────────────────────
+        if (pathname === '/bot/thread-history' && method === 'GET') {
+          const _params = new URLSearchParams(req.url.split('?')[1] || '');
+          const _thTID = _params.get('threadID');
+          const _thCount = Math.min(parseInt(_params.get('count') || '30'), 50);
+          if (!_thTID) return _json(res, { error: 'Missing threadID' }, 400);
+          if (!_api) return _json(res, { ok: false, messages: [], error: 'Bot not connected' });
+          try {
+            const history = await new Promise((resolve, reject) => {
+              if (typeof _api.getThreadHistory !== 'function') return resolve([]);
+              _api.getThreadHistory(String(_thTID), _thCount, undefined, (err, data) => {
+                if (err) reject(err);
+                else resolve(Array.isArray(data) ? data : []);
+              });
+            });
+            const msgs = history.slice(-_thCount).map(m => ({
+              messageID: m.messageID || null,
+              senderID: String(m.senderID || ''),
+              senderName: m.senderName || null,
+              body: m.body || '',
+              timestamp: m.timestamp || 0,
+              attachments: (m.attachments || []).slice(0, 3).map(a => ({
+                type: a.type || 'file',
+                url: a.url || a.previewUrl || null,
+                filename: a.filename || null,
+              })),
+              isUnsent: !!m.isUnsent,
+            }));
+            return _json(res, { ok: true, messages: msgs, threadID: _thTID });
+          } catch (e) {
+            return _json(res, { ok: false, messages: [], error: String(e.message || e).slice(0, 200) });
+          }
+        }
+
+        // ── Group members ────────────────────────────────────────────────────────
+        if (pathname === '/bot/group-members' && method === 'GET') {
+          const _gmp = new URLSearchParams(req.url.split('?')[1] || '');
+          const _gmTID = _gmp.get('threadID');
+          if (!_gmTID) return _json(res, { error: 'Missing threadID' }, 400);
+          if (!_api) return _json(res, { ok: false, members: [], error: 'Bot not connected' });
+          try {
+            const threadInfo = await new Promise((resolve, reject) => {
+              if (typeof _api.getThreadInfo !== 'function') return resolve(null);
+              _api.getThreadInfo(String(_gmTID), (err, data) => err ? reject(err) : resolve(data));
+            });
+            if (!threadInfo) return _json(res, { ok: true, members: [], threadID: _gmTID });
+            const participantIDs = (threadInfo.participantIDs || []).map(String);
+            let userInfoMap = {};
+            if (participantIDs.length > 0 && typeof _api.getUserInfo === 'function') {
+              try {
+                userInfoMap = await new Promise((resolve, reject) => {
+                  _api.getUserInfo(participantIDs.slice(0, 50), (err, data) => err ? reject(err) : resolve(data || {}));
+                });
+              } catch (_) {}
+            }
+            const adminIDs = (threadInfo.adminIDs || []).map(a => String(a.id || a));
+            const members = participantIDs.map(uid => {
+              const info = userInfoMap[uid] || {};
+              return {
+                userID: uid,
+                name: info.name || info.fullName || uid,
+                profilePic: info.thumbSrc || info.profilePicture || null,
+                gender: info.gender === 1 ? 'male' : info.gender === 2 ? 'female' : null,
+                isAdmin: adminIDs.includes(uid),
+              };
+            });
+            return _json(res, {
+              ok: true, members, threadID: _gmTID, count: members.length,
+              name: threadInfo.name || threadInfo.threadName || _gmTID,
+            });
+          } catch (e) {
+            return _json(res, { ok: false, members: [], error: String(e.message || e).slice(0, 200) });
+          }
+        }
+
+        // ── Change group name ────────────────────────────────────────────────────
+        if (pathname === '/bot/group-change-name' && method === 'POST') {
+          const { threadID: _cnTID, name: _cnName } = body;
+          if (!_cnTID || !_cnName) return _json(res, { error: 'Missing threadID or name' }, 400);
+          if (!_api) return _json(res, { error: 'Bot not connected' }, 503);
+          try {
+            await new Promise((resolve, reject) => {
+              if (typeof _api.setTitle !== 'function') return reject(new Error('setTitle API not available'));
+              _api.setTitle(String(_cnName).trim(), String(_cnTID), (err) => err ? reject(err) : resolve());
+            });
+            return _json(res, { ok: true, name: String(_cnName).trim(), threadID: _cnTID });
+          } catch (e) {
+            return _json(res, { ok: false, error: String(e.message || e).slice(0, 200) });
+          }
+        }
+
+        // ── Kick group member ────────────────────────────────────────────────────
+        if (pathname === '/bot/group-kick' && method === 'POST') {
+          const { threadID: _kkTID, userID: _kkUID } = body;
+          if (!_kkTID || !_kkUID) return _json(res, { error: 'Missing threadID or userID' }, 400);
+          if (!_api) return _json(res, { error: 'Bot not connected' }, 503);
+          try {
+            await new Promise((resolve, reject) => {
+              if (typeof _api.removeUserFromGroup !== 'function') return reject(new Error('removeUserFromGroup not available'));
+              _api.removeUserFromGroup(String(_kkUID), String(_kkTID), (err) => err ? reject(err) : resolve());
+            });
+            return _json(res, { ok: true });
+          } catch (e) {
+            return _json(res, { ok: false, error: String(e.message || e).slice(0, 200) });
+          }
         }
 
         res.writeHead(404); res.end('Not found');
