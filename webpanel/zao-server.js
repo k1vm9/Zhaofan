@@ -2035,6 +2035,24 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeEditModal();cl
     <label class="form-label">رسالة مباشرة (بديل للأمر — ترسل نصاً للغروب فوراً)</label>
     <textarea id="execMsg" class="form-control" rows="3" placeholder="نص الرسالة..."></textarea>
   </div>
+  <!-- Quick command presets -->
+  <div class="form-group" style="margin-top:8px">
+    <label class="form-label" style="margin-bottom:6px">⚡ اختصارات سريعة — انقر لملء الأمر</label>
+    <div style="display:flex;flex-wrap:wrap;gap:6px">
+      <button class="btn btn-outline btn-sm" onclick="setCmd('engine تفعيل')" title="تشغيل المحرك 1">🔴 محرك1 تشغيل</button>
+      <button class="btn btn-outline btn-sm" onclick="setCmd('engine ايقاف')" title="إيقاف المحرك 1">⬛ محرك1 إيقاف</button>
+      <button class="btn btn-outline btn-sm" onclick="setCmd('engine حالة')" title="حالة المحرك 1">📊 محرك1 حالة</button>
+      <button class="btn btn-outline btn-sm" onclick="setCmd('motor2 تفعيل')" title="تشغيل المحرك 2">🟠 محرك2 تشغيل</button>
+      <button class="btn btn-outline btn-sm" onclick="setCmd('motor2 ايقاف')" title="إيقاف المحرك 2">⬛ محرك2 إيقاف</button>
+      <button class="btn btn-outline btn-sm" onclick="setCmd('motor2 حالة')" title="حالة المحرك 2">📊 محرك2 حالة</button>
+      <button class="btn btn-outline btn-sm" onclick="setCmd('nm تفعيل')" title="تفعيل قفل اسم الغروب">🔒 NM تفعيل</button>
+      <button class="btn btn-outline btn-sm" onclick="setCmd('nm ايقاف')" title="إيقاف قفل اسم الغروب">🔓 NM إيقاف</button>
+      <button class="btn btn-outline btn-sm" onclick="setCmd('nicknames تشغيل')" title="تشغيل قفل الكنيات">🏷️ كنيات تشغيل</button>
+      <button class="btn btn-outline btn-sm" onclick="setCmd('nicknames ايقاف')" title="إيقاف قفل الكنيات">🏷️ كنيات إيقاف</button>
+      <button class="btn btn-outline btn-sm" onclick="setCmd('groupname ')" title="تغيير اسم الغروب — أكمل باسم الغروب">✏️ تغيير الاسم</button>
+      <button class="btn btn-outline btn-sm" onclick="setCmd('help')" title="قائمة الأوامر">📋 help</button>
+    </div>
+  </div>
   <div class="btn-row">
     <button class="btn btn-primary" onclick="runExecCmd()">⚡ تنفيذ الأمر</button>
     <button class="btn btn-success" onclick="sendMsg()">📤 إرسال رسالة</button>
@@ -2179,6 +2197,12 @@ async function sendBulk(){
     await new Promise(res=>setTimeout(res,delay*1000));
   }
   st.innerHTML='<span style="color:var(--green)">✅ اكتمل: '+ok+' نجح، '+fail+' فشل</span>';
+}
+function setCmd(cmd){
+  const inp=document.getElementById('execCmdInput');
+  inp.value=cmd;
+  inp.focus();
+  if(cmd.endsWith(' '))inp.setSelectionRange(cmd.length,cmd.length);
 }
 document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGrpPicker()});
 </script>`;
@@ -3572,7 +3596,7 @@ function _renderTree(groups){
       if(e.target.closest('button'))return;
       var tid=el.dataset.tid;
       var grp=_treeData.find(function(g){return g.threadID===tid;});
-      if(grp){_q('groupTreeModal').style.display='none';_selectGroup(grp);}
+      if(grp){_q('groupTreeModal').style.display='none';_selectGroup(grp.threadID,grp.name,grp.memberCount);}
     });
   });
 }

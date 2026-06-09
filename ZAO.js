@@ -1153,48 +1153,19 @@ async function onBot({ models }) {
         if (pathname === '/bot/groups' && method === 'GET') {
           // Helper: read/write the persistent group cache so the panel can
           // show groups even when the bot is offline or reconnecting.
-          const _groupCachePath = path.join(__dirname, 'data', 'groupCache.json');
+          // NOTE: use destructured `join` and `readFileSync/writeFileSync` (not path.join/fs.*)
+          const _groupCachePath = join(__dirname, 'data', 'groupCache.json');
           function _readGroupCache() {
-            try { return JSON.parse(fs.readFileSync(_groupCachePath, 'utf8')); } catch (_) { return []; }
+            try { return JSON.parse(readFileSync(_groupCachePath, 'utf8')); } catch (_) { return []; }
           }
-          function _writeGroupCache(groups) {
-            try { fs.writeFileSync(_groupCachePath, JSON.stringify(groups, null, 2), 'utf8'); } catch (_) {}
-          }
-
-          // Bot offline / reconnecting → serve cached list immediately
-          if (!_api) {
-            const cached = _readGroupCache();
-            return _json(res, cached);
+          function _writeGroupCache(grps) {
+            try { writeFileSync(_groupCachePath, JSON.stringify(grps, null, 2), 'utf8'); } catch (_) {}
           }
 
-          try {
-            // Try INBOX filter first; fall back to unfiltered if no groups found
-            let raw;
-            try { raw = await _api.getThreadList(100, null, ['INBOX']); } catch (_) { raw = []; }
-            let list = Array.isArray(raw) ? raw : (raw?.data || []);
-            let groups = list.filter(t => t?.isGroup && t?.threadID);
-
-            if (groups.length === 0) {
-              // Fallback: fetch without filter (returns all thread types)
-              try {
-                const raw2 = await _api.getThreadList(100, null, []);
-                const list2 = Array.isArray(raw2) ? raw2 : (raw2?.data || []);
-                const g2 = list2.filter(t => t?.isGroup && t?.threadID);
-                if (g2.length > 0) groups = g2;
-              } catch (_) {}
-            }
-
-            if (groups.length === 0) {
-              // Last resort: fetch without any tag argument
-              try {
-                const raw3 = await _api.getThreadList(100, null, null);
-                const list3 = Array.isArray(raw3) ? raw3 : (raw3?.data || []);
-                const g3 = list3.filter(t => t?.isGroup && t?.threadID);
-                if (g3.length > 0) groups = g3;
-              } catch (_) {}
-            }
-
-            const result = groups
+          // Helper: build result array from a thread list
+          function _mapGroups(list) {
+            return (Array.isArray(list) ? list : (list?.data || []))
+              .filter(t => t?.isGroup && t?.threadID)
               .sort((a, b) => (Number(b.timestamp) || 0) - (Number(a.timestamp) || 0))
               .map(g => ({
                 threadID:  String(g.threadID),
@@ -1202,13 +1173,61 @@ async function onBot({ models }) {
                 members:   g.participantIDs ? g.participantIDs.length : (g.participantCount || 0),
                 timestamp: g.timestamp || 0
               }));
+          }
+
+          // Helper: build result from in-memory global.data (populated by syncAllGroups)
+          function _fromMemory() {
+            const ids = global.data && global.data.allThreadID;
+            if (!ids || !ids.length) return [];
+            const infoMap = global.data.threadInfo;
+            return ids.map(tid => {
+              const info = infoMap ? infoMap.get(String(tid)) : null;
+              return {
+                threadID: String(tid),
+                name:     (info && (info.name || info.threadName) || String(tid)).slice(0, 60),
+                members:  info ? (info.participantIDs || []).length : 0,
+                timestamp: info ? (info.timestamp || 0) : 0
+              };
+            }).filter(g => g.threadID);
+          }
+
+          // Bot offline / reconnecting → serve from memory cache or disk cache
+          if (!_api) {
+            const mem = _fromMemory();
+            if (mem.length > 0) return _json(res, mem);
+            const cached = _readGroupCache();
+            return _json(res, cached);
+          }
+
+          try {
+            let result = [];
+
+            // Strategy 1: INBOX filter
+            try {
+              result = _mapGroups(await _api.getThreadList(100, null, ['INBOX']));
+            } catch (_) {}
+
+            // Strategy 2: no filter
+            if (!result.length) {
+              try { result = _mapGroups(await _api.getThreadList(100, null, [])); } catch (_) {}
+            }
+
+            // Strategy 3: null tags
+            if (!result.length) {
+              try { result = _mapGroups(await _api.getThreadList(100, null, null)); } catch (_) {}
+            }
+
+            // Strategy 4: in-memory groups from syncAllGroups
+            if (!result.length) result = _fromMemory();
 
             // Persist to cache so the panel survives bot restarts
             if (result.length > 0) _writeGroupCache(result);
 
             return _json(res, result);
           } catch (e) {
-            // Live fetch failed — return cached list as best-effort
+            // Live fetch failed — try memory then disk cache
+            const mem = _fromMemory();
+            if (mem.length > 0) return _json(res, mem);
             const cached = _readGroupCache();
             if (cached.length > 0) return _json(res, cached);
             return _json(res, { error: e.message }, 500);
