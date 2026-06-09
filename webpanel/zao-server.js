@@ -3197,6 +3197,7 @@ setInterval(() => {
       <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
         <span style="font-weight:700;font-size:.87rem">الغروبات</span>
         <span id="msngGrpCount" class="badge badge-blue" style="margin-right:auto">0</span>
+        <button class="msng-icon-btn" id="msngTreeBtn" title="شجرة الغروبات" style="width:30px;height:30px;font-size:.83rem">🌳</button>
         <button class="msng-icon-btn" id="msngRefreshBtn" title="تحديث" style="width:30px;height:30px;font-size:.83rem">🔄</button>
       </div>
       <input type="text" id="msngSearch" placeholder="🔍 بحث في الغروبات..."
@@ -3230,6 +3231,7 @@ setInterval(() => {
         </div>
         <div class="msng-chat-actions">
           <button class="msng-icon-btn" id="msngSilentBtn" title="الصامت: موقف" style="font-size:.85rem">🔔</button>
+          <button class="msng-icon-btn" id="msngStatusBtn" title="حالة الغروب وتفعيل الأوامر" style="font-size:.85rem">⚙️</button>
           <button class="msng-icon-btn" id="msngMembersBtn" title="الأعضاء" style="font-size:.85rem">👥</button>
           <button class="msng-icon-btn" id="msngRenameBtn" title="تغيير اسم الغروب" style="font-size:.85rem">✏️</button>
           <button class="msng-icon-btn" id="msngReloadBtn" title="تحديث الرسائل" style="font-size:.85rem">🔄</button>
@@ -3266,18 +3268,23 @@ setInterval(() => {
       </div>
 
       <!-- Input Area -->
-      <div class="msng-input-area">
+      <div class="msng-input-area" style="position:relative">
+        <!-- Slash Menu Popup -->
+        <div id="slashMenu" style="display:none;position:absolute;bottom:100%;left:12px;right:12px;background:var(--bg2);border:1px solid var(--border);border-radius:10px;box-shadow:0 -4px 20px rgba(0,0,0,.4);overflow:hidden;z-index:500;margin-bottom:4px">
+          <div style="padding:7px 12px;font-size:.73rem;color:var(--text3);border-bottom:1px solid var(--border)">خيارات سريعة — اختر أو اضغط Esc للإغلاق</div>
+          <div id="slashMenuItems"></div>
+        </div>
         <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px">
           <button class="msng-icon-btn" id="msngAttachImgBtn" title="صورة / فيديو" style="font-size:.88rem">🖼️</button>
           <button class="msng-icon-btn" id="msngAttachAudioBtn" title="ملف صوتي" style="font-size:.88rem">🎵</button>
           <button class="msng-icon-btn" id="msngRecBtn" title="تسجيل صوتي" style="font-size:.88rem">🎙️</button>
-          <input type="text" id="msngMsgInput" class="msng-text-input" placeholder="💬 اكتب رسالة..." style="flex:1"/>
+          <input type="text" id="msngMsgInput" class="msng-text-input" placeholder="💬 اكتب رسالة... (/ للخيارات السريعة)" style="flex:1"/>
           <button class="btn btn-primary btn-sm" id="msngSendBtn" style="flex-shrink:0;padding:7px 12px">📤</button>
         </div>
         <div style="display:flex;gap:6px;align-items:center">
           <span style="font-size:.74rem;color:var(--text3);flex-shrink:0;white-space:nowrap">⚡ أمر:</span>
-          <input type="text" id="msngCmdInput" class="msng-text-input" placeholder="ping · help · nm اسم · ai سؤال" style="flex:1"/>
-          <button class="btn btn-outline btn-sm" id="msngExecBtn" style="flex-shrink:0;padding:7px 10px;color:var(--accent)">▶️</button>
+          <input type="text" id="msngCmdInput" class="msng-text-input" placeholder="ping · help · nm اسم · ai سؤال · motor1 on/off · motor2 on/off · nm قفل" style="flex:1"/>
+          <button class="btn btn-outline btn-sm" id="msngExecBtn" style="flex-shrink:0;padding:7px 10px;color:var(--accent)" title="تنفيذ الأمر في الغروب المختار">▶️</button>
         </div>
         <div id="msngActionSt" style="font-size:.73rem;min-height:13px;margin-top:5px;color:var(--text3)"></div>
         <input type="file" id="msngFileInp" style="display:none" multiple/>
@@ -3355,6 +3362,101 @@ setInterval(() => {
   </div>
 </div>
 
+<!-- Group Tree Modal -->
+<div class="msng-modal-overlay" id="groupTreeModal">
+  <div class="msng-modal-box" style="width:min(680px,96vw);max-height:88vh;display:flex;flex-direction:column">
+    <div class="msng-modal-head">
+      <div class="msng-modal-title">🌳 شجرة الغروبات</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <input id="treeSearch" placeholder="🔍 بحث..." style="background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:5px 10px;font-size:.8rem;font-family:'Cairo',sans-serif;outline:none;width:160px"/>
+        <button class="msng-modal-close" id="closeTreeBtn">✕</button>
+      </div>
+    </div>
+    <div style="padding:6px 14px;border-bottom:1px solid var(--border);font-size:.78rem;color:var(--text3)" id="treeSummary">جارٍ التحميل...</div>
+    <div id="treeList" style="overflow-y:auto;flex:1;padding:8px 4px"></div>
+  </div>
+</div>
+
+<!-- Group Status / Command Activation Modal -->
+<div class="msng-modal-overlay" id="groupStatusModal">
+  <div class="msng-modal-box" style="width:min(560px,96vw);max-height:90vh;display:flex;flex-direction:column">
+    <div class="msng-modal-head">
+      <div class="msng-modal-title" id="statusModalTitle">⚙️ حالة الغروب</div>
+      <button class="msng-modal-close" id="closeStatusBtn">✕</button>
+    </div>
+    <div style="overflow-y:auto;flex:1;padding:14px;display:flex;flex-direction:column;gap:12px">
+      <div id="statusModalBanner" style="font-size:.8rem;min-height:14px;color:var(--text3)"></div>
+
+      <!-- Quick Status Badges -->
+      <div style="display:flex;gap:8px;flex-wrap:wrap" id="statusBadgesRow"></div>
+
+      <!-- NM Section -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px">
+        <div style="font-weight:600;margin-bottom:8px;font-size:.88rem">🔒 NM — قفل اسم الغروب <span id="st_nmBadge" class="badge badge-red" style="font-size:.7rem">غير مفعل</span></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input id="st_nmName" class="form-control" placeholder="الاسم المراد قفله..." style="flex:1;min-width:140px;font-size:.83rem;padding:6px 10px"/>
+          <input id="st_nmTime" type="number" class="form-control" value="6" min="1" placeholder="ث" style="width:70px;font-size:.83rem;padding:6px 8px" title="وقت إعادة التطبيق (ثانية)"/>
+          <button class="btn btn-primary btn-sm" onclick="_stNmAction('enable')">✅</button>
+          <button class="btn btn-outline btn-sm" onclick="_stNmAction('disable')">🔓</button>
+        </div>
+        <div id="st_nmSt" style="font-size:.76rem;color:var(--text3);margin-top:5px;min-height:12px"></div>
+      </div>
+
+      <!-- Nicknames Section -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px">
+        <div style="font-weight:600;margin-bottom:8px;font-size:.88rem">👤 كنيات — قفل الألقاب <span id="st_nickBadge" class="badge badge-red" style="font-size:.7rem">غير مفعل</span></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input id="st_nickName" class="form-control" placeholder="الكنية..." style="flex:1;min-width:120px;font-size:.83rem;padding:6px 10px"/>
+          <select id="st_nickScope" class="form-control" style="width:110px;font-size:.83rem;padding:6px 8px">
+            <option value="all">👥 الجميع</option>
+            <option value="bot">🤖 البوت فقط</option>
+          </select>
+          <button class="btn btn-primary btn-sm" onclick="_stNickAction('enable')">✅</button>
+          <button class="btn btn-outline btn-sm" onclick="_stNickAction('disable')">🔓</button>
+        </div>
+        <div id="st_nickSt" style="font-size:.76rem;color:var(--text3);margin-top:5px;min-height:12px"></div>
+      </div>
+
+      <!-- Motor 1 -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px">
+        <div style="font-weight:600;margin-bottom:8px;font-size:.88rem">🔴 محرك 1 — إرسال دوري <span id="st_m1Badge" class="badge badge-red" style="font-size:.7rem">غير مفعل</span></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input id="st_m1Msg" class="form-control" placeholder="نص الرسالة التلقائية..." style="flex:1;min-width:160px;font-size:.83rem;padding:6px 10px"/>
+          <input id="st_m1Time" type="number" class="form-control" value="30" min="5" placeholder="ث" style="width:70px;font-size:.83rem;padding:6px 8px"/>
+          <button class="btn btn-primary btn-sm" onclick="_stM1Action('enable')">▶️</button>
+          <button class="btn btn-outline btn-sm" onclick="_stM1Action('disable')">⏹</button>
+          <button class="btn btn-outline btn-sm" onclick="_stM1Action('message')">💾</button>
+        </div>
+        <div id="st_m1St" style="font-size:.76rem;color:var(--text3);margin-top:5px;min-height:12px"></div>
+      </div>
+
+      <!-- Motor 2 -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px">
+        <div style="font-weight:600;margin-bottom:8px;font-size:.88rem">🟢 محرك 2 — إرسال ذكي <span id="st_m2Badge" class="badge badge-red" style="font-size:.7rem">غير مفعل</span></div>
+        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+          <input id="st_m2Msg" class="form-control" placeholder="نص الرسالة التلقائية..." style="flex:1;min-width:160px;font-size:.83rem;padding:6px 10px"/>
+          <input id="st_m2Time" type="number" class="form-control" value="30" min="5" placeholder="ث" style="width:70px;font-size:.83rem;padding:6px 8px"/>
+          <button class="btn btn-primary btn-sm" onclick="_stM2Action('enable')">▶️</button>
+          <button class="btn btn-outline btn-sm" onclick="_stM2Action('disable')">⏹</button>
+          <button class="btn btn-outline btn-sm" onclick="_stM2Action('message')">💾</button>
+        </div>
+        <div id="st_m2St" style="font-size:.76rem;color:var(--text3);margin-top:5px;min-height:12px"></div>
+      </div>
+
+      <!-- Command Activation -->
+      <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px">
+        <div style="font-weight:600;margin-bottom:8px;font-size:.88rem">⚡ تفعيل أمر في هذا الغروب</div>
+        <div style="font-size:.78rem;color:var(--text3);margin-bottom:8px">اكتب أمراً مباشرة وسيُرسل للغروب — البوت سيستجيب</div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <input id="st_cmdInput" class="form-control" placeholder="مثال: ping · help · ai مرحبا · nm اسم الغروب" style="flex:1;font-size:.83rem;padding:6px 10px"/>
+          <button class="btn btn-primary btn-sm" onclick="_stExecCmd()">▶️ تنفيذ</button>
+        </div>
+        <div id="st_cmdSt" style="font-size:.76rem;color:var(--text3);margin-top:5px;min-height:12px"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ────────────────────────────────── State ─────────────────────────────────── */
 var _allGroups=[], _selTID='', _allMembers=[], _curUID='', _curUName='';
@@ -3374,6 +3476,219 @@ function _q(id){return document.getElementById(id);}
 /* ──────────────────────────── Bot ID init ─────────────────────────────────── */
 async function _initBotID(){
   try{var d=await fetch('/api/bot-id').then(function(r){return r.json();});_botID=String(d.botID||'');}catch(e){}
+}
+
+/* ─────────────────────── Slash Menu (/ commands) ──────────────────────────── */
+var _slashItems=[
+  {icon:'🔕',label:'صامت',desc:'إرسال بدون إشعار (صامت)',action:function(){
+    _silentMode=true;
+    var btn=_q('msngSilentBtn');if(btn){btn.textContent='🔕';btn.title='الصامت: مفعل';}
+    _q('slashMenu').style.display='none';
+    var inp=_q('msngMsgInput');inp.value=inp.value.replace(/^\/\S*\s*/,'');inp.focus();
+    showToast('🔕 الصامت مفعل لهذه الرسالة','info');
+  }},
+  {icon:'🔔',label:'عادي',desc:'إرسال عادي مع إشعار',action:function(){
+    _silentMode=false;
+    var btn=_q('msngSilentBtn');if(btn){btn.textContent='🔔';btn.title='الصامت: موقف';}
+    _q('slashMenu').style.display='none';
+    var inp=_q('msngMsgInput');inp.value=inp.value.replace(/^\/\S*\s*/,'');inp.focus();
+    showToast('🔔 الإرسال العادي مفعل','info');
+  }},
+  {icon:'🌳',label:'شجرة الغروبات',desc:'عرض جميع الغروبات مع حالتها',action:function(){
+    _q('slashMenu').style.display='none';
+    var inp=_q('msngMsgInput');inp.value='';
+    _openGroupTree();
+  }},
+  {icon:'⚙️',label:'إعدادات الغروب',desc:'NM، كنيات، محركات، تفعيل أمر',action:function(){
+    _q('slashMenu').style.display='none';
+    var inp=_q('msngMsgInput');inp.value='';
+    _openGroupStatus();
+  }}
+];
+
+function _showSlashMenu(query){
+  var q=(query||'').toLowerCase().replace(/^\//,'');
+  var items=q?_slashItems.filter(function(i){return i.label.includes(q)||i.desc.includes(q);}):_slashItems;
+  var container=_q('slashMenuItems');
+  if(!items.length){_q('slashMenu').style.display='none';return;}
+  container.innerHTML=items.map(function(item,i){
+    return '<div class="_slashItem" data-idx="'+i+'" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;transition:background .12s" '
+      +'onmouseenter="this.style.background=\'var(--bg3)\'" onmouseleave="this.style.background=\'none\'">'
+      +'<span style="font-size:1.1rem">'+item.icon+'</span>'
+      +'<div><div style="font-size:.84rem;font-weight:600;color:var(--text)">'+_h(item.label)+'</div>'
+      +'<div style="font-size:.73rem;color:var(--text3)">'+_h(item.desc)+'</div></div>'
+      +'</div>';
+  }).join('');
+  container.querySelectorAll('._slashItem').forEach(function(el){
+    el.addEventListener('click',function(){
+      var idx=parseInt(el.dataset.idx);
+      // re-filter to get same index
+      var filteredItems=q?_slashItems.filter(function(i){return i.label.includes(q)||i.desc.includes(q);}):_slashItems;
+      if(filteredItems[idx])filteredItems[idx].action();
+    });
+  });
+  _q('slashMenu').style.display='block';
+}
+
+function _hideSlashMenu(){_q('slashMenu').style.display='none';}
+
+/* ─────────────────────── Group Tree ───────────────────────────────────────── */
+var _treeData=[];
+var _treeStatusMap={};
+
+async function _openGroupTree(){
+  _q('groupTreeModal').style.display='flex';
+  _q('treeSummary').textContent='⏳ جارٍ تحميل الغروبات...';
+  _q('treeList').innerHTML='';
+  var d=await fetch('/api/groups-list').then(function(r){return r.json();}).catch(function(){return{};});
+  _treeData=d.groups||[];
+  _q('treeSummary').textContent=_treeData.length+' غروب'+(d.cached?' (كاش — البوت قد يكون غير متصل)':'')+' — انقر لاختيار غروب أو فتح إعداداته';
+  _renderTree(_treeData);
+  _q('treeSearch').value='';
+}
+
+function _renderTree(groups){
+  var list=_q('treeList');
+  if(!groups.length){list.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:.83rem">لا توجد غروبات</div>';return;}
+  list.innerHTML=groups.map(function(g){
+    var isSel=g.threadID===_selTID;
+    var lastT=g.lastTime?_fmt(g.lastTime):'';
+    var unr=g.unread?'<span class="msng-unread-badge" style="margin-right:4px">'+g.unread+'</span>':'';
+    return '<div class="_treeRow" data-tid="'+_h(g.threadID)+'" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;border-radius:8px;margin:2px 4px;'+(isSel?'background:rgba(255,60,95,.1);border:1px solid rgba(255,60,95,.2)':'border:1px solid transparent')+'" '
+      +'onmouseenter="if(!this.style.borderColor||this.style.borderColor===\'transparent\')this.style.background=\'var(--bg3)\'" onmouseleave="if(\''+g.threadID+'\'!==_selTID){this.style.background=\'none\';this.style.borderColor=\'transparent\';}">'
+      +'<div class="msng-grp-ava" style="background:linear-gradient('+_grad(g.threadID)+');flex-shrink:0">'+_ini(g.name)+'</div>'
+      +'<div style="flex:1;min-width:0">'
+        +'<div style="display:flex;align-items:center;gap:6px;justify-content:space-between">'
+          +'<div style="font-weight:600;font-size:.85rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+_h(g.name||'غير مسمى')+'</div>'
+          +'<div style="display:flex;align-items:center;gap:4px;flex-shrink:0">'+unr+'<span style="font-size:.65rem;color:var(--text3)">'+lastT+'</span></div>'
+        +'</div>'
+        +'<div style="font-size:.73rem;color:var(--text3);margin-top:2px"><code style="font-size:.7rem;opacity:.7">'+g.threadID+'</code>'+(g.memberCount?' · '+g.memberCount+' عضو':'')+'</div>'
+      +'</div>'
+      +'<button onclick="event.stopPropagation();_treeOpenSettings(\''+_h(g.threadID)+'\')" style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:.75rem;color:var(--text3);flex-shrink:0" title="إعدادات الغروب">⚙️</button>'
+    +'</div>';
+  }).join('');
+  list.querySelectorAll('._treeRow').forEach(function(el){
+    el.addEventListener('click',function(e){
+      if(e.target.closest('button'))return;
+      var tid=el.dataset.tid;
+      var grp=_treeData.find(function(g){return g.threadID===tid;});
+      if(grp){_q('groupTreeModal').style.display='none';_selectGroup(grp);}
+    });
+  });
+}
+
+function _treeOpenSettings(tid){
+  var grp=_allGroups.find(function(g){return g.threadID===tid;})||_treeData.find(function(g){return g.threadID===tid;});
+  _q('groupTreeModal').style.display='none';
+  _selTID=tid;
+  if(grp){
+    _q('msngChatName').textContent=grp.name||tid;
+    _q('msngChatSub').textContent=grp.threadID;
+  }
+  _openGroupStatus();
+}
+
+/* ─────────────── Group Status / Command Activation Panel ──────────────────── */
+async function _openGroupStatus(){
+  if(!_selTID){showToast('اختر غروباً أولاً','warn');return;}
+  _q('groupStatusModal').style.display='flex';
+  _q('statusModalTitle').textContent='⚙️ '+(_q('msngChatName').textContent||_selTID);
+  _q('statusModalBanner').innerHTML='<span style="color:var(--text3)">⏳ جارٍ جلب الحالة...</span>';
+  _q('statusBadgesRow').innerHTML='';
+
+  var r=await api('/api/hold/status',{threadID:_selTID});
+  if(!r.ok&&!r.nm){
+    _q('statusModalBanner').innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل جلب الحالة — تأكد من اتصال البوت')+'</span>';
+    return;
+  }
+  _q('statusModalBanner').innerHTML='<span style="color:var(--green)">✅ تم تحميل حالة الغروب</span>';
+
+  // Badges
+  var badges=[];
+  if(r.nm?.locked)badges.push('<span class="badge badge-green">🔒 NM مفعل</span>');
+  if(r.nick?.locked)badges.push('<span class="badge badge-green">👤 كنيات مفعلة</span>');
+  if(r.motor1?.status)badges.push('<span class="badge" style="background:rgba(255,60,60,.18);color:#ff6060;border:1px solid rgba(255,60,60,.3)">🔴 محرك1 نشط</span>');
+  if(r.motor2?.status)badges.push('<span class="badge" style="background:rgba(0,200,100,.15);color:var(--green);border:1px solid rgba(0,200,100,.3)">🟢 محرك2 نشط</span>');
+  if(!badges.length)badges.push('<span class="badge badge-red">لا توجد ميزات مفعلة</span>');
+  _q('statusBadgesRow').innerHTML=badges.join('');
+
+  // NM
+  _stSetBadge('st_nmBadge',r.nm?.locked);
+  if(r.nm?.locked){_q('st_nmName').value=r.nm.name||'';_q('st_nmTime').value=Math.round((r.nm.time||6000)/1000);}
+  _q('st_nmSt').textContent=r.nm?.locked?'مقفول على: "'+r.nm.name+'" كل '+Math.round((r.nm.time||6000)/1000)+'s':'—';
+
+  // Nicknames
+  _stSetBadge('st_nickBadge',r.nick?.locked);
+  if(r.nick?.locked){_q('st_nickName').value=r.nick.nickname||'';_q('st_nickScope').value=r.nick.scope||'all';}
+  _q('st_nickSt').textContent=r.nick?.locked?'مقفول على: "'+r.nick.nickname+'" ('+r.nick.scope+')':'—';
+
+  // Motor1
+  _stSetBadge('st_m1Badge',r.motor1?.status);
+  if(r.motor1?.message)_q('st_m1Msg').value=r.motor1.message;
+  if(r.motor1?.time)_q('st_m1Time').value=Math.round(r.motor1.time/1000);
+  _q('st_m1St').textContent=r.motor1?.status?'نشط — كل '+Math.round((r.motor1.time||0)/1000)+'s':'متوقف';
+
+  // Motor2
+  _stSetBadge('st_m2Badge',r.motor2?.status);
+  if(r.motor2?.message)_q('st_m2Msg').value=r.motor2.message;
+  if(r.motor2?.time)_q('st_m2Time').value=Math.round(r.motor2.time/1000);
+  _q('st_m2St').textContent=r.motor2?.status?'نشط — كل '+Math.round((r.motor2.time||0)/1000)+'s':'متوقف';
+}
+
+function _stSetBadge(id,on){var el=_q(id);if(!el)return;el.className='badge '+(on?'badge-green':'badge-red');el.textContent=on?'مفعل':'غير مفعل';}
+function _stInfo(id,msg,ok){var el=_q(id);if(!el)return;el.innerHTML='<span style="color:var(--'+(ok?'green':'red')+')">'+(ok?'✅':'❌')+' '+_h(msg)+'</span>';}
+
+async function _stNmAction(action){
+  if(!_selTID)return;
+  var p={threadID:_selTID,action};
+  if(action==='enable'){p.name=_q('st_nmName').value.trim();p.timeMs=Number(_q('st_nmTime').value)*1000;}
+  var r=await api('/api/hold/nm-set',p);
+  if(r.ok){_stSetBadge('st_nmBadge',action==='enable');_stInfo('st_nmSt',action==='enable'?'تم تفعيل قفل الاسم':'تم إيقاف القفل',true);}
+  else _stInfo('st_nmSt',r.error||'فشل',false);
+}
+
+async function _stNickAction(action){
+  if(!_selTID)return;
+  var p={threadID:_selTID,action,scope:_q('st_nickScope').value};
+  if(action==='enable'){p.nickname=_q('st_nickName').value.trim();}
+  var r=await api('/api/hold/nick-set',p);
+  if(r.ok){_stSetBadge('st_nickBadge',action==='enable');_stInfo('st_nickSt',action==='enable'?'تم تفعيل قفل الكنيات':'تم إيقاف القفل',true);}
+  else _stInfo('st_nickSt',r.error||'فشل',false);
+}
+
+async function _stM1Action(action){
+  if(!_selTID)return;
+  var p={threadID:_selTID,action};
+  if(action==='message')p.message=_q('st_m1Msg').value.trim();
+  if(action==='time'||action==='enable')p.timeMs=Number(_q('st_m1Time').value)*1000;
+  var r=await api('/api/hold/motor1-set',p);
+  if(r.ok){if(action==='enable'||action==='disable')_stSetBadge('st_m1Badge',action==='enable');_stInfo('st_m1St',action==='enable'?'تم تشغيل المحرك':action==='disable'?'تم الإيقاف':'تم الحفظ',true);}
+  else _stInfo('st_m1St',r.error||'فشل',false);
+}
+
+async function _stM2Action(action){
+  if(!_selTID)return;
+  var p={threadID:_selTID,action};
+  if(action==='message')p.message=_q('st_m2Msg').value.trim();
+  if(action==='time'||action==='enable')p.timeMs=Number(_q('st_m2Time').value)*1000;
+  var r=await api('/api/hold/motor2-set',p);
+  if(r.ok){if(action==='enable'||action==='disable')_stSetBadge('st_m2Badge',action==='enable');_stInfo('st_m2St',action==='enable'?'تم تشغيل المحرك':action==='disable'?'تم الإيقاف':'تم الحفظ',true);}
+  else _stInfo('st_m2St',r.error||'فشل',false);
+}
+
+async function _stExecCmd(){
+  if(!_selTID)return;
+  var cmd=(_q('st_cmdInput').value||'').trim();
+  if(!cmd)return;
+  _q('st_cmdSt').innerHTML='⏳ جارٍ التنفيذ...';
+  var r=await api('/api/execute',{threadID:_selTID,command:cmd});
+  if(r&&(r.ok||r.sent||r.message||r.messageID)){
+    _q('st_cmdSt').innerHTML='<span style="color:var(--green)">✅ تم تنفيذ الأمر</span>';
+    _q('st_cmdInput').value='';
+    showToast('✅ تم تنفيذ الأمر','success');
+  }else{
+    _q('st_cmdSt').innerHTML='<span style="color:var(--red)">❌ '+(r&&r.error?_h(r.error):'فشل التنفيذ')+'</span>';
+  }
 }
 
 /* ──────────────────────────── Group list ──────────────────────────────────── */
@@ -3878,7 +4193,17 @@ async function _reportMessage(msgID){
 
   /* Input buttons */
   _q('msngSendBtn').addEventListener('click',_sendMsg);
-  _q('msngMsgInput').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();_sendMsg();}});
+  _q('msngMsgInput').addEventListener('keydown',function(e){
+    if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();_hideSlashMenu();_sendMsg();return;}
+    if(e.key==='Escape'){_hideSlashMenu();}
+  });
+  _q('msngMsgInput').addEventListener('input',function(){
+    var v=this.value;
+    if(v.startsWith('/')){_showSlashMenu(v);}
+    else{_hideSlashMenu();}
+  });
+  /* close slash menu when clicking outside */
+  document.addEventListener('click',function(e){if(!e.target.closest('#slashMenu')&&!e.target.closest('#msngMsgInput'))_hideSlashMenu();});
   _q('msngExecBtn').addEventListener('click',_execCmd);
   _q('msngCmdInput').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();_execCmd();}});
 
@@ -3937,6 +4262,19 @@ async function _reportMessage(msgID){
   _q('cancelChangeNameBtn').addEventListener('click',function(){_q('changeNameModal').style.display='none';});
   _q('newGroupName').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();_doChangeName();}});
 
+  /* Status modal (⚙️ button) */
+  _q('msngStatusBtn').addEventListener('click',_openGroupStatus);
+  _q('closeStatusBtn').addEventListener('click',function(){_q('groupStatusModal').style.display='none';});
+  _q('st_cmdInput').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();_stExecCmd();}});
+
+  /* Group Tree modal */
+  _q('msngTreeBtn').addEventListener('click',_openGroupTree);
+  _q('closeTreeBtn').addEventListener('click',function(){_q('groupTreeModal').style.display='none';});
+  _q('treeSearch').addEventListener('input',function(){
+    var s=this.value.toLowerCase();
+    _renderTree(s?_treeData.filter(function(g){return (g.name||'').toLowerCase().includes(s)||(g.threadID||'').includes(s);}):_treeData);
+  });
+
   /* Keyboard ESC */
   document.addEventListener('keydown',function(e){
     if(e.key==='Escape'){
@@ -3944,12 +4282,15 @@ async function _reportMessage(msgID){
       _q('profileModal').style.display='none';
       _q('nicknameModal').style.display='none';
       _q('changeNameModal').style.display='none';
+      _q('groupTreeModal').style.display='none';
+      _q('groupStatusModal').style.display='none';
+      _hideSlashMenu();
       _closeCtx();
     }
   });
 
   /* Overlay click to close */
-  ['membersModal','profileModal','nicknameModal','changeNameModal'].forEach(function(id){
+  ['membersModal','profileModal','nicknameModal','changeNameModal','groupTreeModal','groupStatusModal'].forEach(function(id){
     _q(id).addEventListener('click',function(e){if(e.target===_q(id))_q(id).style.display='none';});
   });
 
@@ -5810,29 +6151,30 @@ document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click
     const liveOk = result && result.status < 500;
     const raw    = liveOk && Array.isArray(result.data) ? result.data : [];
 
-    let groups = raw
-      .map(g => ({
+    function _mapGroup(g) {
+      return {
         threadID:    String(g.threadID || g.id || ''),
         name:        String(g.name || g.threadName || 'غير مسمى'),
-        memberCount: g.members || g.memberCount || g.participants || null
-      }))
-      .filter(g => g.threadID);
+        memberCount: g.members || g.memberCount || g.participants || null,
+        timestamp:   g.timestamp || g.lastTime || 0,
+        lastTime:    g.lastTime  || g.timestamp || 0,
+        lastMsg:     g.lastMsg   || g.lastMessage || null,
+        unread:      g.unread    || g.unreadCount  || 0
+      };
+    }
 
-    // Bot returned something live — great, serve it
+    let groups = raw.map(_mapGroup).filter(g => g.threadID);
+
+    // Bot returned something live — great, serve it and refresh cache
     if (groups.length > 0) {
+      try { fs.writeFileSync(_groupCachePath, JSON.stringify(groups, null, 2), 'utf8'); } catch (_) {}
       return res.json({ ok: true, groups, cached: false });
     }
 
     // Live data empty or bot unreachable — try the persistent cache written by ZAO.js
     const cached = _readGroupCache();
     if (cached.length > 0) {
-      const cachedGroups = cached
-        .map(g => ({
-          threadID:    String(g.threadID || ''),
-          name:        String(g.name || 'غير مسمى'),
-          memberCount: g.members || g.memberCount || null
-        }))
-        .filter(g => g.threadID);
+      const cachedGroups = cached.map(_mapGroup).filter(g => g.threadID);
       if (cachedGroups.length > 0) {
         return res.json({ ok: true, groups: cachedGroups, cached: true });
       }
