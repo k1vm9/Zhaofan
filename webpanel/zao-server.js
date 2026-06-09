@@ -3111,457 +3111,856 @@ setInterval(() => {
   app.get('/groups', auth, async (req,res) => {
     const body = `
 <style>
-.msng-wrap{display:flex;height:calc(100vh - var(--topbar-h) - 48px);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;background:var(--bg2);min-height:400px}
-.msng-sidebar{width:300px;min-width:220px;flex-shrink:0;border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--bg2)}
-.msng-sidebar-head{padding:14px 14px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
-.msng-group-list{flex:1;overflow-y:auto}
-.msng-group-item{padding:12px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.03);display:flex;align-items:center;gap:10px;transition:background .13s;position:relative}
+/* ── Messenger Layout ─────────────────────────────────────────────────────── */
+.msng-wrap{display:flex;height:calc(100vh - var(--topbar-h) - 56px);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;background:var(--bg2);min-height:400px;position:relative}
+.msng-sidebar{width:300px;min-width:220px;flex-shrink:0;border-left:1px solid var(--border);display:flex;flex-direction:column;background:var(--bg2);transition:all .2s}
+.msng-sidebar-head{padding:12px 14px 10px;border-bottom:1px solid var(--border);flex-shrink:0}
+.msng-group-list{flex:1;overflow-y:auto;padding:4px 0}
+.msng-group-item{padding:10px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,.03);display:flex;align-items:center;gap:10px;transition:background .13s;position:relative}
 .msng-group-item:hover{background:var(--bg3)}
-.msng-group-item.active{background:rgba(255,60,95,.06);border-right:3px solid var(--accent)}
-.msng-grp-ava{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#ff3c5f,#60d0ff);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:white;flex-shrink:0}
+.msng-group-item.active{background:rgba(255,60,95,.07);border-right:3px solid var(--accent)}
+.msng-grp-ava{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#ff3c5f,#60d0ff);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.9rem;color:white;flex-shrink:0}
 .msng-grp-info{flex:1;min-width:0}
-.msng-grp-name{font-weight:600;font-size:.85rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.msng-grp-meta{font-size:.72rem;color:var(--text3);margin-top:2px}
+.msng-grp-name{font-weight:600;font-size:.84rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msng-grp-meta{font-size:.7rem;color:var(--text3);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.msng-unread-badge{background:var(--accent);color:#fff;font-size:.6rem;font-weight:800;padding:1px 5px;border-radius:8px;min-width:14px;text-align:center}
+/* Chat panel */
 .msng-chat{flex:1;display:flex;flex-direction:column;min-width:0;position:relative;background:var(--bg)}
 .msng-placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;color:var(--text3);text-align:center;padding:32px}
 .msng-chat-inner{display:none;flex-direction:column;height:100%}
-.msng-chat-header{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0;background:var(--bg2)}
-.msng-back-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:1.2rem;padding:4px 8px;border-radius:6px;display:none}
+.msng-chat-header{padding:10px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0;background:var(--bg2)}
+.msng-back-btn{background:none;border:none;cursor:pointer;color:var(--text3);font-size:1.2rem;padding:4px 8px;border-radius:6px;display:none;line-height:1}
+.msng-chat-name{font-weight:700;font-size:.93rem}
+.msng-chat-sub{font-size:.72rem;color:var(--text3);margin-top:1px}
+.msng-chat-actions{margin-right:auto;display:flex;gap:5px;align-items:center}
+/* Messages */
+.msng-messages{flex:1;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px;scroll-behavior:smooth}
+.msng-messages.drag-over{background:rgba(255,60,95,.04);outline:2px dashed var(--accent);outline-offset:-4px}
+.msng-bubble-wrap{display:flex;gap:8px;align-items:flex-end;max-width:88%}
+.msng-bubble-wrap.mine{align-self:flex-end;flex-direction:row-reverse}
+.msng-avatar-sm{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--accent));display:flex;align-items:center;justify-content:center;font-size:.63rem;font-weight:700;color:white;flex-shrink:0;cursor:pointer;user-select:none;transition:opacity .15s}
+.msng-avatar-sm:hover{opacity:.8}
+.msng-bubble{background:var(--bg3);border-radius:16px 16px 16px 4px;padding:8px 12px;font-size:.82rem;line-height:1.48;max-width:100%;word-break:break-word}
+.msng-bubble.mine{background:rgba(255,60,95,.18);border-radius:16px 16px 4px 16px}
+.msng-bubble-name{font-size:.68rem;color:var(--text3);margin-bottom:3px;cursor:pointer;transition:color .15s}
+.msng-bubble-name:hover{color:var(--accent2)}
+.msng-bubble-time{font-size:.63rem;color:var(--text3);margin-top:3px}
+.msng-bubble-wrap.mine .msng-bubble-time{text-align:right}
+.msng-reply-preview{background:rgba(255,255,255,.06);border-right:3px solid var(--accent);border-radius:6px;padding:4px 8px;font-size:.72rem;color:var(--text3);margin-bottom:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+/* Reply bar */
+.msng-reply-bar{padding:7px 14px;background:rgba(255,60,95,.05);border-top:1px solid rgba(255,60,95,.15);display:flex;align-items:center;gap:10px;flex-shrink:0;font-size:.78rem}
+.msng-reply-bar-text{flex:1;color:var(--text3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* Input area */
+.msng-input-area{padding:9px 12px;border-top:1px solid var(--border);flex-shrink:0;background:var(--bg2)}
+.msng-text-input{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 12px;font-size:.83rem;font-family:'Cairo',sans-serif;outline:none;transition:border .2s;min-width:0}
+.msng-text-input:focus{border-color:rgba(255,60,95,.4)}
+.msng-icon-btn{width:34px;height:34px;border-radius:8px;background:var(--bg3);border:1px solid var(--border);cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;transition:all .15s;padding:0;line-height:1}
+.msng-icon-btn:hover{background:var(--bg2);border-color:var(--accent)}
+.msng-icon-btn.active-silent{background:rgba(255,60,95,.2);border-color:var(--accent)}
+.msng-icon-btn.recording{background:rgba(255,60,95,.2);border-color:var(--accent);animation:rec-pulse 1s infinite}
+@keyframes rec-pulse{0%,100%{opacity:1}50%{opacity:.4}}
+/* Context Menu */
+.msng-ctx-menu{position:fixed;z-index:9999;background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-md);box-shadow:0 8px 32px rgba(0,0,0,.55);min-width:168px;overflow:hidden;animation:ctx-in .1s ease}
+@keyframes ctx-in{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.msng-ctx-item{padding:10px 14px;cursor:pointer;font-size:.82rem;display:flex;align-items:center;gap:8px;transition:background .12s;white-space:nowrap}
+.msng-ctx-item:hover{background:var(--bg3)}
+.msng-ctx-sep{height:1px;background:var(--border);margin:2px 0}
+.msng-ctx-react{display:flex;gap:6px;padding:8px 12px;flex-wrap:wrap}
+.msng-ctx-react span{font-size:1.2rem;cursor:pointer;border-radius:6px;padding:3px 6px;transition:background .12s}
+.msng-ctx-react span:hover{background:var(--bg3)}
+/* Modals */
+.msng-modal-overlay{display:none;position:fixed;inset:0;z-index:9800;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:center;justify-content:center}
+.msng-modal-box{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);display:flex;flex-direction:column;overflow:hidden;max-height:90vh;position:relative}
+.msng-modal-head{padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.msng-modal-title{font-weight:700;font-size:.93rem}
+.msng-modal-close{background:none;border:none;cursor:pointer;color:var(--text3);font-size:1.1rem;line-height:1;padding:2px 6px;border-radius:4px;transition:color .15s}
+.msng-modal-close:hover{color:var(--text)}
+.msng-member-row{padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .13s}
+.msng-member-row:hover{background:var(--bg3)}
 @media(max-width:640px){
   .msng-sidebar{position:absolute;width:100%;z-index:10;height:100%}
   .msng-sidebar.hidden{display:none}
-  .msng-back-btn{display:block}
+  .msng-back-btn{display:block!important}
 }
-.msng-chat-name{font-weight:700;font-size:.95rem}
-.msng-chat-sub{font-size:.75rem;color:var(--text3);margin-top:1px}
-.msng-chat-actions{margin-right:auto;display:flex;gap:6px}
-.msng-messages{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:12px}
-.msng-bubble-wrap{display:flex;gap:8px;align-items:flex-end;max-width:85%}
-.msng-bubble-wrap.mine{align-self:flex-end;flex-direction:row-reverse}
-.msng-avatar-sm{width:28px;height:28px;border-radius:50%;background:linear-gradient(135deg,var(--purple),var(--accent));display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:white;flex-shrink:0;cursor:pointer}
-.msng-bubble{background:var(--bg3);border-radius:16px 16px 16px 4px;padding:8px 12px;font-size:.83rem;line-height:1.45;max-width:100%;word-break:break-word}
-.msng-bubble.mine{background:rgba(255,60,95,.15);border-radius:16px 16px 4px 16px}
-.msng-bubble-name{font-size:.69rem;color:var(--text3);margin-bottom:3px;cursor:pointer}
-.msng-bubble-name:hover{color:var(--accent2)}
-.msng-bubble-time{font-size:.65rem;color:var(--text3);margin-top:3px;text-align:left}
-.msng-input-area{padding:12px 14px;border-top:1px solid var(--border);flex-shrink:0;background:var(--bg2)}
-.msng-text-input{flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:10px;padding:8px 12px;font-size:.83rem;font-family:'Cairo',sans-serif;outline:none;transition:border .2s}
-.msng-text-input:focus{border-color:rgba(255,60,95,.4)}
-/* ZaoFan decorative panel corners */
-.msng-wrap::before{content:'';position:absolute;top:0;left:0;width:120px;height:120px;background:radial-gradient(circle at 0 0,rgba(255,60,95,.04),transparent 70%);pointer-events:none;z-index:0}
 </style>
 
 <div class="page-header" style="margin-bottom:10px">
   <div class="page-title">💬 الغروبات — مسنجر</div>
-  <div class="page-sub">تصفح رسائل الغروبات وتفاعل مباشرة</div>
+  <div class="page-sub">اضغط مطولاً على رسالة لخيارات · اسحب وأسقط الملفات لإرسالها · الرسائل الخضراء = رسائل البوت</div>
 </div>
 
-<div class="msng-wrap" id="msngWrap" style="position:relative">
+<div class="msng-wrap" id="msngWrap">
 
-  <!-- ── LEFT: Group List ── -->
+  <!-- Sidebar -->
   <div class="msng-sidebar" id="msngSidebar">
     <div class="msng-sidebar-head">
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="font-weight:700;font-size:.9rem">الغروبات</span>
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
+        <span style="font-weight:700;font-size:.87rem">الغروبات</span>
         <span id="msngGrpCount" class="badge badge-blue" style="margin-right:auto">0</span>
-        <button class="btn btn-outline btn-sm" onclick="refreshGroups()" id="msngRefreshBtn">🔄</button>
+        <button class="msng-icon-btn" id="msngRefreshBtn" title="تحديث" style="width:30px;height:30px;font-size:.83rem">🔄</button>
       </div>
-      <input type="text" id="msngSearch" placeholder="🔍 بحث..." oninput="filterGroups()"
-        style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:.8rem;font-family:'Cairo',sans-serif;outline:none"/>
+      <input type="text" id="msngSearch" placeholder="🔍 بحث في الغروبات..."
+        style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:.79rem;font-family:'Cairo',sans-serif;outline:none;box-sizing:border-box;transition:border .2s"/>
     </div>
     <div class="msng-group-list" id="msngGroupList">
       <div style="text-align:center;padding:32px;color:var(--text3);font-size:.83rem">⏳ جارٍ التحميل...</div>
     </div>
   </div>
 
-  <!-- ── RIGHT: Chat View ── -->
+  <!-- Chat Panel -->
   <div class="msng-chat" id="msngChat">
+
+    <!-- Placeholder -->
     <div class="msng-placeholder" id="msngPlaceholder">
-      <div style="font-size:3rem;margin-bottom:12px;opacity:.4">💬</div>
+      <div style="font-size:3.5rem;margin-bottom:14px;opacity:.3">💬</div>
       <div style="font-weight:700;font-size:1rem;margin-bottom:6px">اختر غروباً للبدء</div>
-      <div style="font-size:.83rem">انقر على أي غروب لعرض رسائله والتفاعل معه</div>
+      <div style="font-size:.82rem;opacity:.7">انقر على أي غروب من القائمة لعرض رسائله والتفاعل معه</div>
     </div>
+
+    <!-- Chat Inner -->
     <div class="msng-chat-inner" id="msngChatInner">
+
       <!-- Header -->
       <div class="msng-chat-header">
-        <button class="msng-back-btn" onclick="deselectGroup()">←</button>
+        <button class="msng-back-btn" id="msngBackBtn" title="رجوع">←</button>
         <div class="msng-grp-ava" id="msngChatAva" style="width:36px;height:36px;font-size:.8rem">G</div>
-        <div>
+        <div style="flex:1;min-width:0">
           <div class="msng-chat-name" id="msngChatName">—</div>
           <div class="msng-chat-sub" id="msngChatSub">—</div>
         </div>
         <div class="msng-chat-actions">
-          <button class="btn btn-outline btn-sm" onclick="openMembers()" title="الأعضاء" style="padding:5px 8px">👥</button>
-          <button class="btn btn-outline btn-sm" onclick="openChangeName()" title="تغيير الاسم" style="padding:5px 8px">✏️</button>
-          <button class="btn btn-outline btn-sm" onclick="goHold(_selTID)" title="التحكم" style="padding:5px 8px">🎛️</button>
-          <button class="btn btn-outline btn-sm" onclick="reloadMessages()" title="تحديث" style="padding:5px 8px">🔄</button>
+          <button class="msng-icon-btn" id="msngSilentBtn" title="الصامت: موقف" style="font-size:.85rem">🔔</button>
+          <button class="msng-icon-btn" id="msngMembersBtn" title="الأعضاء" style="font-size:.85rem">👥</button>
+          <button class="msng-icon-btn" id="msngRenameBtn" title="تغيير اسم الغروب" style="font-size:.85rem">✏️</button>
+          <button class="msng-icon-btn" id="msngReloadBtn" title="تحديث الرسائل" style="font-size:.85rem">🔄</button>
         </div>
       </div>
+
+      <!-- Reply Bar -->
+      <div class="msng-reply-bar" id="msngReplyBar" style="display:none">
+        <span style="color:var(--accent);font-size:.9rem;flex-shrink:0">↩</span>
+        <span class="msng-reply-bar-text" id="msngReplyText"></span>
+        <button id="msngCancelReply" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:1rem;padding:0 2px;line-height:1;flex-shrink:0">✕</button>
+      </div>
+
       <!-- Messages -->
       <div class="msng-messages" id="msngMessages">
-        <div style="text-align:center;padding:32px;color:var(--text3);font-size:.83rem" id="msngMsgLoader">اختر غروباً...</div>
+        <div style="text-align:center;padding:32px;color:var(--text3)">اختر غروباً...</div>
       </div>
-      <!-- Input -->
+
+      <!-- Context Menu -->
+      <div class="msng-ctx-menu" id="msngCtxMenu" style="display:none">
+        <div class="msng-ctx-react" id="msngCtxReact">
+          <span data-emoji="👍">👍</span>
+          <span data-emoji="❤️">❤️</span>
+          <span data-emoji="😂">😂</span>
+          <span data-emoji="😮">😮</span>
+          <span data-emoji="😢">😢</span>
+          <span data-emoji="😡">😡</span>
+        </div>
+        <div class="msng-ctx-sep"></div>
+        <div class="msng-ctx-item" id="ctxReplyBtn"><span>↩</span> رد على الرسالة</div>
+        <div class="msng-ctx-item" id="ctxCopyBtn"><span>📋</span> نسخ النص</div>
+        <div class="msng-ctx-sep"></div>
+        <div class="msng-ctx-item" id="ctxReportBtn" style="color:var(--red)"><span>🚩</span> تبليغ</div>
+      </div>
+
+      <!-- Input Area -->
       <div class="msng-input-area">
-        <div style="display:flex;gap:6px;margin-bottom:6px">
-          <input type="text" id="msngMsgInput" placeholder="💬 اكتب رسالة..." class="msng-text-input"
-            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsngMsg()}"/>
-          <button class="btn btn-primary btn-sm" onclick="sendMsngMsg()" style="white-space:nowrap;padding:6px 10px">📤 إرسال</button>
+        <div style="display:flex;gap:6px;align-items:center;margin-bottom:6px">
+          <button class="msng-icon-btn" id="msngAttachImgBtn" title="صورة / فيديو" style="font-size:.88rem">🖼️</button>
+          <button class="msng-icon-btn" id="msngAttachAudioBtn" title="ملف صوتي" style="font-size:.88rem">🎵</button>
+          <button class="msng-icon-btn" id="msngRecBtn" title="تسجيل صوتي" style="font-size:.88rem">🎙️</button>
+          <input type="text" id="msngMsgInput" class="msng-text-input" placeholder="💬 اكتب رسالة..." style="flex:1"/>
+          <button class="btn btn-primary btn-sm" id="msngSendBtn" style="flex-shrink:0;padding:7px 12px">📤</button>
         </div>
-        <div style="display:flex;gap:6px">
-          <input type="text" id="msngCmdInput" placeholder="⚡ أمر مثل: help | ping | nm اسم الغروب" class="msng-text-input"
-            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();runMsngCmd()}"/>
-          <button class="btn btn-outline btn-sm" onclick="runMsngCmd()" style="white-space:nowrap;padding:6px 10px;color:var(--accent)">▶️ تنفيذ</button>
+        <div style="display:flex;gap:6px;align-items:center">
+          <span style="font-size:.74rem;color:var(--text3);flex-shrink:0;white-space:nowrap">⚡ أمر:</span>
+          <input type="text" id="msngCmdInput" class="msng-text-input" placeholder="ping · help · nm اسم · ai سؤال" style="flex:1"/>
+          <button class="btn btn-outline btn-sm" id="msngExecBtn" style="flex-shrink:0;padding:7px 10px;color:var(--accent)">▶️</button>
         </div>
-        <div id="msngActionSt" style="font-size:.75rem;min-height:14px;margin-top:5px;color:var(--text3)"></div>
+        <div id="msngActionSt" style="font-size:.73rem;min-height:13px;margin-top:5px;color:var(--text3)"></div>
+        <input type="file" id="msngFileInp" style="display:none" multiple/>
       </div>
     </div>
   </div>
 </div>
 
-<!-- ── Members Modal ── -->
-<div id="membersModal" style="display:none;position:fixed;inset:0;z-index:9800;background:rgba(0,0,0,.87);backdrop-filter:blur(8px);align-items:center;justify-content:center">
-  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);width:min(480px,95vw);max-height:82vh;display:flex;flex-direction:column;overflow:hidden">
-    <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
-      <div style="font-weight:700" id="memberModalTitle">👥 الأعضاء</div>
-      <button onclick="closeMembersModal()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:1.1rem">✕</button>
+<!-- Members Modal -->
+<div class="msng-modal-overlay" id="membersModal">
+  <div class="msng-modal-box" style="width:min(500px,95vw)">
+    <div class="msng-modal-head">
+      <div class="msng-modal-title" id="memberModalTitle">👥 الأعضاء</div>
+      <button class="msng-modal-close" id="closeMembersBtn">✕</button>
     </div>
     <div style="padding:8px 14px;border-bottom:1px solid var(--border);flex-shrink:0">
-      <input id="memberSearch" placeholder="🔍 بحث..." oninput="filterMembers()"
-        style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:.8rem;font-family:'Cairo',sans-serif;outline:none"/>
+      <input id="memberSearch" placeholder="🔍 بحث باسم أو ID..."
+        style="width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:7px 10px;font-size:.8rem;font-family:'Cairo',sans-serif;outline:none;box-sizing:border-box"/>
     </div>
-    <div id="membersList" style="overflow-y:auto;flex:1;padding:6px 0"></div>
+    <div id="membersList" style="overflow-y:auto;max-height:60vh;padding:4px 0"></div>
   </div>
 </div>
 
-<!-- ── Member Profile Modal ── -->
-<div id="profileModal" style="display:none;position:fixed;inset:0;z-index:9900;background:rgba(0,0,0,.9);backdrop-filter:blur(12px);align-items:center;justify-content:center">
-  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);width:min(320px,90vw);padding:24px;display:flex;flex-direction:column;align-items:center;gap:12px;position:relative">
-    <button onclick="closeProfileModal()" style="position:absolute;top:10px;left:10px;background:none;border:none;cursor:pointer;color:var(--text3);font-size:1.1rem">✕</button>
-    <div id="profileAva" style="width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--purple));display:flex;align-items:center;justify-content:center;font-size:1.7rem;font-weight:700;color:white;border:3px solid rgba(255,255,255,.08)">?</div>
+<!-- Profile Modal -->
+<div class="msng-modal-overlay" id="profileModal">
+  <div class="msng-modal-box" style="width:min(330px,92vw);padding:22px;align-items:center;gap:12px">
+    <button id="closeProfileBtn" style="position:absolute;top:10px;left:10px;background:none;border:none;cursor:pointer;color:var(--text3);font-size:1.1rem">✕</button>
+    <div id="profileAva" style="width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;font-weight:700;color:white;border:3px solid rgba(255,255,255,.08)">?</div>
     <div id="profileName" style="font-size:1rem;font-weight:700;text-align:center">—</div>
-    <div id="profileAdminBadge" style="display:none"><span class="badge badge-yellow">👑 مشرف الغروب</span></div>
+    <div id="profileAdminBadge" style="display:none"><span class="badge badge-yellow">👑 مشرف</span></div>
     <div style="width:100%;display:flex;flex-direction:column;gap:7px">
       <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg3);border-radius:8px;align-items:center">
         <span style="color:var(--text3);font-size:.78rem">الـ UID</span>
-        <code id="profileUID" style="font-size:.78rem;color:var(--accent2);cursor:pointer" onclick="navigator.clipboard.writeText(this.textContent).then(()=>showToast('✅ تم النسخ','success'))">—</code>
+        <code id="profileUID" style="font-size:.78rem;color:var(--accent2);cursor:pointer">—</code>
       </div>
       <div style="display:flex;justify-content:space-between;padding:8px 12px;background:var(--bg3);border-radius:8px;align-items:center">
-        <span style="color:var(--text3);font-size:.78rem">رابط الملف</span>
-        <a id="profileLink" href="#" target="_blank" rel="noopener" style="font-size:.78rem;color:var(--purple)">🔗 فتح الملف الشخصي</a>
+        <span style="color:var(--text3);font-size:.78rem">الملف الشخصي</span>
+        <a id="profileLink" href="#" target="_blank" rel="noopener" style="font-size:.78rem;color:var(--purple)">🔗 رابط</a>
       </div>
     </div>
-    <div style="display:flex;gap:8px;width:100%">
-      <button class="btn btn-outline btn-sm" style="flex:1" onclick="sendToMember()">💬 رسالة</button>
-      <button class="btn btn-outline btn-sm" style="flex:1;color:var(--red)" onclick="kickMember()">🚫 كيك</button>
+    <div style="display:flex;gap:7px;width:100%;flex-wrap:wrap">
+      <button class="btn btn-outline btn-sm" id="profileSendBtn" style="flex:1">💬 رسالة</button>
+      <button class="btn btn-outline btn-sm" id="profileNickBtn" style="flex:1">🏷️ كنية</button>
+      <button class="btn btn-outline btn-sm" id="profileKickBtn" style="flex:1;color:var(--red)">🚫 كيك</button>
     </div>
-    <div id="profileActSt" style="font-size:.75rem;min-height:14px;color:var(--text3)"></div>
+    <div id="profileActSt" style="font-size:.74rem;min-height:14px;color:var(--text3);text-align:center;width:100%"></div>
   </div>
 </div>
 
-<!-- ── Change Group Name Modal ── -->
-<div id="changeNameModal" style="display:none;position:fixed;inset:0;z-index:9800;background:rgba(0,0,0,.87);backdrop-filter:blur(8px);align-items:center;justify-content:center">
-  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);width:min(380px,90vw);padding:22px;display:flex;flex-direction:column;gap:12px">
-    <div style="font-weight:700">✏️ تغيير اسم الغروب</div>
+<!-- Nickname Modal -->
+<div class="msng-modal-overlay" id="nicknameModal">
+  <div class="msng-modal-box" style="width:min(360px,90vw);padding:22px;gap:12px">
+    <div style="font-weight:700;margin-bottom:4px">🏷️ تغيير كنية العضو</div>
+    <div style="font-size:.8rem;color:var(--text3)" id="nicknameForName"></div>
+    <input type="text" id="nicknameInput" class="form-control" placeholder="الكنية الجديدة (اتركها فارغة للإزالة)..."/>
+    <div class="btn-row">
+      <button class="btn btn-primary" id="doNicknameBtn">✅ تطبيق</button>
+      <button class="btn btn-outline" id="cancelNicknameBtn">إلغاء</button>
+    </div>
+    <div id="nicknameSt" style="font-size:.8rem;min-height:14px;color:var(--text3)"></div>
+  </div>
+</div>
+
+<!-- Change Name Modal -->
+<div class="msng-modal-overlay" id="changeNameModal">
+  <div class="msng-modal-box" style="width:min(380px,90vw);padding:22px;gap:12px">
+    <div style="font-weight:700;margin-bottom:4px">✏️ تغيير اسم الغروب</div>
     <div style="font-size:.8rem;color:var(--text3)" id="changeNameCurrent"></div>
     <input type="text" id="newGroupName" class="form-control" placeholder="الاسم الجديد..."/>
     <div class="btn-row">
-      <button class="btn btn-primary" onclick="doChangeName()">✅ تغيير</button>
-      <button class="btn btn-outline" onclick="document.getElementById('changeNameModal').style.display='none'">إلغاء</button>
+      <button class="btn btn-primary" id="doChangeNameBtn">✅ تغيير</button>
+      <button class="btn btn-outline" id="cancelChangeNameBtn">إلغاء</button>
     </div>
     <div id="changeNameSt" style="font-size:.8rem;min-height:14px;color:var(--text3)"></div>
   </div>
 </div>
 
 <script>
-let _allGroups=[];
-let _selTID='';
-let _allMembers=[];
-let _curProfileUID='';
+/* ────────────────────────────────── State ─────────────────────────────────── */
+var _allGroups=[], _selTID='', _allMembers=[], _curUID='', _curUName='';
+var _botID='', _silentMode=false, _replyTo=null, _ctxMsg=null;
+var _mediaRecorder=null, _audioChunks=[], _pollTimer=null, _lastMsgTS=0;
+var _lpTimer=null;
 
-// ── escape helpers ─────────────────────────────────────────────────────────
+/* ─────────────────────────────── Utilities ────────────────────────────────── */
 function _h(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function _initials(name){const w=String(name||'G').trim().split(/\s+/);return(w[0]?.[0]||'G').toUpperCase();}
-function _gradColor(str){const h=['135deg,#ff3c5f,#60d0ff','135deg,#9b72f7,#60d0ff','135deg,#30d988,#60d0ff','135deg,#f5c842,#ff3c5f'];let n=0;for(const c of String(str))n+=c.charCodeAt(0);return h[n%h.length];}
-function _fmtTime(ts){if(!ts)return'';const d=new Date(Number(ts));const now=new Date();const diff=(now-d)/1000;if(diff<60)return'الآن';if(diff<3600)return Math.floor(diff/60)+'د';if(diff<86400)return Math.floor(diff/3600)+'س';return d.toLocaleDateString('ar');}
+function _ini(n){return((String(n||'G').trim().split(/\s+/)[0]||'G')[0]||'G').toUpperCase();}
+function _grad(s){var h=['135deg,#ff3c5f,#60d0ff','135deg,#9b72f7,#60d0ff','135deg,#30d988,#43e97b','135deg,#f5c842,#ff6b6b'];var n=0;for(var i=0;i<String(s).length;i++)n+=String(s).charCodeAt(i);return h[n%h.length];}
+function _fmt(ts){if(!ts)return'';var d=new Date(Number(ts)),now=new Date(),dif=(now-d)/1000;if(dif<60)return'الآن';if(dif<3600)return Math.floor(dif/60)+'د';if(dif<86400)return Math.floor(dif/3600)+'س';return d.toLocaleDateString('ar');}
+function _fmtFull(ts){if(!ts)return'';return new Date(Number(ts)).toLocaleString('ar');}
+function _st(html,id){document.getElementById(id||'msngActionSt').innerHTML=html;}
+function _q(id){return document.getElementById(id);}
 
-// ── Group List ─────────────────────────────────────────────────────────────
+/* ──────────────────────────── Bot ID init ─────────────────────────────────── */
+async function _initBotID(){
+  try{var d=await fetch('/api/bot-id').then(function(r){return r.json();});_botID=String(d.botID||'');}catch(e){}
+}
+
+/* ──────────────────────────── Group list ──────────────────────────────────── */
 async function refreshGroups(){
-  const btn=document.getElementById('msngRefreshBtn');
-  const list=document.getElementById('msngGroupList');
+  var btn=_q('msngRefreshBtn');
   if(btn){btn.disabled=true;btn.textContent='⏳';}
-  list.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:.83rem">⏳ جارٍ الجلب...</div>';
   try{
-    const r=await fetch('/api/groups-list');
-    const d=await r.json();
-    _allGroups=d.groups||[];
-    document.getElementById('msngGrpCount').textContent=_allGroups.length;
-    renderGroupList(_allGroups);
+    var r=await fetch('/api/groups-list');
+    var d=await r.json();
+    var groups=d.groups||[];
+    groups.sort(function(a,b){return Number(b.lastTime||b.timestamp||0)-Number(a.lastTime||a.timestamp||0);});
+    _allGroups=groups;
+    _q('msngGrpCount').textContent=_allGroups.length;
+    _renderGroupList(_allGroups);
     if(!_allGroups.length)showToast('⚠️ '+(d.error||'لا توجد غروبات — البوت قد يكون غير متصل'),'warn');
     else showToast('✅ '+_allGroups.length+' غروب'+(d.cached?' (كاش)':''),'success');
   }catch(e){
-    list.innerHTML='<div style="text-align:center;padding:32px;color:var(--red);font-size:.83rem">❌ '+_h(e.message)+'</div>';
+    _q('msngGroupList').innerHTML='<div style="text-align:center;padding:32px;color:var(--red);font-size:.83rem">❌ '+_h(String(e.message||e))+'</div>';
     showToast('❌ فشل جلب الغروبات','error');
-  }finally{if(btn){btn.disabled=false;btn.textContent='🔄';}}
+  }
+  if(btn){btn.disabled=false;btn.textContent='🔄';}
 }
 
-function renderGroupList(groups){
-  const list=document.getElementById('msngGroupList');
-  if(!groups.length){
-    list.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:.83rem">لا توجد نتائج</div>';
-    return;
-  }
-  list.innerHTML=groups.map(g=>{
-    const ini=_initials(g.name);
-    const grad=_gradColor(g.threadID);
-    return '<div class="msng-group-item'+(g.threadID===_selTID?' active':'')+'" onclick="selectGroup(\''+_h(g.threadID)+'\',\''+_h(g.name)+'\','+(_h(g.memberCount||0))+')" id="gi-'+_h(g.threadID)+'">'
-      +'<div class="msng-grp-ava" style="background:linear-gradient('+grad+')">'+ini+'</div>'
+function _renderGroupList(groups){
+  var list=_q('msngGroupList');
+  if(!groups.length){list.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:.82rem">لا توجد نتائج</div>';return;}
+  list.innerHTML=groups.map(function(g){
+    var act=g.threadID===_selTID;
+    var lastT=g.lastTime?_fmt(g.lastTime):'';
+    var lastM=g.lastMsg?_h(String(g.lastMsg).slice(0,45)):'';
+    var unr=g.unread?'<span class="msng-unread-badge">'+g.unread+'</span>':'';
+    return '<div class="msng-group-item'+(act?' active':'')+'" id="gi-'+_h(g.threadID)+'"'
+      +' data-tid="'+_h(g.threadID)+'" data-name="'+_h(g.name||'')+'" data-mc="'+(Number(g.memberCount)||0)+'">'
+      +'<div class="msng-grp-ava" style="background:linear-gradient('+_grad(g.threadID)+')">'+_ini(g.name)+'</div>'
       +'<div class="msng-grp-info">'
-        +'<div class="msng-grp-name">'+_h(g.name||'غير مسمى')+'</div>'
-        +'<div class="msng-grp-meta">'+_h(g.threadID)+(g.memberCount?' · '+g.memberCount+' عضو':'')+'</div>'
+        +'<div style="display:flex;justify-content:space-between;align-items:center;gap:4px">'
+          +'<div class="msng-grp-name">'+_h(g.name||'غير مسمى')+'</div>'
+          +'<div style="display:flex;align-items:center;gap:4px;flex-shrink:0">'+unr+'<span style="font-size:.63rem;color:var(--text3)">'+lastT+'</span></div>'
+        +'</div>'
+        +'<div class="msng-grp-meta">'+(lastM||_h(g.threadID))+'</div>'
       +'</div>'
     +'</div>';
   }).join('');
 }
 
-function filterGroups(){
-  const s=document.getElementById('msngSearch').value.toLowerCase();
-  const filtered=_allGroups.filter(g=>(g.name||'').toLowerCase().includes(s)||String(g.threadID).includes(s));
-  renderGroupList(filtered);
+function _filterGroups(){
+  var s=_q('msngSearch').value.toLowerCase();
+  _renderGroupList(_allGroups.filter(function(g){return (g.name||'').toLowerCase().includes(s)||String(g.threadID).includes(s);}));
 }
 
-// ── Select Group ───────────────────────────────────────────────────────────
-function selectGroup(tid,name,mc){
+function _bumpGroup(tid,lastMsg,ts){
+  var idx=_allGroups.findIndex(function(g){return g.threadID===tid;});
+  if(idx>=0){_allGroups[idx].lastMsg=lastMsg;_allGroups[idx].lastTime=ts||Date.now();}
+  _allGroups.sort(function(a,b){return Number(b.lastTime||0)-Number(a.lastTime||0);});
+  _filterGroups();
+}
+
+/* ──────────────────────────── Select group ────────────────────────────────── */
+function _selectGroup(tid,name,mc){
   _selTID=tid;
-  // update sidebar active state
-  document.querySelectorAll('.msng-group-item').forEach(el=>el.classList.remove('active'));
-  const el=document.getElementById('gi-'+tid);
-  if(el)el.classList.add('active');
-  // show chat panel
-  document.getElementById('msngPlaceholder').style.display='none';
-  const inner=document.getElementById('msngChatInner');
-  inner.style.display='flex';
-  // header
-  const ini=_initials(name);
-  const grad=_gradColor(tid);
-  document.getElementById('msngChatAva').textContent=ini;
-  document.getElementById('msngChatAva').style.background='linear-gradient('+grad+')';
-  document.getElementById('msngChatName').textContent=name||tid;
-  document.getElementById('msngChatSub').textContent=tid+(mc?' · '+mc+' عضو':'');
-  // mobile: hide sidebar
-  if(window.innerWidth<=640)document.getElementById('msngSidebar').classList.add('hidden');
-  // load messages
-  loadMessages(tid);
+  document.querySelectorAll('.msng-group-item').forEach(function(el){el.classList.remove('active');});
+  var el=_q('gi-'+tid);if(el)el.classList.add('active');
+  _q('msngPlaceholder').style.display='none';
+  _q('msngChatInner').style.display='flex';
+  var ava=_q('msngChatAva');
+  ava.textContent=_ini(name);ava.style.background='linear-gradient('+_grad(tid)+')';
+  _q('msngChatName').textContent=name||tid;
+  _q('msngChatSub').textContent=tid+(mc?' · '+mc+' عضو':'');
+  if(window.innerWidth<=640)_q('msngSidebar').classList.add('hidden');
+  _cancelReply();
+  if(_pollTimer)clearInterval(_pollTimer);
+  _lastMsgTS=0;
+  _loadMessages(tid);
+  _pollTimer=setInterval(function(){if(_selTID===tid)_pollNew(tid);},30000);
 }
 
-function deselectGroup(){
-  document.getElementById('msngSidebar').classList.remove('hidden');
-  document.getElementById('msngPlaceholder').style.display='flex';
-  document.getElementById('msngChatInner').style.display='none';
-  document.querySelectorAll('.msng-group-item').forEach(el=>el.classList.remove('active'));
+function _deselectGroup(){
+  _q('msngSidebar').classList.remove('hidden');
+  _q('msngPlaceholder').style.display='flex';
+  _q('msngChatInner').style.display='none';
+  document.querySelectorAll('.msng-group-item').forEach(function(el){el.classList.remove('active');});
   _selTID='';
+  if(_pollTimer)clearInterval(_pollTimer);_pollTimer=null;
 }
 
-// ── Messages ───────────────────────────────────────────────────────────────
-async function loadMessages(tid){
-  const box=document.getElementById('msngMessages');
-  box.innerHTML='<div id="msngMsgLoader" style="text-align:center;padding:24px;color:var(--text3);font-size:.83rem">⏳ جارٍ تحميل الرسائل...</div>';
+/* ──────────────────────────── Messages ────────────────────────────────────── */
+async function _loadMessages(tid){
+  var box=_q('msngMessages');
+  box.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:.83rem">⏳ جارٍ تحميل الرسائل...</div>';
   try{
-    const r=await fetch('/api/thread-history?threadID='+encodeURIComponent(tid)+'&count=30');
-    const d=await r.json();
+    var r=await fetch('/api/thread-history?threadID='+encodeURIComponent(tid)+'&count=40');
+    var d=await r.json();
     if(!d.ok&&!Array.isArray(d.messages)){
-      box.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:.83rem">💬 '+(d.error||'لا تتوفر سجلات الرسائل — المكتبة لا تدعم جلب السجل')+'</div>';
-      return;
+      box.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:.83rem">💬 '+(d.error||'المكتبة لا تدعم جلب سجل الرسائل')+'</div>';return;
     }
-    const msgs=d.messages||[];
-    if(!msgs.length){
-      box.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:.83rem">📭 لا توجد رسائل محفوظة</div>';
-      return;
-    }
-    const myID=String((await fetch('/api/status').then(r=>r.json()).catch(()=>({}))).botUserID||'');
-    box.innerHTML=msgs.map(m=>renderBubble(m,myID)).join('');
+    var msgs=d.messages||[];
+    _lastMsgTS=msgs.length?Number(msgs[msgs.length-1].timestamp||0):0;
+    if(!msgs.length){box.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:.83rem">📭 لا توجد رسائل محفوظة</div>';return;}
+    box.innerHTML='<div id="msngMsgsInner">'+msgs.map(function(m){return _renderBubble(m,_botID);}).join('')+'</div>';
     box.scrollTop=box.scrollHeight;
+    _attachBubbleEvents();
   }catch(e){
-    box.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:.83rem">💬 جلب الرسائل غير متاح</div>';
+    box.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3);font-size:.83rem">💬 جلب الرسائل غير متاح ('+_h(String(e.message||''))+')...</div>';
   }
 }
 
-function reloadMessages(){if(_selTID)loadMessages(_selTID);}
+async function _pollNew(tid){
+  try{
+    var r=await fetch('/api/thread-history?threadID='+encodeURIComponent(tid)+'&count=8');
+    var d=await r.json();
+    if(!d.ok)return;
+    var news=(d.messages||[]).filter(function(m){return Number(m.timestamp||0)>_lastMsgTS;});
+    if(!news.length)return;
+    var box=_q('msngMessages'),inner=_q('msngMsgsInner');
+    if(!inner)return;
+    var atBot=(box.scrollTop+box.clientHeight)>=(box.scrollHeight-100);
+    news.forEach(function(m){
+      var tmp=document.createElement('div');tmp.innerHTML=_renderBubble(m,_botID);
+      if(tmp.firstChild)inner.appendChild(tmp.firstChild);
+      _lastMsgTS=Math.max(_lastMsgTS,Number(m.timestamp||0));
+    });
+    if(atBot)box.scrollTop=box.scrollHeight;
+    _attachBubbleEvents();
+    var last=news[news.length-1];
+    _bumpGroup(tid,last.body||'📎',last.timestamp);
+  }catch(e){}
+}
 
-function renderBubble(m,myID){
-  const isMe=myID&&String(m.senderID)===String(myID);
-  const name=_h(m.senderName||m.senderID||'مجهول');
-  const body=_h(m.body||'');
-  const time=_fmtTime(m.timestamp);
-  const ini=(m.senderName||'?')[0].toUpperCase();
-  const grad=_gradColor(String(m.senderID||'0'));
-  const attaches=(m.attachments||[]).filter(a=>a.url).map(a=>'<div style="margin-top:5px"><a href="'+_h(a.url)+'" target="_blank" rel="noopener" style="color:var(--accent2);font-size:.75rem">📎 '+_h(a.type||'مرفق')+'</a></div>').join('');
-  if(m.isUnsent)return'<div style="text-align:center;color:var(--text3);font-size:.75rem;padding:4px 0">🚫 تم حذف رسالة</div>';
-  return '<div class="msng-bubble-wrap'+(isMe?' mine':'')+'">'
-    +'<div class="msng-avatar-sm" style="background:linear-gradient('+grad+')" onclick="quickProfile(\''+_h(String(m.senderID))+'\',\''+_h(m.senderName||m.senderID)+'\')">'+ini+'</div>'
-    +'<div>'
-      +(isMe?'':'<div class="msng-bubble-name" onclick="quickProfile(\''+_h(String(m.senderID))+'\',\''+_h(m.senderName||m.senderID)+'\')">'+name+'</div>')
-      +'<div class="msng-bubble'+(isMe?' mine':'')+'">'+(body||'<em style="color:var(--text3)">بلا نص</em>')+attaches+'</div>'
-      +'<div class="msng-bubble-time">'+time+'</div>'
+function _reloadMessages(){if(_selTID)_loadMessages(_selTID);}
+
+function _renderBubble(m,myID){
+  var isMe=!!(myID&&String(m.senderID)===String(myID)&&myID);
+  var senderName=m.senderName||m.senderID||'مجهول';
+  var msgID=m.messageID||m.id||'';
+  var bodyText=m.body||'';
+  var time=_fmt(m.timestamp);
+  var fullT=_fmtFull(m.timestamp);
+  var ini=((senderName||'?')[0]||'?').toUpperCase();
+  var grad=_grad(String(m.senderID||'0'));
+
+  var attaches='';
+  var aa=m.attachments||[];
+  for(var i=0;i<aa.length;i++){
+    var a=aa[i];
+    if((a.type==='photo'||a.type==='sticker')&&a.url){
+      attaches+='<div style="margin-top:5px"><img src="'+_h(a.url)+'" style="max-width:180px;max-height:180px;border-radius:10px;cursor:pointer;display:block" onclick="window.open(\''+_h(a.url)+'\',\'_blank\')" onerror="this.parentElement.style.display=\'none\'"/></div>';
+    }else if(a.type==='audio'&&a.url){
+      attaches+='<div style="margin-top:5px"><audio src="'+_h(a.url)+'" controls style="max-width:200px;height:32px"></audio></div>';
+    }else if(a.type==='video'&&a.url){
+      attaches+='<div style="margin-top:5px"><video src="'+_h(a.url)+'" controls style="max-width:200px;border-radius:8px"></video></div>';
+    }else if(a.url){
+      attaches+='<div style="margin-top:5px"><a href="'+_h(a.url)+'" target="_blank" rel="noopener" style="color:var(--accent2);font-size:.75rem">📎 '+_h(a.type||'مرفق')+'</a></div>';
+    }
+  }
+
+  if(m.isUnsent)return '<div style="text-align:center;color:var(--text3);font-size:.75rem;padding:4px 0;font-style:italic">🚫 تم حذف رسالة</div>';
+
+  return '<div class="msng-bubble-wrap'+(isMe?' mine':'')+'" data-msgid="'+_h(msgID)+'" data-body="'+_h(bodyText.slice(0,200))+'" data-sender="'+_h(senderName.slice(0,80))+'">'
+    +'<div class="msng-avatar-sm" style="background:linear-gradient('+grad+')" data-uid="'+_h(String(m.senderID||''))+'" data-uname="'+_h(senderName)+'">'+ini+'</div>'
+    +'<div style="max-width:80%;display:flex;flex-direction:column;'+(isMe?'align-items:flex-end':'align-items:flex-start')+'">'
+      +(isMe?'':'<div class="msng-bubble-name" data-uid="'+_h(String(m.senderID||''))+'" data-uname="'+_h(senderName)+'">'+_h(senderName)+'</div>')
+      +(m.messageReply?('<div class="msng-reply-preview">↩ '+_h(String(m.messageReply.body||'').slice(0,60))+'</div>'):'')
+      +'<div class="msng-bubble'+(isMe?' mine':'')+'">'+(bodyText?_h(bodyText):'<em style="color:var(--text3);font-size:.78rem">بلا نص</em>')+attaches+'</div>'
+      +'<div class="msng-bubble-time" title="'+_h(fullT)+'">'+time+(isMe?' ✓✓':'')+'</div>'
     +'</div>'
   +'</div>';
 }
 
-// ── Send & Execute ─────────────────────────────────────────────────────────
-async function sendMsngMsg(){
+/* ─────────────────────────── Context menu ─────────────────────────────────── */
+function _attachBubbleEvents(){
+  document.querySelectorAll('.msng-bubble-wrap:not([data-ev])').forEach(function(el){
+    el.setAttribute('data-ev','1');
+    el.addEventListener('contextmenu',function(e){e.preventDefault();_showCtx(el,e.clientX,e.clientY);});
+    el.addEventListener('touchstart',function(e){var t=e.touches[0];_lpTimer=setTimeout(function(){_showCtx(el,t.clientX,t.clientY);},500);},{passive:true});
+    el.addEventListener('touchend',function(){clearTimeout(_lpTimer);},{passive:true});
+    el.addEventListener('touchmove',function(){clearTimeout(_lpTimer);},{passive:true});
+  });
+}
+
+function _showCtx(el,x,y){
+  _ctxMsg={msgID:el.getAttribute('data-msgid'),body:el.getAttribute('data-body')||'',sender:el.getAttribute('data-sender')||''};
+  var menu=_q('msngCtxMenu');
+  menu.style.display='block';
+  var vw=window.innerWidth,vh=window.innerHeight;
+  var left=x,top=y;
+  if(left+185>vw)left=vw-192;
+  if(top+230>vh)top=Math.max(4,y-230);
+  menu.style.left=left+'px';menu.style.top=top+'px';
+}
+function _closeCtx(){var m=_q('msngCtxMenu');if(m)m.style.display='none';_ctxMsg=null;}
+
+/* ──────────────────────────── Reply ───────────────────────────────────────── */
+function _setReply(msgID,body,sender){
+  _replyTo={msgID:msgID,body:body,sender:sender};
+  _q('msngReplyText').textContent=(sender?sender+': ':'')+String(body||'').slice(0,80);
+  _q('msngReplyBar').style.display='flex';
+  _q('msngMsgInput').focus();
+}
+function _cancelReply(){
+  _replyTo=null;
+  _q('msngReplyBar').style.display='none';
+  _q('msngReplyText').textContent='';
+}
+
+/* ──────────────────────────── Silent mode ─────────────────────────────────── */
+function _toggleSilent(){
+  _silentMode=!_silentMode;
+  var btn=_q('msngSilentBtn');
+  if(btn){
+    btn.textContent=_silentMode?'🔕':'🔔';
+    btn.title=_silentMode?'الصامت: مفعّل':'الصامت: موقف';
+    if(_silentMode)btn.classList.add('active-silent');else btn.classList.remove('active-silent');
+  }
+  showToast(_silentMode?'🔕 وضع الصامت مفعّل':'🔔 وضع الصامت موقف','info');
+}
+
+/* ──────────────────────────── Send message ────────────────────────────────── */
+async function _sendMsg(){
   if(!_selTID)return showToast('اختر غروباً أولاً','error');
-  const inp=document.getElementById('msngMsgInput');
-  const msg=inp.value.trim();
+  var inp=_q('msngMsgInput'),msg=inp.value.trim();
   if(!msg)return;
-  const st=document.getElementById('msngActionSt');
-  st.innerHTML='⏳ جارٍ الإرسال...';
-  const r=await api('/api/send',{threadID:_selTID,message:msg});
-  if(r.ok||r.message){
-    inp.value='';
-    st.innerHTML='<span style="color:var(--green)">✅ تم الإرسال</span>';
+  _st('⏳ جارٍ الإرسال...');
+  var payload={threadID:_selTID,message:msg};
+  if(_replyTo&&_replyTo.msgID)payload.replyToMessage=_replyTo.msgID;
+  if(_silentMode)payload.silent=true;
+  var r=await api('/api/send',payload);
+  if(r.ok||r.message||r.messageID){
+    inp.value='';_cancelReply();
+    _st('<span style="color:var(--green)">✅ تم الإرسال</span>');
     showToast('✅ الرسالة أُرسلت','success');
-    setTimeout(()=>{st.innerHTML='';reloadMessages();},1500);
+    _bumpGroup(_selTID,msg,Date.now());
+    setTimeout(function(){_st('');_reloadMessages();},1500);
   }else{
-    st.innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل الإرسال')+'</span>';
+    _st('<span style="color:var(--red)">❌ '+(r.error||'فشل الإرسال — البوت قد يكون غير متصل')+'</span>');
     showToast('❌ '+(r.error||'فشل'),'error');
   }
 }
 
-async function runMsngCmd(){
+/* ──────────────────────────── Execute command ─────────────────────────────── */
+async function _execCmd(){
   if(!_selTID)return showToast('اختر غروباً أولاً','error');
-  const inp=document.getElementById('msngCmdInput');
-  const cmd=inp.value.trim();
+  var inp=_q('msngCmdInput'),cmd=inp.value.trim();
   if(!cmd)return;
-  const st=document.getElementById('msngActionSt');
-  st.innerHTML='⏳ جارٍ تنفيذ الأمر...';
-  const r=await api('/api/execute',{threadID:_selTID,command:cmd});
-  if(r.ok||r.message){
+  _st('⏳ تنفيذ الأمر "'+_h(cmd)+'"...');
+  var r=await api('/api/execute',{threadID:_selTID,command:cmd});
+  if(r.ok){
     inp.value='';
-    st.innerHTML='<span style="color:var(--green)">✅ '+(r.message||'تم تنفيذ الأمر')+'</span>';
+    _st('<span style="color:var(--green)">✅ '+(r.message||'تم تنفيذ الأمر — الرد سيصل في الغروب')+'</span>');
     showToast('✅ تم تنفيذ الأمر','success');
-    setTimeout(()=>{st.innerHTML='';reloadMessages();},2000);
+    setTimeout(function(){_st('');_reloadMessages();},2500);
   }else{
-    st.innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>';
-    showToast('❌ '+(r.error||'فشل'),'error');
+    var em=r.error||'فشل';
+    if(r.availableCount!==undefined)em+=' ('+r.availableCount+' أمر متاح)';
+    _st('<span style="color:var(--red)">❌ '+_h(em)+'</span>');
+    showToast('❌ '+em,'error');
   }
 }
 
-// ── Members ────────────────────────────────────────────────────────────────
-async function openMembers(){
+/* ────────────────────────── Media / file upload ───────────────────────────── */
+async function _uploadMedia(file){
   if(!_selTID)return showToast('اختر غروباً أولاً','error');
-  document.getElementById('membersModal').style.display='flex';
-  document.getElementById('membersList').innerHTML='<div style="text-align:center;padding:24px;color:var(--text3)">⏳ جارٍ تحميل الأعضاء...</div>';
-  document.getElementById('memberModalTitle').textContent='👥 أعضاء: '+document.getElementById('msngChatName').textContent;
+  if(file.size>20*1024*1024)return showToast('❌ الملف أكبر من 20 ميجابايت','error');
+  _st('⏳ جارٍ رفع '+_h(file.name)+'...');
+  var reader=new FileReader();
+  reader.onload=async function(ev){
+    var b64=ev.target.result.split(',')[1];
+    if(!b64){_st('<span style="color:var(--red)">❌ تعذّر قراءة الملف</span>');return;}
+    var r=await api('/api/send-media',{threadID:_selTID,base64:b64,mimeType:file.type||'application/octet-stream',filename:file.name});
+    if(r.ok){
+      _st('<span style="color:var(--green)">✅ تم إرسال '+_h(file.name)+'</span>');
+      showToast('✅ تم إرسال الملف','success');
+      _bumpGroup(_selTID,file.name,Date.now());
+      setTimeout(function(){_st('');_reloadMessages();},2000);
+    }else{
+      _st('<span style="color:var(--red)">❌ '+(r.error||'فشل الإرسال')+'</span>');
+      showToast('❌ '+(r.error||'فشل'),'error');
+    }
+  };
+  reader.onerror=function(){_st('<span style="color:var(--red)">❌ خطأ في قراءة الملف</span>');};
+  reader.readAsDataURL(file);
+}
+
+/* ─────────────────────────── Audio recording ──────────────────────────────── */
+var _recTimer=null,_recSecs=0;
+
+function _toggleRecord(){
+  if(_mediaRecorder&&_mediaRecorder.state==='recording')_stopRecord();
+  else _startRecord();
+}
+
+function _startRecord(){
+  if(!_selTID)return showToast('اختر غروباً أولاً','error');
+  if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia)return showToast('❌ المتصفح لا يدعم التسجيل','error');
+  navigator.mediaDevices.getUserMedia({audio:true}).then(function(stream){
+    _audioChunks=[];
+    var mt='audio/webm';
+    if(!MediaRecorder.isTypeSupported(mt))mt='audio/ogg;codecs=opus';
+    if(!MediaRecorder.isTypeSupported(mt))mt='';
+    try{_mediaRecorder=new MediaRecorder(stream,mt?{mimeType:mt}:{});}
+    catch(e){_mediaRecorder=new MediaRecorder(stream);}
+    _mediaRecorder.ondataavailable=function(e){if(e.data&&e.data.size>0)_audioChunks.push(e.data);};
+    _mediaRecorder.onstop=function(){
+      stream.getTracks().forEach(function(t){t.stop();});
+      var mime=_mediaRecorder.mimeType||'audio/webm';
+      var ext=mime.includes('ogg')?'ogg':'webm';
+      var blob=new Blob(_audioChunks,{type:mime});
+      var rd=new FileReader();
+      rd.onload=async function(ev){
+        var b64=ev.target.result.split(',')[1];
+        if(!b64)return;
+        _st('⏳ جارٍ إرسال التسجيل الصوتي...');
+        var r=await api('/api/send-media',{threadID:_selTID,base64:b64,mimeType:mime,filename:'voice-'+Date.now()+'.'+ext});
+        if(r.ok){
+          _st('<span style="color:var(--green)">✅ تم إرسال الصوت</span>');
+          showToast('✅ تم إرسال التسجيل','success');
+          _bumpGroup(_selTID,'🎤 تسجيل صوتي',Date.now());
+          setTimeout(function(){_st('');_reloadMessages();},2000);
+        }else{
+          _st('<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>');
+        }
+      };
+      rd.readAsDataURL(blob);
+    };
+    _mediaRecorder.start(200);
+    var btn=_q('msngRecBtn');if(btn){btn.classList.add('recording');btn.textContent='⏹️';btn.title='إيقاف التسجيل';}
+    _recSecs=0;
+    _recTimer=setInterval(function(){
+      _recSecs++;
+      _st('🔴 يسجل... '+_recSecs+'ث — اضغط ⏹️ للإيقاف والإرسال');
+      if(_recSecs>=120)_stopRecord();
+    },1000);
+  }).catch(function(e){showToast('❌ الميكروفون: '+String(e.message||e),'error');});
+}
+
+function _stopRecord(){
+  clearInterval(_recTimer);_recTimer=null;
+  if(_mediaRecorder&&_mediaRecorder.state!=='inactive'){try{_mediaRecorder.stop();}catch(e){}}
+  _mediaRecorder=null;
+  var btn=_q('msngRecBtn');if(btn){btn.classList.remove('recording');btn.textContent='🎙️';btn.title='تسجيل صوتي';}
+}
+
+/* ──────────────────────────── Members modal ────────────────────────────────── */
+async function _openMembers(){
+  if(!_selTID)return showToast('اختر غروباً أولاً','error');
+  _q('membersModal').style.display='flex';
+  _q('membersList').innerHTML='<div style="text-align:center;padding:24px;color:var(--text3)">⏳ جارٍ التحميل...</div>';
+  _q('memberModalTitle').textContent='👥 أعضاء: '+_q('msngChatName').textContent;
   try{
-    const r=await fetch('/api/group-members?threadID='+encodeURIComponent(_selTID));
-    const d=await r.json();
+    var r=await fetch('/api/group-members?threadID='+encodeURIComponent(_selTID));
+    var d=await r.json();
     _allMembers=d.members||[];
-    document.getElementById('memberModalTitle').textContent='👥 الأعضاء ('+_allMembers.length+')';
-    renderMembers(_allMembers);
+    _q('memberModalTitle').textContent='👥 الأعضاء ('+_allMembers.length+')';
+    _renderMembers(_allMembers);
   }catch(e){
-    document.getElementById('membersList').innerHTML='<div style="text-align:center;padding:24px;color:var(--red)">❌ '+_h(e.message)+'</div>';
+    _q('membersList').innerHTML='<div style="text-align:center;padding:24px;color:var(--red)">❌ '+_h(String(e.message||e))+'</div>';
   }
 }
 
-function renderMembers(members){
-  const list=document.getElementById('membersList');
+function _renderMembers(members){
+  var list=_q('membersList');
   if(!members.length){list.innerHTML='<div style="text-align:center;padding:24px;color:var(--text3)">لا يوجد أعضاء</div>';return;}
-  list.innerHTML=members.map(m=>{
-    const ini=(m.name||'?')[0].toUpperCase();
-    const grad=_gradColor(m.userID);
-    return '<div style="padding:10px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid rgba(255,255,255,.04);cursor:pointer;transition:background .13s" onmouseover="this.style.background=\'var(--bg3)\'" onmouseout="this.style.background=\'\'" onclick="openProfile(\''+_h(m.userID)+'\',\''+_h(m.name)+'\','+!!m.isAdmin+')">'
-      +'<div class="msng-avatar-sm" style="background:linear-gradient('+grad+');width:36px;height:36px;font-size:.8rem">'+ini+'</div>'
+  list.innerHTML=members.map(function(m){
+    var ini=((m.name||'?')[0]||'?').toUpperCase();
+    var grad=_grad(m.userID||'0');
+    return '<div class="msng-member-row" data-uid="'+_h(m.userID||'')+'" data-uname="'+_h(m.name||m.userID||'مجهول')+'" data-admin="'+(m.isAdmin?'true':'false')+'">'
+      +'<div class="msng-avatar-sm" style="background:linear-gradient('+grad+');width:36px;height:36px;font-size:.78rem">'+ini+'</div>'
       +'<div style="flex:1;min-width:0">'
-        +'<div style="font-weight:600;font-size:.83rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+_h(m.name)+(m.isAdmin?' <span class="badge badge-yellow" style="font-size:.62rem">مشرف</span>':'')+'</div>'
-        +'<div style="font-size:.7rem;color:var(--text3);font-family:monospace">'+_h(m.userID)+'</div>'
+        +'<div style="font-weight:600;font-size:.82rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+_h(m.name||'مجهول')+(m.isAdmin?' <span class="badge badge-yellow" style="font-size:.58rem">مشرف</span>':'')+'</div>'
+        +'<div style="font-size:.69rem;color:var(--text3);font-family:monospace">'+_h(m.userID||'')+'</div>'
       +'</div>'
-      +'<span style="color:var(--text3);font-size:.75rem">↗</span>'
+      +'<span style="color:var(--text3);font-size:.8rem">↗</span>'
     +'</div>';
   }).join('');
 }
 
-function filterMembers(){
-  const s=document.getElementById('memberSearch').value.toLowerCase();
-  renderMembers(_allMembers.filter(m=>(m.name||'').toLowerCase().includes(s)||String(m.userID).includes(s)));
+/* ─────────────────────────── Profile modal ─────────────────────────────────── */
+function _openProfile(uid,name,isAdmin){
+  _curUID=uid;_curUName=name;
+  var ini=((name||'?')[0]||'?').toUpperCase();
+  _q('profileAva').textContent=ini;
+  _q('profileAva').style.background='linear-gradient('+_grad(uid||'0')+')';
+  _q('profileName').textContent=name||uid||'—';
+  _q('profileUID').textContent=uid||'—';
+  _q('profileLink').href='https://www.facebook.com/profile.php?id='+encodeURIComponent(uid||'');
+  _q('profileAdminBadge').style.display=isAdmin?'block':'none';
+  _q('profileActSt').innerHTML='';
+  _q('profileModal').style.display='flex';
+  _q('membersModal').style.display='none';
 }
 
-function closeMembersModal(){document.getElementById('membersModal').style.display='none';}
-
-// ── Profile Modal ──────────────────────────────────────────────────────────
-function openProfile(uid,name,isAdmin){
-  _curProfileUID=uid;
-  const ini=(name||'?')[0].toUpperCase();
-  const grad=_gradColor(uid);
-  document.getElementById('profileAva').textContent=ini;
-  document.getElementById('profileAva').style.background='linear-gradient('+grad+')';
-  document.getElementById('profileName').textContent=name||uid;
-  document.getElementById('profileUID').textContent=uid;
-  document.getElementById('profileLink').href='https://www.facebook.com/profile.php?id='+encodeURIComponent(uid);
-  document.getElementById('profileAdminBadge').style.display=isAdmin?'block':'none';
-  document.getElementById('profileActSt').innerHTML='';
-  document.getElementById('profileModal').style.display='flex';
+/* ────────────────────────── Nickname modal ─────────────────────────────────── */
+function _openNickname(){
+  if(!_selTID||!_curUID)return showToast('يجب اختيار غروب وعضو','error');
+  _q('nicknameForName').textContent='العضو: '+_q('profileName').textContent;
+  _q('nicknameInput').value='';_q('nicknameSt').innerHTML='';
+  _q('nicknameModal').style.display='flex';
 }
 
-function quickProfile(uid,name){openProfile(uid,name,false);}
-function closeProfileModal(){document.getElementById('profileModal').style.display='none';}
-
-async function sendToMember(){
-  const msg=prompt('رسالة لـ '+document.getElementById('profileName').textContent+':');
-  if(!msg)return;
-  const r=await api('/api/send',{threadID:_curProfileUID,message:msg});
-  const st=document.getElementById('profileActSt');
-  if(r.ok||r.message)st.innerHTML='<span style="color:var(--green)">✅ تم الإرسال</span>';
-  else st.innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>';
-}
-
-async function kickMember(){
-  if(!_selTID)return;
-  if(!confirm('هل تريد إخراج هذا العضو من الغروب؟'))return;
-  const st=document.getElementById('profileActSt');
-  st.innerHTML='⏳ جارٍ الكيك...';
-  const r=await api('/api/group-kick',{threadID:_selTID,userID:_curProfileUID});
-  if(r.ok)st.innerHTML='<span style="color:var(--green)">✅ تم الكيك</span>';
-  else st.innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>';
-}
-
-// ── Change Group Name ──────────────────────────────────────────────────────
-function openChangeName(){
-  if(!_selTID)return showToast('اختر غروباً أولاً','error');
-  document.getElementById('changeNameCurrent').textContent='الاسم الحالي: '+document.getElementById('msngChatName').textContent;
-  document.getElementById('newGroupName').value='';
-  document.getElementById('changeNameSt').innerHTML='';
-  document.getElementById('changeNameModal').style.display='flex';
-}
-
-async function doChangeName(){
-  const name=document.getElementById('newGroupName').value.trim();
-  if(!name)return showToast('أدخل الاسم الجديد','error');
-  const st=document.getElementById('changeNameSt');
-  st.innerHTML='⏳ جارٍ التغيير...';
-  const r=await api('/api/group-change-name',{threadID:_selTID,name});
+async function _doNickname(){
+  var nick=_q('nicknameInput').value.trim();
+  _st('⏳ جارٍ التغيير...','nicknameSt');
+  var r=await api('/api/set-nickname',{threadID:_selTID,userID:_curUID,nickname:nick});
   if(r.ok){
-    document.getElementById('msngChatName').textContent=name;
-    const grp=_allGroups.find(g=>g.threadID===_selTID);
-    if(grp){grp.name=name;filterGroups();}
-    st.innerHTML='<span style="color:var(--green)">✅ تم تغيير الاسم</span>';
-    showToast('✅ تم تغيير اسم الغروب','success');
-    setTimeout(()=>document.getElementById('changeNameModal').style.display='none',1500);
+    _st('<span style="color:var(--green)">✅ تم تغيير الكنية</span>','nicknameSt');
+    showToast('✅ تم تغيير الكنية','success');
+    setTimeout(function(){_q('nicknameModal').style.display='none';},1200);
   }else{
-    st.innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>';
+    _st('<span style="color:var(--red)">❌ '+(r.error||'فشل — قد لا يكون مدعوماً')+'</span>','nicknameSt');
+  }
+}
+
+/* ─────────────────────────── Change name ────────────────────────────────────── */
+function _openChangeName(){
+  if(!_selTID)return showToast('اختر غروباً أولاً','error');
+  _q('changeNameCurrent').textContent='الاسم الحالي: '+_q('msngChatName').textContent;
+  _q('newGroupName').value='';_q('changeNameSt').innerHTML='';
+  _q('changeNameModal').style.display='flex';
+  setTimeout(function(){_q('newGroupName').focus();},100);
+}
+
+async function _doChangeName(){
+  var name=_q('newGroupName').value.trim();
+  if(!name)return showToast('أدخل الاسم الجديد','error');
+  _st('⏳ جارٍ التغيير...','changeNameSt');
+  var r=await api('/api/group-change-name',{threadID:_selTID,name:name});
+  if(r.ok){
+    _q('msngChatName').textContent=name;
+    var grp=_allGroups.find(function(g){return g.threadID===_selTID;});
+    if(grp){grp.name=name;_filterGroups();}
+    _st('<span style="color:var(--green)">✅ تم تغيير الاسم</span>','changeNameSt');
+    showToast('✅ تم تغيير اسم الغروب','success');
+    setTimeout(function(){_q('changeNameModal').style.display='none';},1500);
+  }else{
+    _st('<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>','changeNameSt');
     showToast('❌ '+(r.error||'فشل'),'error');
   }
 }
 
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){
-    closeMembersModal();
-    closeProfileModal();
-    document.getElementById('changeNameModal').style.display='none';
-  }
-});
+/* ─────────────────────────── Report ────────────────────────────────────────── */
+async function _reportMessage(msgID){
+  if(!_selTID)return;
+  var r=await api('/api/report-message',{threadID:_selTID,messageID:msgID||''});
+  if(r.ok)showToast('✅ تم التبليغ','success');
+  else showToast('⚠️ '+(r.error||'التبليغ غير متاح في هذا الإصدار'),'warn');
+}
 
-// ── Init ───────────────────────────────────────────────────────────────────
-refreshGroups();
+/* ─────────────────────────── Event delegation setup ─────────────────────────── */
+(function _setupEvents(){
+
+  /* Group list */
+  _q('msngGroupList').addEventListener('click',function(e){
+    var item=e.target.closest('.msng-group-item');
+    if(item)_selectGroup(item.dataset.tid,item.dataset.name,item.dataset.mc);
+  });
+  _q('msngSearch').addEventListener('input',_filterGroups);
+
+  /* Header buttons */
+  _q('msngRefreshBtn').addEventListener('click',refreshGroups);
+  _q('msngBackBtn').addEventListener('click',_deselectGroup);
+  _q('msngSilentBtn').addEventListener('click',_toggleSilent);
+  _q('msngMembersBtn').addEventListener('click',_openMembers);
+  _q('msngRenameBtn').addEventListener('click',_openChangeName);
+  _q('msngReloadBtn').addEventListener('click',_reloadMessages);
+
+  /* Reply bar */
+  _q('msngCancelReply').addEventListener('click',_cancelReply);
+
+  /* Messages area — avatar / name click → profile; drag-drop */
+  var msgBox=_q('msngMessages');
+  msgBox.addEventListener('click',function(e){
+    var ava=e.target.closest('.msng-avatar-sm');
+    if(ava&&ava.dataset.uid){_openProfile(ava.dataset.uid,ava.dataset.uname||ava.dataset.uid,false);return;}
+    var bn=e.target.closest('.msng-bubble-name');
+    if(bn&&bn.dataset.uid){_openProfile(bn.dataset.uid,bn.dataset.uname||bn.dataset.uid,false);}
+  });
+  msgBox.addEventListener('dragover',function(e){e.preventDefault();msgBox.classList.add('drag-over');});
+  msgBox.addEventListener('dragleave',function(){msgBox.classList.remove('drag-over');});
+  msgBox.addEventListener('drop',function(e){
+    e.preventDefault();msgBox.classList.remove('drag-over');
+    if(!_selTID){showToast('اختر غروباً أولاً','error');return;}
+    var files=e.dataTransfer.files;
+    for(var i=0;i<files.length;i++)_uploadMedia(files[i]);
+  });
+
+  /* Close ctx on outside click */
+  document.addEventListener('click',function(e){var m=_q('msngCtxMenu');if(m&&!m.contains(e.target))_closeCtx();});
+
+  /* Context menu buttons */
+  _q('ctxReplyBtn').addEventListener('click',function(){if(_ctxMsg)_setReply(_ctxMsg.msgID,_ctxMsg.body,_ctxMsg.sender);_closeCtx();});
+  _q('ctxCopyBtn').addEventListener('click',function(){
+    if(_ctxMsg&&_ctxMsg.body)navigator.clipboard.writeText(_ctxMsg.body).then(function(){showToast('✅ تم النسخ','success');});
+    _closeCtx();
+  });
+  _q('ctxReportBtn').addEventListener('click',function(){if(_ctxMsg)_reportMessage(_ctxMsg.msgID);_closeCtx();});
+  _q('msngCtxReact').addEventListener('click',function(e){
+    var sp=e.target.closest('span');
+    if(!sp||!_selTID)return;
+    var emoji=sp.getAttribute('data-emoji');
+    if(emoji)api('/api/send',{threadID:_selTID,message:emoji}).then(function(r){if(r.ok||r.message)showToast('✅ تم','success');});
+    _closeCtx();
+  });
+
+  /* Input buttons */
+  _q('msngSendBtn').addEventListener('click',_sendMsg);
+  _q('msngMsgInput').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();_sendMsg();}});
+  _q('msngExecBtn').addEventListener('click',_execCmd);
+  _q('msngCmdInput').addEventListener('keydown',function(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();_execCmd();}});
+
+  _q('msngAttachImgBtn').addEventListener('click',function(){var fi=_q('msngFileInp');fi.accept='image/*,video/*';fi.click();});
+  _q('msngAttachAudioBtn').addEventListener('click',function(){var fi=_q('msngFileInp');fi.accept='audio/*';fi.click();});
+  _q('msngRecBtn').addEventListener('click',_toggleRecord);
+  _q('msngFileInp').addEventListener('change',function(e){
+    var files=e.target.files;
+    for(var i=0;i<files.length;i++)_uploadMedia(files[i]);
+    e.target.value='';
+  });
+
+  /* Profile modal */
+  _q('profileUID').addEventListener('click',function(){navigator.clipboard.writeText(this.textContent).then(function(){showToast('✅ تم نسخ الـ ID','success');});});
+  _q('closeProfileBtn').addEventListener('click',function(){_q('profileModal').style.display='none';});
+  _q('profileSendBtn').addEventListener('click',function(){
+    if(!_curUID)return;
+    var msg=prompt('رسالة لـ '+_q('profileName').textContent+':');
+    if(!msg)return;
+    api('/api/send',{threadID:_curUID,message:msg}).then(function(r){
+      _st((r.ok||r.message||r.messageID)?'<span style="color:var(--green)">✅ تم الإرسال</span>':'<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>','profileActSt');
+    });
+  });
+  _q('profileNickBtn').addEventListener('click',_openNickname);
+  _q('profileKickBtn').addEventListener('click',async function(){
+    if(!_selTID||!_curUID)return;
+    if(!confirm('هل تريد إخراج هذا العضو من الغروب؟'))return;
+    _st('⏳ جارٍ الكيك...','profileActSt');
+    var r=await api('/api/group-kick',{threadID:_selTID,userID:_curUID});
+    if(r.ok){
+      _st('<span style="color:var(--green)">✅ تم الكيك</span>','profileActSt');
+      setTimeout(function(){_q('profileModal').style.display='none';_openMembers();},1000);
+    }else{
+      _st('<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>','profileActSt');
+    }
+  });
+
+  /* Members modal */
+  _q('closeMembersBtn').addEventListener('click',function(){_q('membersModal').style.display='none';});
+  _q('memberSearch').addEventListener('input',function(){
+    var s=this.value.toLowerCase();
+    _renderMembers(_allMembers.filter(function(m){return (m.name||'').toLowerCase().includes(s)||String(m.userID||'').includes(s);}));
+  });
+  _q('membersList').addEventListener('click',function(e){
+    var row=e.target.closest('.msng-member-row');
+    if(row)_openProfile(row.dataset.uid,row.dataset.uname,row.dataset.admin==='true');
+  });
+
+  /* Nickname modal */
+  _q('doNicknameBtn').addEventListener('click',_doNickname);
+  _q('cancelNicknameBtn').addEventListener('click',function(){_q('nicknameModal').style.display='none';});
+  _q('nicknameInput').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();_doNickname();}});
+
+  /* Change name modal */
+  _q('doChangeNameBtn').addEventListener('click',_doChangeName);
+  _q('cancelChangeNameBtn').addEventListener('click',function(){_q('changeNameModal').style.display='none';});
+  _q('newGroupName').addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();_doChangeName();}});
+
+  /* Keyboard ESC */
+  document.addEventListener('keydown',function(e){
+    if(e.key==='Escape'){
+      _q('membersModal').style.display='none';
+      _q('profileModal').style.display='none';
+      _q('nicknameModal').style.display='none';
+      _q('changeNameModal').style.display='none';
+      _closeCtx();
+    }
+  });
+
+  /* Overlay click to close */
+  ['membersModal','profileModal','nicknameModal','changeNameModal'].forEach(function(id){
+    _q(id).addEventListener('click',function(e){if(e.target===_q(id))_q(id).style.display='none';});
+  });
+
+})();
+
+/* ──────────────────────────── Init ─────────────────────────────────────────── */
+(async function(){
+  await _initBotID();
+  await refreshGroups();
+  setInterval(refreshGroups,60000);
+})();
 </script>`;
     res.send(layout('الغروبات', body, 'groups', pageOpts()));
   });
@@ -5570,6 +5969,31 @@ document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click
   });
   app.post('/api/group-kick', auth, async (req,res) => {
     const r = await proxyToBot('POST', '/bot/group-kick', JSON.stringify(req.body));
+    res.status(r.status||200).json(r.data);
+  });
+
+  // ── Bot user ID (used by groups page for message direction) ────────────────
+  app.get('/api/bot-id', auth, async (req,res) => {
+    if (!isBotOnline()) return res.json({ botID: '' });
+    try { const r = await proxyToBot('GET', '/bot/my-id', null); res.json({ botID: r.data && r.data.botID || '' }); }
+    catch(_) { res.json({ botID: '' }); }
+  });
+
+  // ── Set member nickname ─────────────────────────────────────────────────────
+  app.post('/api/set-nickname', auth, async (req,res) => {
+    const r = await proxyToBot('POST', '/bot/set-nickname', JSON.stringify(req.body));
+    res.status(r.status||200).json(r.data);
+  });
+
+  // ── Send media / file (base64) ──────────────────────────────────────────────
+  app.post('/api/send-media', auth, async (req,res) => {
+    const r = await proxyToBot('POST', '/bot/send-media', JSON.stringify(req.body));
+    res.status(r.status||200).json(r.data);
+  });
+
+  // ── Report message ──────────────────────────────────────────────────────────
+  app.post('/api/report-message', auth, async (req,res) => {
+    const r = await proxyToBot('POST', '/bot/report-message', JSON.stringify(req.body));
     res.status(r.status||200).json(r.data);
   });
 

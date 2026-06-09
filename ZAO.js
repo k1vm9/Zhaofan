@@ -2219,6 +2219,63 @@ async function onBot({ models }) {
           }
         }
 
+        // ── Set member nickname ──────────────────────────────────────────────
+        if (pathname === '/bot/set-nickname' && method === 'POST') {
+          const { threadID: _nnTID, userID: _nnUID, nickname: _nnNick } = body;
+          if (!_nnTID || !_nnUID) return _json(res, { error: 'Missing threadID or userID' }, 400);
+          if (!_api) return _json(res, { error: 'Bot not connected' }, 503);
+          try {
+            await new Promise((resolve, reject) => {
+              if (typeof _api.changeNickname !== 'function') return reject(new Error('changeNickname API not available'));
+              _api.changeNickname(String(_nnNick || ''), String(_nnTID), String(_nnUID), (err) => err ? reject(err) : resolve());
+            });
+            return _json(res, { ok: true });
+          } catch (e) { return _json(res, { ok: false, error: String(e.message || e).slice(0, 200) }); }
+        }
+
+        // ── Send media / file (base64) ───────────────────────────────────────
+        if (pathname === '/bot/send-media' && method === 'POST') {
+          const { threadID: _smTID, base64: _smB64, mimeType: _smMime, filename: _smFname, messageBody: _smBodyText } = body;
+          if (!_smTID || !_smB64) return _json(res, { error: 'Missing threadID or base64' }, 400);
+          if (!_api) return _json(res, { error: 'Bot not connected' }, 503);
+          try {
+            const { PassThrough } = require('stream');
+            const buf = Buffer.from(String(_smB64), 'base64');
+            const stream = new PassThrough();
+            const ext = (_smMime || '').split('/')[1] || 'bin';
+            stream.path = _smFname || ('upload-' + Date.now() + '.' + ext);
+            stream.end(buf);
+            const msg = { attachment: stream };
+            if (_smBodyText) msg.body = String(_smBodyText);
+            await new Promise((resolve, reject) => {
+              _api.sendMessage(msg, String(_smTID), (err, info) => err ? reject(err) : resolve(info));
+            });
+            return _json(res, { ok: true });
+          } catch (e) { return _json(res, { ok: false, error: String(e.message || e).slice(0, 200) }); }
+        }
+
+        // ── Report message / thread as spam ─────────────────────────────────
+        if (pathname === '/bot/report-message' && method === 'POST') {
+          const { threadID: _rpTID, messageID: _rpMID } = body;
+          if (!_rpTID) return _json(res, { error: 'Missing threadID' }, 400);
+          if (!_api) return _json(res, { error: 'Bot not connected' }, 503);
+          try {
+            if (typeof _api.markAsSpam === 'function') {
+              await new Promise((resolve, reject) => {
+                _api.markAsSpam(String(_rpTID), (err) => err ? reject(err) : resolve());
+              });
+            } else {
+              return _json(res, { ok: false, error: 'Report/spam API not available in this library version' }, 503);
+            }
+            return _json(res, { ok: true });
+          } catch (e) { return _json(res, { ok: false, error: String(e.message || e).slice(0, 200) }); }
+        }
+
+        // ── Bot user ID (for message direction) ──────────────────────────────
+        if (pathname === '/bot/my-id' && method === 'GET') {
+          return _json(res, { ok: true, botID: global['botUserID'] || '' });
+        }
+
         res.writeHead(404); res.end('Not found');
       } catch (e) {
         _json(res, { error: e.message }, 500);
