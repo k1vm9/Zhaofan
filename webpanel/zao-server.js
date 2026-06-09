@@ -3221,6 +3221,7 @@ setInterval(() => {
       <div style="display:flex;align-items:center;gap:7px;margin-bottom:8px">
         <span style="font-weight:700;font-size:.87rem">الغروبات</span>
         <span id="msngGrpCount" class="badge badge-blue" style="margin-right:auto">0</span>
+        <button class="msng-icon-btn" id="msngReqBtn" title="طلبات المراسلة" style="width:30px;height:30px;font-size:.83rem;position:relative">📩<span id="msngReqBadge" style="display:none;position:absolute;top:-3px;right:-3px;background:var(--accent);color:#fff;font-size:.55rem;font-weight:800;padding:1px 4px;border-radius:8px;min-width:13px;text-align:center;line-height:1.4"></span></button>
         <button class="msng-icon-btn" id="msngTreeBtn" title="شجرة الغروبات" style="width:30px;height:30px;font-size:.83rem">🌳</button>
         <button class="msng-icon-btn" id="msngRefreshBtn" title="تحديث" style="width:30px;height:30px;font-size:.83rem">🔄</button>
       </div>
@@ -3401,6 +3402,21 @@ setInterval(() => {
   </div>
 </div>
 
+<!-- Message Requests Modal -->
+<div class="msng-modal-overlay" id="msgReqModal2">
+  <div class="msng-modal-box" style="width:min(560px,96vw);max-height:88vh;display:flex;flex-direction:column">
+    <div class="msng-modal-head">
+      <div class="msng-modal-title">📩 طلبات المراسلة</div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-outline btn-sm" id="msngReqRefreshBtn" style="font-size:.78rem;padding:4px 10px">🔄 تحديث</button>
+        <button class="msng-modal-close" id="closeMsgReq2Btn">✕</button>
+      </div>
+    </div>
+    <div style="padding:8px 16px;border-bottom:1px solid var(--border);font-size:.8rem;color:var(--text3)" id="msgReq2Status">⏳ جارٍ التحميل...</div>
+    <div id="msgReq2List" style="overflow-y:auto;flex:1;padding:10px 16px;display:flex;flex-direction:column;gap:8px"></div>
+  </div>
+</div>
+
 <!-- Group Status / Command Activation Modal -->
 <div class="msng-modal-overlay" id="groupStatusModal">
   <div class="msng-modal-box" style="width:min(560px,96vw);max-height:90vh;display:flex;flex-direction:column">
@@ -3490,7 +3506,7 @@ var _lpTimer=null;
 
 /* ─────────────────────────────── Utilities ────────────────────────────────── */
 function _h(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
-function _ini(n){return((String(n||'G').trim().split(/\s+/)[0]||'G')[0]||'G').toUpperCase();}
+function _ini(n){return((String(n||'G').trim().split(/\\s+/)[0]||'G')[0]||'G').toUpperCase();}
 function _grad(s){var h=['135deg,#ff3c5f,#60d0ff','135deg,#9b72f7,#60d0ff','135deg,#30d988,#43e97b','135deg,#f5c842,#ff6b6b'];var n=0;for(var i=0;i<String(s).length;i++)n+=String(s).charCodeAt(i);return h[n%h.length];}
 function _fmt(ts){if(!ts)return'';var d=new Date(Number(ts)),now=new Date(),dif=(now-d)/1000;if(dif<60)return'الآن';if(dif<3600)return Math.floor(dif/60)+'د';if(dif<86400)return Math.floor(dif/3600)+'س';return d.toLocaleDateString('ar');}
 function _fmtFull(ts){if(!ts)return'';return new Date(Number(ts)).toLocaleString('ar');}
@@ -3508,14 +3524,14 @@ var _slashItems=[
     _silentMode=true;
     var btn=_q('msngSilentBtn');if(btn){btn.textContent='🔕';btn.title='الصامت: مفعل';}
     _q('slashMenu').style.display='none';
-    var inp=_q('msngMsgInput');inp.value=inp.value.replace(/^\/\S*\s*/,'');inp.focus();
+    var inp=_q('msngMsgInput');inp.value=inp.value.replace(/^\\/\\S*\\s*/,'');inp.focus();
     showToast('🔕 الصامت مفعل لهذه الرسالة','info');
   }},
   {icon:'🔔',label:'عادي',desc:'إرسال عادي مع إشعار',action:function(){
     _silentMode=false;
     var btn=_q('msngSilentBtn');if(btn){btn.textContent='🔔';btn.title='الصامت: موقف';}
     _q('slashMenu').style.display='none';
-    var inp=_q('msngMsgInput');inp.value=inp.value.replace(/^\/\S*\s*/,'');inp.focus();
+    var inp=_q('msngMsgInput');inp.value=inp.value.replace(/^\\/\\S*\\s*/,'');inp.focus();
     showToast('🔔 الإرسال العادي مفعل','info');
   }},
   {icon:'🌳',label:'شجرة الغروبات',desc:'عرض جميع الغروبات مع حالتها',action:function(){
@@ -3531,7 +3547,7 @@ var _slashItems=[
 ];
 
 function _showSlashMenu(query){
-  var q=(query||'').toLowerCase().replace(/^\//,'');
+  var q=(query||'').toLowerCase().replace(/^\\/\//,'');
   var items=q?_slashItems.filter(function(i){return i.label.includes(q)||i.desc.includes(q);}):_slashItems;
   var container=_q('slashMenuItems');
   if(!items.length){_q('slashMenu').style.display='none';return;}
@@ -4308,23 +4324,110 @@ async function _reportMessage(msgID){
       _q('changeNameModal').style.display='none';
       _q('groupTreeModal').style.display='none';
       _q('groupStatusModal').style.display='none';
+      _q('msgReqModal2').style.display='none';
       _hideSlashMenu();
       _closeCtx();
     }
   });
 
   /* Overlay click to close */
-  ['membersModal','profileModal','nicknameModal','changeNameModal','groupTreeModal','groupStatusModal'].forEach(function(id){
+  ['membersModal','profileModal','nicknameModal','changeNameModal','groupTreeModal','groupStatusModal','msgReqModal2'].forEach(function(id){
     _q(id).addEventListener('click',function(e){if(e.target===_q(id))_q(id).style.display='none';});
   });
 
-})();
+  /* ── Message Requests ──────────────────────────────────────────────────── */
+  async function _loadMsgReq2(){
+    var st=_q('msgReq2Status'),list=_q('msgReq2List');
+    if(!st||!list)return;
+    st.textContent='⏳ جارٍ الجلب...';list.innerHTML='';
+    try{
+      var r=await fetch('/api/message-requests');
+      var d=await r.json();
+      var reqs=Array.isArray(d)?d:(d.requests||d||[]);
+      if(!reqs.length){
+        st.textContent='📭 لا توجد طلبات مراسلة معلّقة';
+        list.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3);font-size:2rem">📭<br><span style="font-size:.83rem">لا توجد طلبات</span></div>';
+        _q('msngReqBadge').style.display='none';
+        return;
+      }
+      st.textContent=reqs.length+' طلب معلّق — انقر قبول أو رفض';
+      var badge=_q('msngReqBadge');
+      if(badge){badge.textContent=reqs.length;badge.style.display='block';}
+      list.innerHTML=reqs.map(function(req){
+        var tid=_h(String(req.threadID||req.id||''));
+        var name=_h(String(req.name||req.threadName||tid));
+        var isGrp=req.isGroup?'<span class="badge badge-blue" style="font-size:.65rem">غروب</span>':'<span class="badge badge-purple" style="font-size:.65rem">دايركت</span>';
+        var folderC=(req.folder||'').toUpperCase()==='OTHER'?'rgba(255,160,0,.15)':'rgba(0,180,120,.12)';
+        var folderTxt=(req.folder||'').toUpperCase()==='OTHER'?'فلتر رسائل':'طلب جديد';
+        return '<div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;flex-wrap:wrap">'
+          +'<div class="msng-grp-ava" style="background:linear-gradient('+_grad(req.threadID||'0')+');flex-shrink:0;width:38px;height:38px;font-size:.85rem">'+_ini(req.name||'?')+'</div>'
+          +'<div style="flex:1;min-width:0">'
+            +'<div style="font-weight:700;font-size:.87rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+name+'</div>'
+            +'<div style="display:flex;gap:5px;align-items:center;margin-top:3px;flex-wrap:wrap">'
+              +'<code style="font-size:.69rem;color:var(--text3)">'+tid+'</code>'+isGrp
+              +'<span style="background:'+folderC+';border-radius:4px;padding:1px 6px;font-size:.67rem;color:var(--text2)">'+folderTxt+'</span>'
+            +'</div>'
+          +'</div>'
+          +'<div style="display:flex;gap:6px;flex-shrink:0">'
+            +'<button class="btn btn-outline btn-sm" style="color:var(--green);font-size:.8rem" onclick="this._act(\'accept\')" data-tid="'+tid+'" data-name="'+name+'">✅ قبول</button>'
+            +'<button class="btn btn-outline btn-sm" style="color:var(--red);font-size:.8rem" onclick="this._act(\'decline\')" data-tid="'+tid+'" data-name="'+name+'">❌ رفض</button>'
+          +'</div>'
+        +'</div>';
+      }).join('');
+      // Attach action handlers to buttons (avoids global scope issues)
+      list.querySelectorAll('.btn').forEach(function(btn){
+        btn.addEventListener('click',function(){
+          var action=this.textContent.includes('قبول')?'accept':'decline';
+          var row=this.closest('div[data-tid]')||this.parentElement.parentElement;
+          // get tid/name from the buttons' parent structure
+          var p=this.closest('[data-tid]')||this.parentElement;
+          while(p&&!p.dataset.tid)p=p.parentElement;
+          var btid=p?p.dataset.tid:this.dataset.tid;
+          var bname=p?p.dataset.name:this.dataset.name;
+          _msgReq2Act(btid,action,bname,this);
+        });
+      });
+    }catch(e){
+      st.textContent='❌ '+_h(String(e.message||e));
+      list.innerHTML='<div style="text-align:center;padding:24px;color:var(--red)">❌ فشل جلب الطلبات</div>';
+    }
+  }
 
-/* ──────────────────────────── Init ─────────────────────────────────────────── */
-(async function(){
-  await _initBotID();
-  await refreshGroups();
-  setInterval(refreshGroups,60000);
+  async function _msgReq2Act(tid,action,name,btn){
+    if(!confirm((action==='accept'?'قبول':'رفض')+' طلب مراسلة من: '+name+'?'))return;
+    if(btn){btn.disabled=true;btn.textContent='⏳';}
+    try{
+      var r=await api('/api/message-requests/'+action,{threadID:tid});
+      if(r&&(r.ok||r.accepted||r.declined)){
+        showToast(action==='accept'?'✅ تم قبول الطلب':'✅ تم رفض الطلب','success');
+        setTimeout(_loadMsgReq2,600);
+      }else{
+        showToast('❌ '+(r&&r.error?r.error:'فشل التنفيذ'),'error');
+        if(btn){btn.disabled=false;btn.textContent=action==='accept'?'✅ قبول':'❌ رفض';}
+      }
+    }catch(e){
+      showToast('❌ '+String(e.message||e),'error');
+      if(btn){btn.disabled=false;btn.textContent=action==='accept'?'✅ قبول':'❌ رفض';}
+    }
+  }
+
+  /* ── Init ──────────────────────────────────────────────────────────────── */
+  (async function(){
+    await _initBotID();
+    await refreshGroups();
+    setInterval(refreshGroups,60000);
+    // Silent badge check for message requests
+    fetch('/api/message-requests').then(function(r){return r.json();}).then(function(d){
+      var reqs=Array.isArray(d)?d:(d.requests||d||[]);
+      var badge=_q('msngReqBadge');
+      if(badge&&reqs.length){badge.textContent=reqs.length;badge.style.display='block';}
+    }).catch(function(){});
+    // Wire message-requests modal buttons
+    _q('msngReqBtn').addEventListener('click',function(){_q('msgReqModal2').style.display='flex';_loadMsgReq2();});
+    _q('msngReqRefreshBtn').addEventListener('click',_loadMsgReq2);
+    _q('closeMsgReq2Btn').addEventListener('click',function(){_q('msgReqModal2').style.display='none';});
+  })();
+
 })();
 </script>`;
     res.send(layout('الغروبات', body, 'groups', pageOpts()));
@@ -6157,24 +6260,19 @@ document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click
   app.post('/api/social/notes',        auth, async (req,res) => { const r=await proxyToBot('POST','/bot/social/notes',       JSON.stringify(req.body)); res.status(r.status||200).json(r.data); });
 
   // ─── Hold API routes ──────────────────────────────────────────────────────
-  app.post('/api/hold/status',    auth, async (req,res) => { const r = await proxyToBot('POST', '/bot/hold/status',    JSON.stringify(req.body)); res.status(r.status||200).json(r.data); });
-  app.post('/api/hold/nm-set',    auth, async (req,res) => { const r = await proxyToBot('POST', '/bot/hold/nm-set',    JSON.stringify(req.body)); res.status(r.status||200).json(r.data); });
-  app.post('/api/hold/nick-set',  auth, async (req,res) => { const r = await proxyToBot('POST', '/bot/hold/nick-set',  JSON.stringify(req.body)); res.status(r.status||200).json(r.data); });
-  app.post('/api/hold/motor1-set',auth, async (req,res) => { const r = await proxyToBot('POST', '/bot/hold/motor1-set',JSON.stringify(req.body)); res.status(r.status||200).json(r.data); });
-  app.post('/api/hold/motor2-set',auth, async (req,res) => { const r = await proxyToBot('POST', '/bot/hold/motor2-set',JSON.stringify(req.body)); res.status(r.status||200).json(r.data); });
+  const _botRequired = (req,res,next) => isBotOnline() ? next() : res.status(503).json({ok:false,error:'البوت غير متصل — أضف كوكيز صالحة لتشغيل البوت'});
+  app.post('/api/hold/status',    auth, _botRequired, async (req,res) => { const r = await proxyToBot('POST', '/bot/hold/status',    JSON.stringify(req.body)); res.status(r.status||200).json(r.data); });
+  app.post('/api/hold/nm-set',    auth, _botRequired, async (req,res) => { const r = await proxyToBot('POST', '/bot/hold/nm-set',    JSON.stringify(req.body)); res.status(r.status||200).json(r.data); });
+  app.post('/api/hold/nick-set',  auth, _botRequired, async (req,res) => { const r = await proxyToBot('POST', '/bot/hold/nick-set',  JSON.stringify(req.body)); res.status(r.status||200).json(r.data); });
+  app.post('/api/hold/motor1-set',auth, _botRequired, async (req,res) => { const r = await proxyToBot('POST', '/bot/hold/motor1-set',JSON.stringify(req.body)); res.status(r.status||200).json(r.data); });
+  app.post('/api/hold/motor2-set',auth, _botRequired, async (req,res) => { const r = await proxyToBot('POST', '/bot/hold/motor2-set',JSON.stringify(req.body)); res.status(r.status||200).json(r.data); });
 
   // Groups list (lightweight — for the execute tab picker)
   app.get('/api/groups-list', auth, async (req,res) => {
-    // Helper: fall back to local cache when bot is unreachable or returns nothing
     const _groupCachePath = path.join(DATA_DIR, 'groupCache.json');
     function _readGroupCache() {
       try { return JSON.parse(fs.readFileSync(_groupCachePath, 'utf8')); } catch (_) { return []; }
     }
-
-    const result = await proxyToBot('GET', '/bot/groups', null);
-    const liveOk = result && result.status < 500;
-    const raw    = liveOk && Array.isArray(result.data) ? result.data : [];
-
     function _mapGroup(g) {
       return {
         threadID:    String(g.threadID || g.id || ''),
@@ -6187,15 +6285,32 @@ document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click
       };
     }
 
+    // ── Fast path: bot offline → return cache immediately (no 8s wait) ──
+    if (!isBotOnline()) {
+      const cached = _readGroupCache();
+      const groups = cached.map(_mapGroup).filter(g => g.threadID);
+      return res.json({
+        ok: groups.length > 0,
+        groups,
+        cached: true,
+        botOffline: true,
+        error: groups.length === 0 ? 'البوت غير متصل ولا يوجد كاش — أضف كوكيز صالحة من إعدادات الجلسة' : undefined
+      });
+    }
+
+    // ── Bot online → proxy to ZAO.js (has 8s timeout internally) ──
+    const result = await proxyToBot('GET', '/bot/groups', null);
+    const liveOk = result && result.status < 500;
+    const raw    = liveOk && Array.isArray(result.data) ? result.data : [];
+
     let groups = raw.map(_mapGroup).filter(g => g.threadID);
 
-    // Bot returned something live — great, serve it and refresh cache
     if (groups.length > 0) {
       try { fs.writeFileSync(_groupCachePath, JSON.stringify(groups, null, 2), 'utf8'); } catch (_) {}
       return res.json({ ok: true, groups, cached: false });
     }
 
-    // Live data empty or bot unreachable — try the persistent cache written by ZAO.js
+    // Live returned empty → try cache
     const cached = _readGroupCache();
     if (cached.length > 0) {
       const cachedGroups = cached.map(_mapGroup).filter(g => g.threadID);
@@ -6204,19 +6319,20 @@ document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click
       }
     }
 
-    // Nothing at all
     const errMsg = !liveOk ? (result?.data?.error || 'Bot unavailable') : 'No groups found';
     res.json({ ok: false, groups: [], error: errMsg });
   });
 
   // Execute
   app.post('/api/execute', auth, async (req,res) => {
+    if (!isBotOnline()) return res.status(503).json({ ok:false, error:'البوت غير متصل — أضف كوكيز صالحة لتشغيل البوت' });
     const result = await proxyToBot('POST', '/bot/execute', JSON.stringify(req.body));
     res.status(result.status||200).json(result.data);
   });
 
   // Send message — proxies to /bot/send-message (the actual ZAO.js endpoint)
   app.post('/api/send', auth, async (req,res) => {
+    if (!isBotOnline()) return res.status(503).json({ ok:false, error:'البوت غير متصل' });
     const result = await proxyToBot('POST', '/bot/send-message', JSON.stringify(req.body));
     res.status(result.status||200).json(result.data);
   });

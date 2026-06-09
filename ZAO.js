@@ -1191,45 +1191,50 @@ async function onBot({ models }) {
             }).filter(g => g.threadID);
           }
 
-          // Bot offline / reconnecting → serve from memory cache or disk cache
-          if (!_api) {
-            const mem = _fromMemory();
-            if (mem.length > 0) return _json(res, mem);
-            const cached = _readGroupCache();
-            return _json(res, cached);
+          // ── WHITE-V3 approach: serve instantly from memory/cache, refresh in background ──
+
+          // Priority 1: in-memory (populated by syncAllGroups right after login — fastest)
+          const memGroups = _fromMemory();
+          if (memGroups.length > 0) {
+            // Serve immediately, kick off a silent background cache write + live refresh
+            if (_api) {
+              setImmediate(() => {
+                _api.getThreadList(100, null, ['INBOX'])
+                  .then(d => { const g = _mapGroups(d); if (g.length > 0) _writeGroupCache(g); })
+                  .catch(() => {});
+              });
+            }
+            return _json(res, memGroups);
           }
 
+          // Priority 2: disk cache (survives bot restarts, still instant — no Facebook call)
+          const cachedGroups = _readGroupCache();
+          if (cachedGroups.length > 0) {
+            // Serve cache immediately, trigger background live refresh
+            if (_api) {
+              setImmediate(async () => {
+                try {
+                  const live = _mapGroups(await _api.getThreadList(100, null, ['INBOX']));
+                  if (live.length > 0) _writeGroupCache(live);
+                } catch (_) {}
+              });
+            }
+            return _json(res, cachedGroups);
+          }
+
+          // Priority 3: bot offline and no cache at all
+          if (!_api) return _json(res, []);
+
+          // Priority 4: nothing cached yet — call Facebook API synchronously (first-run only)
           try {
-            let result = [];
-
-            // Strategy 1: INBOX filter
-            try {
-              result = _mapGroups(await _api.getThreadList(100, null, ['INBOX']));
-            } catch (_) {}
-
-            // Strategy 2: no filter
+            let result = _mapGroups(await _api.getThreadList(100, null, ['INBOX']));
             if (!result.length) {
               try { result = _mapGroups(await _api.getThreadList(100, null, [])); } catch (_) {}
             }
-
-            // Strategy 3: null tags
-            if (!result.length) {
-              try { result = _mapGroups(await _api.getThreadList(100, null, null)); } catch (_) {}
-            }
-
-            // Strategy 4: in-memory groups from syncAllGroups
             if (!result.length) result = _fromMemory();
-
-            // Persist to cache so the panel survives bot restarts
             if (result.length > 0) _writeGroupCache(result);
-
             return _json(res, result);
           } catch (e) {
-            // Live fetch failed — try memory then disk cache
-            const mem = _fromMemory();
-            if (mem.length > 0) return _json(res, mem);
-            const cached = _readGroupCache();
-            if (cached.length > 0) return _json(res, cached);
             return _json(res, { error: e.message }, 500);
           }
         }
