@@ -1,8 +1,8 @@
 {
-  "savedAt": 1781105580253,
+  "savedAt": 1781106312116,
   "dailyStats": {
     "date": "Wed Jun 10 2026",
-    "messageCount": 8,
+    "messageCount": 11,
     "threadStats": [
       [
         "1695299318400430",
@@ -17,19 +17,40 @@
           "count": 6,
           "lastActivity": 1781105172332
         }
+      ],
+      [
+        "100089220841183",
+        {
+          "count": 1,
+          "lastActivity": 1781106268772
+        }
+      ],
+      [
+        "100000434205615",
+        {
+          "count": 1,
+          "lastActivity": 1781106269052
+        }
+      ],
+      [
+        "61590329414663",
+        {
+          "count": 1,
+          "lastActivity": 1781106293691
+        }
       ]
     ]
   },
   "hourlyBucket": {
     "hour": 15,
-    "count": 8
+    "count": 11
   },
   "circuitBreaker": {
     "tripped": false,
     "trippedAt": null,
     "cooldownMs": 1800000,
-    "signalCount": 0,
-    "lastSignalAt": null
+    "signalCount": 1,
+    "lastSignalAt": 1781106292273
   },
   "warmup": {
     "active": true,

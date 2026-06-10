@@ -1929,12 +1929,40 @@ async function onBot({ models }) {
           try { const NCL = require('./includes/nicknameLocks'); const e = NCL.getLock(tid); if (e) nickLock = e; } catch (_) {}
           const m1 = (global.motorData  || {})[tid] || null;
           const m2 = (global.motorData2 || {})[tid] || null;
+          let m1Stats = null, m2Stats = null;
+          try {
+            const { getLoopStats } = require('./includes/motorSafeSend');
+            // Motor loops share the _activeLoops Map keyed by threadID.
+            // We record which thread each motor data entry belongs to, so we
+            // check tid for both (only one will actually be live at a time
+            // per thread due to the single-loop guarantee).
+            const raw = getLoopStats(tid);
+            if (raw) { m1Stats = raw; m2Stats = raw; }
+          } catch (_) {}
           return _json(res, {
             ok: true, threadID: tid,
-            nm:     nmLock   ? { locked: true,  name:     nmLock.name,       time: nmLock.time,   randomTime: !!nmLock.randomTime,   randomRange: nmLock.randomRange }   : { locked: false },
-            nick:   nickLock ? { locked: true,  nickname: nickLock.nickname,  scope: nickLock.scope, time: nickLock.time, randomTime: !!nickLock.randomTime, randomRange: nickLock.randomRange } : { locked: false },
-            motor1: m1 ? { status: !!m1.status, message: m1.message, time: m1.time, randomTime: !!m1.randomTime, randomRange: m1.randomRange } : { status: false },
-            motor2: m2 ? { status: !!m2.status, message: m2.message, time: m2.time, randomTime: !!m2.randomTime, randomRange: m2.randomRange } : { status: false },
+            nm:     nmLock   ? { locked: true,  name: nmLock.name, time: nmLock.time, randomTime: !!nmLock.randomTime, randomRange: nmLock.randomRange } : { locked: false },
+            nick:   nickLock ? {
+              locked: true,
+              nickname:        nickLock.nickname,
+              scope:           nickLock.scope,
+              time:            nickLock.time,
+              randomTime:      !!nickLock.randomTime,
+              randomRange:     nickLock.randomRange,
+              globalNick:      nickLock.globalNick      || null,
+              botOverride:     nickLock.botOverride      || null,
+              memberOverrides: nickLock.memberOverrides  || {}
+            } : { locked: false },
+            motor1: m1 ? { status: !!m1.status, message: m1.message, time: m1.time, randomTime: !!m1.randomTime, randomRange: m1.randomRange,
+              lastSentAt: m1Stats ? m1Stats.lastSentAt : null,
+              nextSendAt: m1Stats ? m1Stats.nextSendAt : null,
+              backoffMs:  m1Stats ? m1Stats.backoffMs  : 0
+            } : { status: false },
+            motor2: m2 ? { status: !!m2.status, message: m2.message, time: m2.time, randomTime: !!m2.randomTime, randomRange: m2.randomRange,
+              lastSentAt: m2Stats ? m2Stats.lastSentAt : null,
+              nextSendAt: m2Stats ? m2Stats.nextSendAt : null,
+              backoffMs:  m2Stats ? m2Stats.backoffMs  : 0
+            } : { status: false },
           });
         }
 
@@ -2031,6 +2059,59 @@ async function onBot({ models }) {
               if (!global._nickNextApply) global._nickNextApply = new Map();
               global._nickNextApply.set(tid, Date.now() + minMs + Math.round(Math.random() * (maxMs - minMs)));
               return _json(res, { ok: true, action: 'random-time-set', randomMin: minMs, randomMax: maxMs });
+            }
+            if (action === 'global-lock') {
+              const { globalNick, botOverride, memberOverrides } = body;
+              if (!globalNick) return _json(res, { error: 'Missing globalNick' }, 400);
+              NCL.setGlobalLock(tid, globalNick, botOverride || null, memberOverrides || {});
+              // Also try to pre-populate from live thread info if API is available
+              try {
+                if (_api && typeof _api.getThreadInfo === 'function') {
+                  _api.getThreadInfo(tid, (err, info) => {
+                    if (err || !info) return;
+                    const parts = info.participantIDs || [];
+                    const overrides = memberOverrides || {};
+                    const botId = String(global.botUserID || '');
+                    for (const uid of parts) {
+                      const uidStr = String(uid);
+                      if (overrides[uidStr]) continue; // already has override
+                      if (uidStr === botId) {
+                        NCL.updateMember(tid, uidStr, botOverride || globalNick);
+                      } else {
+                        NCL.updateMember(tid, uidStr, globalNick);
+                      }
+                    }
+                    try { NCL.saveLocks(); } catch (_) {}
+                  });
+                }
+              } catch (_) {}
+              return _json(res, { ok: true, action: 'global-lock-set' });
+            }
+            if (action === 'add-override') {
+              const { uid, nickname: oNick } = body;
+              if (!uid || !oNick) return _json(res, { error: 'Missing uid or nickname' }, 400);
+              NCL.lockUser(tid, String(uid), oNick);
+              // Update stored meta overrides too
+              try {
+                const lock = NCL.getLock(tid);
+                const overrides = { ...(lock ? lock.memberOverrides : {}) };
+                overrides[String(uid)] = oNick;
+                const meta = (NCL._meta || NCL.getLock(tid));
+                // Update memberOverrides in _meta via setGlobalLock preserving existing data
+                if (lock) NCL.setGlobalLock(tid, lock.globalNick || lock.nickname, lock.botOverride, overrides);
+              } catch (_) {}
+              return _json(res, { ok: true, action: 'override-added', uid, nickname: oNick });
+            }
+            if (action === 'remove-override') {
+              const { uid } = body;
+              if (!uid) return _json(res, { error: 'Missing uid' }, 400);
+              NCL.unlockUser(tid, String(uid));
+              // Re-apply global nick to this user if global lock is set
+              try {
+                const lock = NCL.getLock(tid);
+                if (lock && lock.globalNick) NCL.updateMember(tid, String(uid), lock.globalNick);
+              } catch (_) {}
+              return _json(res, { ok: true, action: 'override-removed', uid });
             }
             return _json(res, { error: 'Unknown action' }, 400);
           } catch (e) { return _json(res, { error: e.message }, 500); }

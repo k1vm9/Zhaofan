@@ -2331,6 +2331,27 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGrpPicker()});
       <button class="btn btn-outline btn-sm" onclick="nickAction('time')">⏱ حفظ الوقت</button>
     </div>
     <div id="nickStatus" style="margin-top:8px;font-size:.8rem;color:var(--text3);min-height:16px"></div>
+
+    <!-- Global Lock Section -->
+    <div style="margin-top:12px;padding:10px 12px;border:1px dashed var(--border);border-radius:8px">
+      <div style="font-size:.82rem;font-weight:600;color:var(--text2);margin-bottom:10px">🌐 قفل شامل لجميع الأعضاء</div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label class="form-label" style="font-size:.76rem">كنية مشتركة للكل</label>
+        <input id="nickGlobal" class="form-control" style="font-size:.83rem" placeholder="مثال: عضو"/>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label class="form-label" style="font-size:.76rem">كنية البوت (مخصصة) — اختياري</label>
+        <input id="nickBotOverride" class="form-control" style="font-size:.83rem" placeholder="فارغ = نفس الكنية الشاملة"/>
+      </div>
+      <div class="form-group" style="margin-bottom:8px">
+        <label class="form-label" style="font-size:.76rem;display:flex;align-items:center;justify-content:space-between">
+          <span>استثناءات (أعضاء بكنيات خاصة)</span>
+          <button class="btn btn-outline" style="padding:1px 8px;font-size:.72rem;line-height:1.6" onclick="addOverrideRow()">＋ إضافة</button>
+        </label>
+        <div id="overridesList" style="display:flex;flex-direction:column;gap:5px;margin-top:3px"></div>
+      </div>
+      <button class="btn btn-primary btn-sm" style="width:100%;margin-top:2px" onclick="applyGlobalLock()">🔒 تطبيق القفل الشامل</button>
+    </div>
   </div>
 
   <!-- Motor 1 Card -->
@@ -2357,6 +2378,17 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGrpPicker()});
       <button class="btn btn-outline btn-sm" onclick="m1Action('disable')">⏹ إيقاف</button>
     </div>
     <div id="m1Status" style="margin-top:8px;font-size:.8rem;color:var(--text3);min-height:16px"></div>
+    <div id="m1Preview" style="margin-top:8px;padding:8px 10px;background:rgba(255,255,255,.04);border-radius:6px;display:none">
+      <div style="font-size:.72rem;font-weight:600;color:var(--text3);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between">
+        <span>📨 آخر رسالة مُرسلة</span>
+        <span id="m1BackoffBadge" style="color:var(--yellow);font-size:.7rem"></span>
+      </div>
+      <div id="m1PrevMsg" style="font-size:.78rem;color:var(--text2);margin-bottom:5px;word-break:break-word;font-style:italic;max-height:40px;overflow:hidden"></div>
+      <div style="display:flex;gap:14px;font-size:.72rem;color:var(--text3)">
+        <span>🕐 آخر: <b id="m1LastSent" style="color:var(--text2)">—</b></span>
+        <span>⏭ التالي: <b id="m1NextSend" style="color:var(--text2)">—</b></span>
+      </div>
+    </div>
   </div>
 
   <!-- Motor 2 Card -->
@@ -2383,6 +2415,17 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGrpPicker()});
       <button class="btn btn-outline btn-sm" onclick="m2Action('disable')">⏹ إيقاف</button>
     </div>
     <div id="m2Status" style="margin-top:8px;font-size:.8rem;color:var(--text3);min-height:16px"></div>
+    <div id="m2Preview" style="margin-top:8px;padding:8px 10px;background:rgba(255,255,255,.04);border-radius:6px;display:none">
+      <div style="font-size:.72rem;font-weight:600;color:var(--text3);margin-bottom:4px;display:flex;align-items:center;justify-content:space-between">
+        <span>📨 آخر رسالة مُرسلة</span>
+        <span id="m2BackoffBadge" style="color:var(--yellow);font-size:.7rem"></span>
+      </div>
+      <div id="m2PrevMsg" style="font-size:.78rem;color:var(--text2);margin-bottom:5px;word-break:break-word;font-style:italic;max-height:40px;overflow:hidden"></div>
+      <div style="display:flex;gap:14px;font-size:.72rem;color:var(--text3)">
+        <span>🕐 آخر: <b id="m2LastSent" style="color:var(--text2)">—</b></span>
+        <span>⏭ التالي: <b id="m2NextSend" style="color:var(--text2)">—</b></span>
+      </div>
+    </div>
   </div>
 
   <!-- Message Requests Card -->
@@ -2420,6 +2463,81 @@ function toggleRandom(prefix){
   const on=document.getElementById(prefix+'Random').checked;
   document.getElementById(prefix+'FixedWrap').style.display=on?'none':'';
   document.getElementById(prefix+'RandWrap').style.display=on?'':'none';
+}
+
+function fmtRelTime(ts){
+  if(!ts)return '—';
+  const diff=Date.now()-ts;
+  const future=diff<0;
+  const abs=Math.abs(diff);
+  const s=Math.floor(abs/1000);
+  const m=Math.floor(s/60);
+  const h=Math.floor(m/60);
+  let str;
+  if(s<60)str=s+'ث';
+  else if(m<60)str=m+'د '+(s%60)+'ث';
+  else str=h+'س '+(m%60)+'د';
+  return (future?'خلال ':'منذ ')+str;
+}
+
+function populateMotorPreview(prefix, data){
+  const hasStats = data && (data.lastSentAt || data.nextSendAt || data.backoffMs);
+  const isActive = data && data.status;
+  const el = document.getElementById(prefix+'Preview');
+  if(!el) return;
+  if(isActive || hasStats){
+    el.style.display='';
+    const msg = (data.message||'').slice(0,80);
+    document.getElementById(prefix+'PrevMsg').textContent = msg ? '"'+msg+(msg.length<(data.message||'').length?'...':'')+'"' : '(لا توجد رسالة محفوظة)';
+    document.getElementById(prefix+'LastSent').textContent = fmtRelTime(data.lastSentAt||null);
+    document.getElementById(prefix+'NextSend').textContent = fmtRelTime(data.nextSendAt||null);
+    const bb = document.getElementById(prefix+'BackoffBadge');
+    if(bb) bb.textContent = data.backoffMs>0 ? '⚠️ انتظار '+Math.round(data.backoffMs/1000)+'s' : '';
+  } else {
+    el.style.display='none';
+  }
+}
+
+function addOverrideRow(uid, nick){
+  uid = uid||''; nick = nick||'';
+  const list = document.getElementById('overridesList');
+  if(!list) return;
+  const row = document.createElement('div');
+  row.className = 'override-row';
+  row.style.cssText = 'display:flex;gap:5px;align-items:center';
+  const uidEl = document.createElement('input');
+  uidEl.className = 'form-control override-uid';
+  uidEl.style.cssText = 'flex:1;font-size:.78rem';
+  uidEl.placeholder = 'Account ID...';
+  uidEl.value = uid;
+  const nickEl = document.createElement('input');
+  nickEl.className = 'form-control override-nick';
+  nickEl.style.cssText = 'flex:2;font-size:.78rem';
+  nickEl.placeholder = 'الكنية...';
+  nickEl.value = nick;
+  const del = document.createElement('button');
+  del.className = 'btn btn-outline';
+  del.style.cssText = 'padding:2px 7px;font-size:.8rem;flex-shrink:0;color:var(--red)';
+  del.textContent = '✕';
+  del.onclick = function(){ row.remove(); };
+  row.appendChild(uidEl); row.appendChild(nickEl); row.appendChild(del);
+  list.appendChild(row);
+}
+
+async function applyGlobalLock(){
+  const t=tid(); if(!t) return showToast('أدخل Thread ID','error');
+  const globalNick = document.getElementById('nickGlobal').value.trim();
+  if(!globalNick) return showToast('أدخل الكنية الشاملة','error');
+  const botOverride = document.getElementById('nickBotOverride').value.trim()||null;
+  const memberOverrides = {};
+  document.querySelectorAll('#overridesList .override-row').forEach(function(row){
+    const uid = row.querySelector('.override-uid').value.trim();
+    const nick = row.querySelector('.override-nick').value.trim();
+    if(uid&&nick) memberOverrides[uid]=nick;
+  });
+  const r = await api('/api/hold/nick-set',{threadID:t, action:'global-lock', globalNick, botOverride, memberOverrides});
+  if(r.ok){ setBadge('nickBadge',true); setInfo('nickStatus','تم تطبيق القفل الشامل 🔒',true); showToast('✅ القفل الشامل مفعّل','success'); }
+  else{ setInfo('nickStatus',r.error||'فشل',false); showToast('❌ '+(r.error||'فشل'),'error'); }
 }
 
 async function loadHoldStatus(){
@@ -2460,6 +2578,14 @@ async function loadHoldStatus(){
       document.getElementById('nickTime').value=r.nick.time||500;
       document.getElementById('nickStatus').textContent='مقفول على: "'+r.nick.nickname+'" ('+r.nick.scope+') — كل '+r.nick.time+'ms';
     }
+    // Global lock fields
+    if(r.nick.globalNick){
+      document.getElementById('nickGlobal').value=r.nick.globalNick;
+      document.getElementById('nickBotOverride').value=r.nick.botOverride||'';
+      document.getElementById('overridesList').innerHTML='';
+      var overrides=r.nick.memberOverrides||{};
+      Object.keys(overrides).forEach(function(uid){ addOverrideRow(uid,overrides[uid]); });
+    }
   }
   // Motor 1
   setBadge('m1Badge',r.motor1?.status);
@@ -2474,6 +2600,7 @@ async function loadHoldStatus(){
     document.getElementById('m1Time').value=Math.round(r.motor1.time/1000);
     document.getElementById('m1Status').textContent=r.motor1.status?'نشط — رسالة: "'+(r.motor1.message||'').slice(0,30)+'" — كل '+Math.round((r.motor1.time||0)/1000)+'s':'متوقف';
   } else { document.getElementById('m1Status').textContent=r.motor1?.status?'نشط':'متوقف'; }
+  populateMotorPreview('m1', r.motor1);
   // Motor 2
   setBadge('m2Badge',r.motor2?.status);
   if(r.motor2?.message)document.getElementById('m2Msg').value=r.motor2.message;
@@ -2487,6 +2614,7 @@ async function loadHoldStatus(){
     document.getElementById('m2Time').value=Math.round(r.motor2.time/1000);
     document.getElementById('m2Status').textContent=r.motor2.status?'نشط — رسالة: "'+(r.motor2.message||'').slice(0,30)+'" — كل '+Math.round((r.motor2.time||0)/1000)+'s':'متوقف';
   } else { document.getElementById('m2Status').textContent=r.motor2?.status?'نشط':'متوقف'; }
+  populateMotorPreview('m2', r.motor2);
 }
 
 async function nmAction(action){

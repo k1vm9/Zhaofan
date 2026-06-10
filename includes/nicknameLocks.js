@@ -175,6 +175,9 @@ function getLock(threadID) {
   return {
     nickname:        meta.template,
     scope:           meta.scope,
+    globalNick:      meta.globalNick    || null,
+    botOverride:     meta.botOverride   || null,
+    memberOverrides: meta.memberOverrides || {},
     memberCount:     members.size,
     members,
     userLockedCount: locked.size,
@@ -310,6 +313,63 @@ function getUserLockedMembers(threadID) {
   return Array.from(userLockedMembers.get(String(threadID)) || []);
 }
 
+/**
+ * Set a global lock template for a thread — all members get `globalNick`,
+ * with optional bot override and per-member overrides.
+ * Populates the members map immediately from known group participants when
+ * the bot API is wired in via setApi().
+ */
+function setGlobalLock(threadID, globalNick, botOverride, memberOverrides) {
+  const tid = String(threadID);
+  const existingMeta = _meta.get(tid) || {};
+  _meta.set(tid, {
+    ...existingMeta,
+    scope:           "all",
+    template:        globalNick || existingMeta.template || "",
+    globalNick:      globalNick  || null,
+    botOverride:     botOverride || null,
+    memberOverrides: memberOverrides || {}
+  });
+  if (!lockedNicknames.has(tid))    lockedNicknames.set(tid, new Map());
+  if (!userLockedMembers.has(tid))  userLockedMembers.set(tid, new Set());
+  const members    = lockedNicknames.get(tid);
+  const userLocked = userLockedMembers.get(tid);
+
+  const botId = global.botUserID ? String(global.botUserID) : null;
+
+  // Bot entry
+  if (botId) {
+    const botNick = botOverride || globalNick;
+    if (botNick) members.set(botId, botNick);
+    if (botOverride) userLocked.add(botId);
+    else             userLocked.delete(botId);
+  }
+
+  // Per-member overrides → user-locked so the enforce loop keeps their custom nick
+  if (memberOverrides && typeof memberOverrides === "object") {
+    for (const [uid, nick] of Object.entries(memberOverrides)) {
+      if (!uid || !nick) continue;
+      members.set(String(uid), nick);
+      userLocked.add(String(uid));
+    }
+  }
+
+  // Try to pre-populate all known group members from threadInfo cache
+  try {
+    const info = (global.data && global.data.threadInfo && global.data.threadInfo.get(tid));
+    const participants = info && (info.participantIDs || info.participants || []);
+    if (participants && participants.length) {
+      for (const uid of participants) {
+        const uidStr = String(uid);
+        if (userLocked.has(uidStr)) continue; // already has an override
+        if (globalNick) members.set(uidStr, globalNick);
+      }
+    }
+  } catch (_) {}
+
+  _save();
+}
+
 const saveLocks = _save;
 const flush     = _save;
 
@@ -325,11 +385,11 @@ module.exports = {
   getLocks,
   updateMember,
   removeMember,
-  // NEW
   lockUser,
   unlockUser,
   isUserLocked,
   getUserLockedMembers,
+  setGlobalLock,
   saveLocks,
   flush,
   getLockTime,
