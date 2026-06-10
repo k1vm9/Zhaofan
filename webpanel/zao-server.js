@@ -2288,8 +2288,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGrpPicker()});
       <input id="nmName" class="form-control" placeholder="اسم المجموعة..."/>
     </div>
     <div class="form-group">
-      <label class="form-label">وقت إعادة التطبيق (ثانية)</label>
-      <input id="nmTime" class="form-control" type="number" min="1" value="6" placeholder="6"/>
+      <label class="form-label" style="display:flex;align-items:center;justify-content:space-between"><span>وقت إعادة التطبيق (ثانية)</span><label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:.79rem;font-weight:400;color:var(--text2)"><input type="checkbox" id="nmRandom" onchange="toggleRandom('nm')"> 🎲 عشوائي</label></label>
+      <div id="nmFixedWrap"><input id="nmTime" class="form-control" type="number" min="1" value="6" placeholder="6"/><div style="font-size:.71rem;color:var(--text3);margin-top:3px">بالثواني — الحد الأدنى 1s</div></div>
+      <div id="nmRandWrap" style="display:none"><div style="display:flex;gap:8px"><input id="nmRandMin" class="form-control" type="number" min="1" value="6" placeholder="من (s)"/><span style="align-self:center;color:var(--text3)">—</span><input id="nmRandMax" class="form-control" type="number" min="2" value="30" placeholder="إلى (s)"/></div><div style="font-size:.71rem;color:var(--text3);margin-top:3px">نطاق عشوائي بالثواني (مثال: 6 — 30)</div></div>
     </div>
     <div class="btn-row">
       <button class="btn btn-primary btn-sm" onclick="nmAction('enable')">✅ تفعيل</button>
@@ -2305,6 +2306,11 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGrpPicker()});
       <div class="card-title">👤 كنيات — قفل الألقاب</div>
       <span id="nickBadge" class="badge badge-red">غير مفعل</span>
     </div>
+    <div style="display:flex;gap:8px;align-items:center;padding:8px 0 10px;border-bottom:1px solid var(--border);margin-bottom:10px">
+      <span style="font-size:.82rem;color:var(--text2);flex:1">🛡️ تفعيل / إيقاف الحماية</span>
+      <button class="btn btn-primary btn-sm" onclick="nickAction('enable')">✅ تفعيل</button>
+      <button class="btn btn-outline btn-sm" onclick="nickAction('disable')">⏹ إيقاف</button>
+    </div>
     <div class="form-group">
       <label class="form-label">الكنية</label>
       <input id="nickName" class="form-control" placeholder="الكنية المطلوبة..."/>
@@ -2317,12 +2323,11 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGrpPicker()});
       </select>
     </div>
     <div class="form-group">
-      <label class="form-label">وقت إعادة التطبيق (ميلي ثانية)</label>
-      <input id="nickTime" class="form-control" type="number" min="100" value="500" placeholder="500"/>
+      <label class="form-label" style="display:flex;align-items:center;justify-content:space-between"><span>وقت إعادة التطبيق</span><label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:.79rem;font-weight:400;color:var(--text2)"><input type="checkbox" id="nickRandom" onchange="toggleRandom('nick')"> 🎲 عشوائي</label></label>
+      <div id="nickFixedWrap"><input id="nickTime" class="form-control" type="number" min="100" value="500" placeholder="500"/><div style="font-size:.71rem;color:var(--text3);margin-top:3px">بالميلي ثانية — الحد الأدنى 100ms</div></div>
+      <div id="nickRandWrap" style="display:none"><div style="display:flex;gap:8px"><input id="nickRandMin" class="form-control" type="number" min="1" value="30" placeholder="من (s)"/><span style="align-self:center;color:var(--text3)">—</span><input id="nickRandMax" class="form-control" type="number" min="2" value="120" placeholder="إلى (s)"/></div><div style="font-size:.71rem;color:var(--text3);margin-top:3px">نطاق عشوائي بالثواني</div></div>
     </div>
     <div class="btn-row">
-      <button class="btn btn-primary btn-sm" onclick="nickAction('enable')">✅ تفعيل</button>
-      <button class="btn btn-outline btn-sm" onclick="nickAction('disable')">🔓 إيقاف</button>
       <button class="btn btn-outline btn-sm" onclick="nickAction('time')">⏱ حفظ الوقت</button>
     </div>
     <div id="nickStatus" style="margin-top:8px;font-size:.8rem;color:var(--text3);min-height:16px"></div>
@@ -2339,8 +2344,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGrpPicker()});
       <textarea id="m1Msg" class="form-control" rows="2" placeholder="نص الرسالة التلقائية..."></textarea>
     </div>
     <div class="form-group">
-      <label class="form-label">الفترة الزمنية (ثانية، الحد الأدنى 5)</label>
-      <input id="m1Time" class="form-control" type="number" min="5" value="30" placeholder="30"/>
+      <label class="form-label" style="display:flex;align-items:center;justify-content:space-between"><span>الفترة الزمنية (ثانية)</span><label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:.79rem;font-weight:400;color:var(--text2)"><input type="checkbox" id="m1Random" onchange="toggleRandom('m1')"> 🎲 عشوائي</label></label>
+      <div id="m1FixedWrap"><input id="m1Time" class="form-control" type="number" min="5" value="30" placeholder="30"/><div style="font-size:.71rem;color:var(--text3);margin-top:3px">بالثواني — الحد الأدنى 5s</div></div>
+      <div id="m1RandWrap" style="display:none"><div style="display:flex;gap:8px"><input id="m1RandMin" class="form-control" type="number" min="5" value="15" placeholder="من (s)"/><span style="align-self:center;color:var(--text3)">—</span><input id="m1RandMax" class="form-control" type="number" min="10" value="60" placeholder="إلى (s)"/></div><div style="font-size:.71rem;color:var(--text3);margin-top:3px">نطاق عشوائي بالثواني — الحد الأدنى 5s</div></div>
     </div>
     <div class="btn-row">
       <button class="btn btn-outline btn-sm" onclick="m1Action('message')">💾 حفظ الرسالة</button>
@@ -2364,8 +2370,9 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGrpPicker()});
       <textarea id="m2Msg" class="form-control" rows="2" placeholder="نص الرسالة التلقائية..."></textarea>
     </div>
     <div class="form-group">
-      <label class="form-label">الفترة الزمنية (ثانية، الحد الأدنى 5)</label>
-      <input id="m2Time" class="form-control" type="number" min="5" value="30" placeholder="30"/>
+      <label class="form-label" style="display:flex;align-items:center;justify-content:space-between"><span>الفترة الزمنية (ثانية)</span><label style="display:flex;align-items:center;gap:5px;cursor:pointer;font-size:.79rem;font-weight:400;color:var(--text2)"><input type="checkbox" id="m2Random" onchange="toggleRandom('m2')"> 🎲 عشوائي</label></label>
+      <div id="m2FixedWrap"><input id="m2Time" class="form-control" type="number" min="5" value="30" placeholder="30"/><div style="font-size:.71rem;color:var(--text3);margin-top:3px">بالثواني — الحد الأدنى 5s</div></div>
+      <div id="m2RandWrap" style="display:none"><div style="display:flex;gap:8px"><input id="m2RandMin" class="form-control" type="number" min="5" value="20" placeholder="من (s)"/><span style="align-self:center;color:var(--text3)">—</span><input id="m2RandMax" class="form-control" type="number" min="10" value="90" placeholder="إلى (s)"/></div><div style="font-size:.71rem;color:var(--text3);margin-top:3px">نطاق عشوائي بالثواني — الحد الأدنى 5s</div></div>
     </div>
     <div class="btn-row">
       <button class="btn btn-outline btn-sm" onclick="m2Action('message')">💾 حفظ الرسالة</button>
@@ -2409,6 +2416,12 @@ function tid(){return document.getElementById('holdTid').value.trim();}
 function setBadge(id,on){const el=document.getElementById(id);if(!el)return;el.className='badge '+(on?'badge-green':'badge-red');el.textContent=on?'مفعل':'غير مفعل';}
 function setInfo(id,msg,ok){const el=document.getElementById(id);if(!el)return;el.innerHTML='<span style="color:var(--'+(ok?'green':'red')+')">'+(ok?'✅':'❌')+' '+msg+'</span>';}
 
+function toggleRandom(prefix){
+  const on=document.getElementById(prefix+'Random').checked;
+  document.getElementById(prefix+'FixedWrap').style.display=on?'none':'';
+  document.getElementById(prefix+'RandWrap').style.display=on?'':'none';
+}
+
 async function loadHoldStatus(){
   const t=tid();
   if(!t)return showToast('أدخل Thread ID','error');
@@ -2419,59 +2432,124 @@ async function loadHoldStatus(){
   st.innerHTML='<span style="color:var(--green)">✅ تم تحميل حالة: '+t+'</span>';
   // NM
   setBadge('nmBadge',r.nm?.locked);
-  if(r.nm?.locked){document.getElementById('nmName').value=r.nm.name||'';document.getElementById('nmTime').value=Math.round((r.nm.time||6000)/1000);document.getElementById('nmStatus').textContent='مقفول على: "'+r.nm.name+'" — كل '+Math.round((r.nm.time||6000)/1000)+'s';}
+  if(r.nm?.locked){
+    document.getElementById('nmName').value=r.nm.name||'';
+    if(r.nm.randomTime&&r.nm.randomRange){
+      document.getElementById('nmRandom').checked=true;toggleRandom('nm');
+      document.getElementById('nmRandMin').value=Math.round((r.nm.randomRange.min||6000)/1000);
+      document.getElementById('nmRandMax').value=Math.round((r.nm.randomRange.max||30000)/1000);
+      document.getElementById('nmStatus').textContent='مقفول على: "'+r.nm.name+'" — 🎲 '+Math.round((r.nm.randomRange.min||6000)/1000)+'s–'+Math.round((r.nm.randomRange.max||30000)/1000)+'s';
+    } else {
+      document.getElementById('nmRandom').checked=false;toggleRandom('nm');
+      document.getElementById('nmTime').value=Math.round((r.nm.time||6000)/1000);
+      document.getElementById('nmStatus').textContent='مقفول على: "'+r.nm.name+'" — كل '+Math.round((r.nm.time||6000)/1000)+'s';
+    }
+  }
   // Nicknames
   setBadge('nickBadge',r.nick?.locked);
-  if(r.nick?.locked){document.getElementById('nickName').value=r.nick.nickname||'';document.getElementById('nickScope').value=r.nick.scope||'all';document.getElementById('nickTime').value=r.nick.time||500;document.getElementById('nickStatus').textContent='مقفول على: "'+r.nick.nickname+'" ('+r.nick.scope+') — كل '+r.nick.time+'ms';}
+  if(r.nick?.locked){
+    document.getElementById('nickName').value=r.nick.nickname||'';
+    document.getElementById('nickScope').value=r.nick.scope||'all';
+    if(r.nick.randomTime&&r.nick.randomRange){
+      document.getElementById('nickRandom').checked=true;toggleRandom('nick');
+      document.getElementById('nickRandMin').value=Math.round((r.nick.randomRange.min||30000)/1000);
+      document.getElementById('nickRandMax').value=Math.round((r.nick.randomRange.max||120000)/1000);
+      document.getElementById('nickStatus').textContent='مقفول على: "'+r.nick.nickname+'" ('+r.nick.scope+') — 🎲 '+Math.round((r.nick.randomRange.min||30000)/1000)+'s–'+Math.round((r.nick.randomRange.max||120000)/1000)+'s';
+    } else {
+      document.getElementById('nickRandom').checked=false;toggleRandom('nick');
+      document.getElementById('nickTime').value=r.nick.time||500;
+      document.getElementById('nickStatus').textContent='مقفول على: "'+r.nick.nickname+'" ('+r.nick.scope+') — كل '+r.nick.time+'ms';
+    }
+  }
   // Motor 1
   setBadge('m1Badge',r.motor1?.status);
   if(r.motor1?.message)document.getElementById('m1Msg').value=r.motor1.message;
-  if(r.motor1?.time)document.getElementById('m1Time').value=Math.round(r.motor1.time/1000);
-  document.getElementById('m1Status').textContent=r.motor1?.status?'نشط — رسالة: "'+(r.motor1.message||'').slice(0,30)+'" — كل '+Math.round((r.motor1.time||0)/1000)+'s':'متوقف';
+  if(r.motor1?.randomTime&&r.motor1?.randomRange){
+    document.getElementById('m1Random').checked=true;toggleRandom('m1');
+    document.getElementById('m1RandMin').value=Math.round((r.motor1.randomRange.min||15000)/1000);
+    document.getElementById('m1RandMax').value=Math.round((r.motor1.randomRange.max||60000)/1000);
+    document.getElementById('m1Status').textContent=r.motor1.status?'نشط — 🎲 '+Math.round((r.motor1.randomRange.min||15000)/1000)+'s–'+Math.round((r.motor1.randomRange.max||60000)/1000)+'s':'متوقف';
+  } else if(r.motor1?.time){
+    document.getElementById('m1Random').checked=false;toggleRandom('m1');
+    document.getElementById('m1Time').value=Math.round(r.motor1.time/1000);
+    document.getElementById('m1Status').textContent=r.motor1.status?'نشط — رسالة: "'+(r.motor1.message||'').slice(0,30)+'" — كل '+Math.round((r.motor1.time||0)/1000)+'s':'متوقف';
+  } else { document.getElementById('m1Status').textContent=r.motor1?.status?'نشط':'متوقف'; }
   // Motor 2
   setBadge('m2Badge',r.motor2?.status);
   if(r.motor2?.message)document.getElementById('m2Msg').value=r.motor2.message;
-  if(r.motor2?.time)document.getElementById('m2Time').value=Math.round(r.motor2.time/1000);
-  document.getElementById('m2Status').textContent=r.motor2?.status?'نشط — رسالة: "'+(r.motor2.message||'').slice(0,30)+'" — كل '+Math.round((r.motor2.time||0)/1000)+'s':'متوقف';
+  if(r.motor2?.randomTime&&r.motor2?.randomRange){
+    document.getElementById('m2Random').checked=true;toggleRandom('m2');
+    document.getElementById('m2RandMin').value=Math.round((r.motor2.randomRange.min||20000)/1000);
+    document.getElementById('m2RandMax').value=Math.round((r.motor2.randomRange.max||90000)/1000);
+    document.getElementById('m2Status').textContent=r.motor2.status?'نشط — 🎲 '+Math.round((r.motor2.randomRange.min||20000)/1000)+'s–'+Math.round((r.motor2.randomRange.max||90000)/1000)+'s':'متوقف';
+  } else if(r.motor2?.time){
+    document.getElementById('m2Random').checked=false;toggleRandom('m2');
+    document.getElementById('m2Time').value=Math.round(r.motor2.time/1000);
+    document.getElementById('m2Status').textContent=r.motor2.status?'نشط — رسالة: "'+(r.motor2.message||'').slice(0,30)+'" — كل '+Math.round((r.motor2.time||0)/1000)+'s':'متوقف';
+  } else { document.getElementById('m2Status').textContent=r.motor2?.status?'نشط':'متوقف'; }
 }
 
 async function nmAction(action){
   const t=tid();if(!t)return showToast('أدخل Thread ID','error');
+  const isRand=document.getElementById('nmRandom').checked;
   let payload={threadID:t,action};
-  if(action==='enable'){payload.name=document.getElementById('nmName').value.trim();payload.timeMs=Number(document.getElementById('nmTime').value)*1000;}
-  if(action==='time')payload.timeMs=Number(document.getElementById('nmTime').value)*1000;
+  if(action==='enable'){
+    payload.name=document.getElementById('nmName').value.trim();
+    if(isRand){payload.randomMin=Number(document.getElementById('nmRandMin').value)*1000;payload.randomMax=Number(document.getElementById('nmRandMax').value)*1000;}
+    else{payload.timeMs=Number(document.getElementById('nmTime').value)*1000;}
+  }
+  if(action==='time'){
+    if(isRand){payload.action='random-time';payload.randomMin=Number(document.getElementById('nmRandMin').value)*1000;payload.randomMax=Number(document.getElementById('nmRandMax').value)*1000;}
+    else{payload.timeMs=Number(document.getElementById('nmTime').value)*1000;}
+  }
   const r=await api('/api/hold/nm-set',payload);
-  if(r.ok){setInfo('nmStatus',action==='enable'?'تم تفعيل قفل الاسم':action==='disable'?'تم إيقاف القفل':'تم حفظ الوقت',true);setBadge('nmBadge',action==='enable');showToast('✅ NM: '+action,'success');}
+  if(r.ok){setInfo('nmStatus',action==='enable'?'تم تفعيل قفل الاسم':action==='disable'?'تم إيقاف القفل':isRand?'تم حفظ الوقت العشوائي 🎲':'تم حفظ الوقت',true);setBadge('nmBadge',action==='enable');showToast('✅ NM: '+action,'success');}
   else{setInfo('nmStatus',r.error||'فشل',false);showToast('❌ '+(r.error||'فشل'),'error');}
 }
 
 async function nickAction(action){
   const t=tid();if(!t)return showToast('أدخل Thread ID','error');
+  const isRand=document.getElementById('nickRandom').checked;
   let payload={threadID:t,action,scope:document.getElementById('nickScope').value};
-  if(action==='enable'){payload.nickname=document.getElementById('nickName').value.trim();payload.timeMs=Number(document.getElementById('nickTime').value);}
-  if(action==='time')payload.timeMs=Number(document.getElementById('nickTime').value);
+  if(action==='enable'){
+    payload.nickname=document.getElementById('nickName').value.trim();
+    if(isRand){payload.randomMin=Number(document.getElementById('nickRandMin').value)*1000;payload.randomMax=Number(document.getElementById('nickRandMax').value)*1000;}
+    else{payload.timeMs=Number(document.getElementById('nickTime').value);}
+  }
+  if(action==='time'){
+    if(isRand){payload.action='random-time';payload.randomMin=Number(document.getElementById('nickRandMin').value)*1000;payload.randomMax=Number(document.getElementById('nickRandMax').value)*1000;}
+    else{payload.timeMs=Number(document.getElementById('nickTime').value);}
+  }
   const r=await api('/api/hold/nick-set',payload);
-  if(r.ok){setInfo('nickStatus',action==='enable'?'تم تفعيل قفل الكنيات':action==='disable'?'تم إيقاف القفل':'تم حفظ الوقت',true);setBadge('nickBadge',action==='enable');showToast('✅ كنيات: '+action,'success');}
+  if(r.ok){setInfo('nickStatus',action==='enable'?'تم تفعيل حماية الكنيات':action==='disable'?'تم إيقاف الحماية':isRand?'تم حفظ الوقت العشوائي 🎲':'تم حفظ الوقت',true);setBadge('nickBadge',action==='enable');showToast('✅ كنيات: '+action,'success');}
   else{setInfo('nickStatus',r.error||'فشل',false);showToast('❌ '+(r.error||'فشل'),'error');}
 }
 
 async function m1Action(action){
   const t=tid();if(!t)return showToast('أدخل Thread ID','error');
+  const isRand=document.getElementById('m1Random').checked;
   let payload={threadID:t,action};
   if(action==='message')payload.message=document.getElementById('m1Msg').value.trim();
-  if(action==='time')payload.timeMs=Number(document.getElementById('m1Time').value)*1000;
+  if(action==='time'){
+    if(isRand){payload.action='random-time';payload.randomMin=Number(document.getElementById('m1RandMin').value)*1000;payload.randomMax=Number(document.getElementById('m1RandMax').value)*1000;}
+    else{payload.timeMs=Number(document.getElementById('m1Time').value)*1000;}
+  }
   const r=await api('/api/hold/motor1-set',payload);
-  if(r.ok){const active=action==='enable';setInfo('m1Status',action==='enable'?'تم تشغيل المحرك':action==='disable'?'تم إيقاف المحرك':'تم الحفظ',true);if(action==='enable'||action==='disable')setBadge('m1Badge',active);showToast('✅ محرك1: '+action,'success');}
+  if(r.ok){const active=action==='enable';setInfo('m1Status',action==='enable'?'تم تشغيل المحرك':action==='disable'?'تم إيقاف المحرك':isRand&&(action==='time'||payload.action==='random-time')?'تم حفظ الوقت العشوائي 🎲':'تم الحفظ',true);if(action==='enable'||action==='disable')setBadge('m1Badge',active);showToast('✅ محرك1: '+action,'success');}
   else{setInfo('m1Status',r.error||'فشل',false);showToast('❌ '+(r.error||'فشل'),'error');}
 }
 
 async function m2Action(action){
   const t=tid();if(!t)return showToast('أدخل Thread ID','error');
+  const isRand=document.getElementById('m2Random').checked;
   let payload={threadID:t,action};
   if(action==='message')payload.message=document.getElementById('m2Msg').value.trim();
-  if(action==='time')payload.timeMs=Number(document.getElementById('m2Time').value)*1000;
+  if(action==='time'){
+    if(isRand){payload.action='random-time';payload.randomMin=Number(document.getElementById('m2RandMin').value)*1000;payload.randomMax=Number(document.getElementById('m2RandMax').value)*1000;}
+    else{payload.timeMs=Number(document.getElementById('m2Time').value)*1000;}
+  }
   const r=await api('/api/hold/motor2-set',payload);
-  if(r.ok){const active=action==='enable';setInfo('m2Status',action==='enable'?'تم تشغيل المحرك':action==='disable'?'تم إيقاف المحرك':'تم الحفظ',true);if(action==='enable'||action==='disable')setBadge('m2Badge',active);showToast('✅ محرك2: '+action,'success');}
+  if(r.ok){const active=action==='enable';setInfo('m2Status',action==='enable'?'تم تشغيل المحرك':action==='disable'?'تم إيقاف المحرك':isRand&&(action==='time'||payload.action==='random-time')?'تم حفظ الوقت العشوائي 🎲':'تم الحفظ',true);if(action==='enable'||action==='disable')setBadge('m2Badge',active);showToast('✅ محرك2: '+action,'success');}
   else{setInfo('m2Status',r.error||'فشل',false);showToast('❌ '+(r.error||'فشل'),'error');}
 }
 

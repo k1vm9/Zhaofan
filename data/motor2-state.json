@@ -5,5 +5,12 @@
     "time": 5000,
     "randomTime": false,
     "randomRange": null
+  },
+  "1695299318400430": {
+    "status": false,
+    "message": "تست",
+    "time": 5000,
+    "randomTime": false,
+    "randomRange": null
   }
 }

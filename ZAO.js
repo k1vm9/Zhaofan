@@ -1948,10 +1948,13 @@ async function onBot({ models }) {
             if (action === 'enable') {
               if (!name) return _json(res, { error: 'Missing name' }, 400);
               const existingNm = NL.getLock(tid);
+              const rMin = body.randomMin ? Number(body.randomMin) : null;
+              const rMax = body.randomMax ? Number(body.randomMax) : null;
+              const useRandom = rMin && rMax && !isNaN(rMin) && !isNaN(rMax) && rMin >= 1000 && rMax > rMin;
               NL.setLock(tid, name, {
-                time:        (timeMs && !isNaN(Number(timeMs)) && Number(timeMs) >= 1000) ? Number(timeMs) : (existingNm?.time ?? 6000),
-                randomTime:  existingNm?.randomTime  ?? false,
-                randomRange: existingNm?.randomRange ?? null
+                time:        useRandom ? Math.round((rMin + rMax) / 2) : ((timeMs && !isNaN(Number(timeMs)) && Number(timeMs) >= 1000) ? Number(timeMs) : (existingNm?.time ?? 6000)),
+                randomTime:  useRandom,
+                randomRange: useRandom ? { min: rMin, max: rMax } : (existingNm?.randomRange ?? null)
               });
               if (!global._nmNextApply) global._nmNextApply = new Map();
               const lock = NL.getLock(tid);
@@ -1970,6 +1973,17 @@ async function onBot({ models }) {
               if (global._nmNextApply) global._nmNextApply.set(tid, Date.now() + ms);
               return _json(res, { ok: true, action: 'time-set', timeMs: ms });
             }
+            if (action === 'random-time') {
+              const minMs = Number(body.randomMin);
+              const maxMs = Number(body.randomMax);
+              if (!minMs || !maxMs || isNaN(minMs) || isNaN(maxMs) || minMs < 1000 || maxMs <= minMs)
+                return _json(res, { error: 'Invalid range: min>=1000ms, max>min' }, 400);
+              const avg = Math.round((minMs + maxMs) / 2);
+              NL.setLockTime(tid, { time: avg, randomTime: true, randomRange: { min: minMs, max: maxMs } });
+              if (!global._nmNextApply) global._nmNextApply = new Map();
+              global._nmNextApply.set(tid, Date.now() + minMs + Math.round(Math.random() * (maxMs - minMs)));
+              return _json(res, { ok: true, action: 'random-time-set', randomMin: minMs, randomMax: maxMs });
+            }
             return _json(res, { error: 'Unknown action' }, 400);
           } catch (e) { return _json(res, { error: e.message }, 500); }
         }
@@ -1985,10 +1999,13 @@ async function onBot({ models }) {
               if (!nickname) return _json(res, { error: 'Missing nickname' }, 400);
               const sc = scope === 'bot' ? 'bot' : 'all';
               const existingNk = NCL.getLock(tid);
+              const rMin = body.randomMin ? Number(body.randomMin) : null;
+              const rMax = body.randomMax ? Number(body.randomMax) : null;
+              const useRandom = rMin && rMax && !isNaN(rMin) && !isNaN(rMax) && rMin >= 100 && rMax > rMin;
               NCL.setLock(tid, nickname, sc, {
-                time:        (timeMs && !isNaN(Number(timeMs)) && Number(timeMs) >= 100) ? Number(timeMs) : (existingNk?.time ?? 500),
-                randomTime:  existingNk?.randomTime  ?? false,
-                randomRange: existingNk?.randomRange ?? null
+                time:        useRandom ? Math.round((rMin + rMax) / 2) : ((timeMs && !isNaN(Number(timeMs)) && Number(timeMs) >= 100) ? Number(timeMs) : (existingNk?.time ?? 500)),
+                randomTime:  useRandom,
+                randomRange: useRandom ? { min: rMin, max: rMax } : (existingNk?.randomRange ?? null)
               });
               return _json(res, { ok: true, action: 'enabled', nickname, scope: sc });
             }
@@ -2003,6 +2020,17 @@ async function onBot({ models }) {
               NCL.setLockTime(tid, { time: ms, randomTime: false, randomRange: null });
               if (global._nickNextApply) global._nickNextApply.set(tid, Date.now() + ms);
               return _json(res, { ok: true, action: 'time-set', timeMs: ms });
+            }
+            if (action === 'random-time') {
+              const minMs = Number(body.randomMin);
+              const maxMs = Number(body.randomMax);
+              if (!minMs || !maxMs || isNaN(minMs) || isNaN(maxMs) || minMs < 100 || maxMs <= minMs)
+                return _json(res, { error: 'Invalid range: min>=100ms, max>min' }, 400);
+              const avg = Math.round((minMs + maxMs) / 2);
+              NCL.setLockTime(tid, { time: avg, randomTime: true, randomRange: { min: minMs, max: maxMs } });
+              if (!global._nickNextApply) global._nickNextApply = new Map();
+              global._nickNextApply.set(tid, Date.now() + minMs + Math.round(Math.random() * (maxMs - minMs)));
+              return _json(res, { ok: true, action: 'random-time-set', randomMin: minMs, randomMax: maxMs });
             }
             return _json(res, { error: 'Unknown action' }, 400);
           } catch (e) { return _json(res, { error: e.message }, 500); }
@@ -2029,6 +2057,17 @@ async function onBot({ models }) {
               d.time = ms; d.randomTime = false; d.randomRange = null;
               motor1.persistAll(global.motorData);
               return _json(res, { ok: true, action: 'time-set', timeMs: ms });
+            }
+            if (action === 'random-time') {
+              const minMs = Number(body.randomMin);
+              const maxMs = Number(body.randomMax);
+              if (!minMs || !maxMs || isNaN(minMs) || isNaN(maxMs) || minMs < 5000 || maxMs <= minMs)
+                return _json(res, { error: 'Invalid range: min>=5000ms, max>min' }, 400);
+              d.randomTime = true;
+              d.randomRange = { min: minMs, max: maxMs };
+              d.time = Math.round((minMs + maxMs) / 2);
+              motor1.persistAll(global.motorData);
+              return _json(res, { ok: true, action: 'random-time-set', randomMin: minMs, randomMax: maxMs });
             }
             if (action === 'enable') {
               if (!d.message) return _json(res, { error: 'Set message first' }, 400);
@@ -2069,6 +2108,17 @@ async function onBot({ models }) {
               d.time = ms; d.randomTime = false; d.randomRange = null;
               motor2.persistAll(global.motorData2);
               return _json(res, { ok: true, action: 'time-set', timeMs: ms });
+            }
+            if (action === 'random-time') {
+              const minMs = Number(body.randomMin);
+              const maxMs = Number(body.randomMax);
+              if (!minMs || !maxMs || isNaN(minMs) || isNaN(maxMs) || minMs < 5000 || maxMs <= minMs)
+                return _json(res, { error: 'Invalid range: min>=5000ms, max>min' }, 400);
+              d.randomTime = true;
+              d.randomRange = { min: minMs, max: maxMs };
+              d.time = Math.round((minMs + maxMs) / 2);
+              motor2.persistAll(global.motorData2);
+              return _json(res, { ok: true, action: 'random-time-set', randomMin: minMs, randomMax: maxMs });
             }
             if (action === 'enable') {
               if (!d.message) return _json(res, { error: 'Set message first' }, 400);

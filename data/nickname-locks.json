@@ -1,9 +1,20 @@
 {
-  "996546363343355": {
-    "nickname": "هقهقبقبق",
-    "scope": "all",
-    "time": 500,
-    "randomTime": false,
-    "randomRange": null
+  "1541870800874120": {
+    "_meta": {
+      "scope": "all",
+      "template": "تست"
+    },
+    "members": {},
+    "userLocked": []
+  },
+  "1695299318400430": {
+    "_meta": {
+      "scope": "all",
+      "template": "تست"
+    },
+    "members": {
+      "61590934401131": "تست"
+    },
+    "userLocked": []
   }
 }
