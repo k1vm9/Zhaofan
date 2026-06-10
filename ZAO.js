@@ -1204,52 +1204,32 @@ async function onBot({ models }) {
             }).filter(g => g.threadID);
           }
 
-          // ── WHITE-V3 approach: serve instantly from memory/cache, refresh in background ──
+          // ── LIVE-FIRST approach: always fetch from Facebook account, cache is fallback only ──
 
-          // Priority 1: in-memory (populated by syncAllGroups right after login — fastest)
+          // Priority 1: bot online → call Facebook API directly (live, like .التحكم command)
+          if (_api) {
+            try {
+              let result = _mapGroups(await _api.getThreadList(100, null, ['INBOX']));
+              if (!result.length) {
+                try { result = _mapGroups(await _api.getThreadList(100, null, [])); } catch (_) {}
+              }
+              if (result.length > 0) _writeGroupCache(result);
+              return _json(res, result);
+            } catch (e) {
+              // API call failed — fall through to cache fallbacks below
+            }
+          }
+
+          // Priority 2: bot offline or API failed → try in-memory data
           const memGroups = _fromMemory();
-          if (memGroups.length > 0) {
-            // Serve immediately, kick off a silent background cache write + live refresh
-            if (_api) {
-              setImmediate(() => {
-                _api.getThreadList(100, null, ['INBOX'])
-                  .then(d => { const g = _mapGroups(d); if (g.length > 0) _writeGroupCache(g); })
-                  .catch(() => {});
-              });
-            }
-            return _json(res, memGroups);
-          }
+          if (memGroups.length > 0) return _json(res, memGroups);
 
-          // Priority 2: disk cache (survives bot restarts, still instant — no Facebook call)
+          // Priority 3: no memory → try disk cache
           const cachedGroups = _readGroupCache();
-          if (cachedGroups.length > 0) {
-            // Serve cache immediately, trigger background live refresh
-            if (_api) {
-              setImmediate(async () => {
-                try {
-                  const live = _mapGroups(await _api.getThreadList(100, null, ['INBOX']));
-                  if (live.length > 0) _writeGroupCache(live);
-                } catch (_) {}
-              });
-            }
-            return _json(res, cachedGroups);
-          }
+          if (cachedGroups.length > 0) return _json(res, cachedGroups);
 
-          // Priority 3: bot offline and no cache at all
-          if (!_api) return _json(res, []);
-
-          // Priority 4: nothing cached yet — call Facebook API synchronously (first-run only)
-          try {
-            let result = _mapGroups(await _api.getThreadList(100, null, ['INBOX']));
-            if (!result.length) {
-              try { result = _mapGroups(await _api.getThreadList(100, null, [])); } catch (_) {}
-            }
-            if (!result.length) result = _fromMemory();
-            if (result.length > 0) _writeGroupCache(result);
-            return _json(res, result);
-          } catch (e) {
-            return _json(res, { error: e.message }, 500);
-          }
+          // Priority 4: nothing available
+          return _json(res, []);
         }
 
         if (pathname === '/bot/requests' && method === 'GET') {

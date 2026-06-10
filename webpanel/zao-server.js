@@ -1353,7 +1353,14 @@ body{
   <div class="manga-corners"></div>
   <div class="zaofan-art">
     <div class="zaofan-speedlines"></div>
-    <div class="zaofan-char">⚡</div>
+    <div class="zaofan-char">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="44" height="44" fill="none">
+        <ellipse cx="32" cy="32" rx="28" ry="18" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="32" cy="32" r="9" stroke="white" stroke-width="2.5"/>
+        <circle cx="32" cy="32" r="4" fill="white"/>
+        <circle cx="36" cy="28" r="2" fill="rgba(255,255,255,0.5)"/>
+      </svg>
+    </div>
   </div>
   <div class="zaofan-text">
     <div class="zaofan-title">ZAO Bot — نظام التحكم المتكامل
