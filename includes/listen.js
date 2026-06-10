@@ -274,7 +274,7 @@ module.exports = function({ api, models, globalData, usersData, threadsData }) {
           storedReply({ event: ev, message: message2 }),
           storedCommandEvent({ event: ev, message: message2 }),
         ].forEach(p => Promise.resolve(p).catch(() => {}));
-      });
+      }).catch(() => {});
     } catch (_) {}
   }
 

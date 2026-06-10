@@ -124,6 +124,66 @@ Multiple Facebook accounts (Tier 1, 2, 3) supported via `ZAO-STATE.json` + `alt.
 ---
 
 ## ══════════════════════════════════════
+## PART 14 — SESSION 14 BUGS + FEATURES (S14-01 → S14-04)
+## ══════════════════════════════════════
+
+---
+
+### S14-F1 — Feature: Live Counter Badges on Log Section Tabs
+
+**File:** `webpanel/zao-server.js` (logs tab JS + HTML)
+
+**What was added:**
+Each of the 7 log section tabs (الكل, تسجيل الدخول, الرسائل, الأخطاء, التحذيرات, النظام, MQTT) now shows a live line-count badge beside its label.
+
+**Implementation details:**
+- Added `<span class="log-cnt" id="cnt-{sec}">` inside every `.log-sec-btn` button.
+- Added CSS `.log-cnt` (pill badge, inherits button color, subdued on inactive tabs).
+- Added `_badgeRaf` throttle variable — badge DOM writes are batched via `setTimeout(500ms)` so each incoming SSE log line doesn't trigger 7 DOM queries.
+- `_updateBadges()` iterates `_SECTIONS` keys, counts matching lines from `_allLines`, and writes to each badge element.
+- Called from: `rerender()` (always), `clearLogs()` (reset to empty), and the throttled path in `addLine()` (live stream).
+- Seed sequence calls `_updateBadges()` once after all `_initialLines` are seeded, clearing the pending throttle first.
+
+**Status:** ✅ Implemented
+
+---
+
+### S14-01 — `includes/listen.js` — Floating `.then()` Chain in `_dispatchEvent`
+
+**File:** `includes/listen.js` (`_dispatchEvent` inner function, ~line 271)
+
+**Problem:** The outer `Promise.all(...).then(() => { ... })` was an unhandled floating promise. If the `.then()` callback threw synchronously (e.g. `storedCommand` returned a rejected promise before the inner `.forEach` could wrap it), or if `Promise.all` itself rejected despite per-item `.catch()` wrappers, the rejection would surface as an unhandled promise rejection — which in Node.js 20 terminates the process.
+
+**Fix:** Added `.catch(() => {})` to the outer chain:
+```js
+Promise.all(...).then(() => { ... }).catch(() => {});
+```
+
+**Status:** ✅ Fixed
+
+---
+
+### S14-02 — `includes/login/autoRelogin.js` — Labyrinth E2EE Keys Can Be Corrupted on Forced Exit
+
+**File:** `includes/login/autoRelogin.js` (lines ~360 and ~506)
+
+**Problem:** Both `forceTierSwitch` and `autoRelogin` call `setTimeout(() => process.exit(0), RESTART_DELAY)`. `KeyStore._flush()` (the Labyrinth E2EE key persistence method) is **async** and may be mid-write when the 3-second `RESTART_DELAY` fires. An abrupt `process.exit` during an in-progress `_flush()` writes partial key data, corrupting the key store and causing a "Labyrinth Decrypt Failed" loop on every restart that requires manual deletion of the key file.
+
+**Fix:** Converted both `setTimeout` callbacks to `async` and awaited `global._labyrinth.keyStore._flush()` (guarded with try/catch) before calling `process.exit(0)`. `global._labyrinth` is set by `includes/labyrinth/index.js` during E2EE init; the guard is a no-op if Labyrinth was never initialised.
+
+**Status:** ✅ Fixed
+
+---
+
+### S14-03 — Version Bump 1.6 → 1.7 (Prior Session)
+
+**Note:** Documented here for completeness. Version was bumped to `1.7.0` in `package.json`, sidebar, homepage banner, and i18n map during the session immediately prior to S14.
+
+**Status:** ✅ Done (prior session)
+
+---
+
+## ══════════════════════════════════════
 ## PART 13 — SESSION 13 SECURITY + AUDIT (S13-01 → S13-08)
 ## ══════════════════════════════════════
 

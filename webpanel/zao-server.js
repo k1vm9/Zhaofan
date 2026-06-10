@@ -1764,13 +1764,13 @@ refreshSilentMode();
   </div>
   <!-- Section tabs -->
   <div id="logSections" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px">
-    <button class="log-sec-btn active" data-sec="all"      onclick="switchSection(this)">📋 الكل</button>
-    <button class="log-sec-btn"        data-sec="login"    onclick="switchSection(this)">🔐 تسجيل الدخول</button>
-    <button class="log-sec-btn"        data-sec="messages" onclick="switchSection(this)">💬 الرسائل</button>
-    <button class="log-sec-btn"        data-sec="errors"   onclick="switchSection(this)">❌ الأخطاء</button>
-    <button class="log-sec-btn"        data-sec="warnings" onclick="switchSection(this)">⚠️ التحذيرات</button>
-    <button class="log-sec-btn"        data-sec="system"   onclick="switchSection(this)">⚙️ النظام</button>
-    <button class="log-sec-btn"        data-sec="mqtt"     onclick="switchSection(this)">📡 MQTT</button>
+    <button class="log-sec-btn active" data-sec="all"      onclick="switchSection(this)">📋 الكل <span class="log-cnt" id="cnt-all"></span></button>
+    <button class="log-sec-btn"        data-sec="login"    onclick="switchSection(this)">🔐 تسجيل الدخول <span class="log-cnt" id="cnt-login"></span></button>
+    <button class="log-sec-btn"        data-sec="messages" onclick="switchSection(this)">💬 الرسائل <span class="log-cnt" id="cnt-messages"></span></button>
+    <button class="log-sec-btn"        data-sec="errors"   onclick="switchSection(this)">❌ الأخطاء <span class="log-cnt" id="cnt-errors"></span></button>
+    <button class="log-sec-btn"        data-sec="warnings" onclick="switchSection(this)">⚠️ التحذيرات <span class="log-cnt" id="cnt-warnings"></span></button>
+    <button class="log-sec-btn"        data-sec="system"   onclick="switchSection(this)">⚙️ النظام <span class="log-cnt" id="cnt-system"></span></button>
+    <button class="log-sec-btn"        data-sec="mqtt"     onclick="switchSection(this)">📡 MQTT <span class="log-cnt" id="cnt-mqtt"></span></button>
   </div>
   <!-- Log box -->
   <div class="log-box" id="logBox" style="max-height:60vh;border-top:1px solid var(--border);padding-top:8px"></div>
@@ -1779,12 +1779,15 @@ refreshSilentMode();
 .log-sec-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:20px;padding:3px 11px;font-size:.76rem;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .15s}
 .log-sec-btn:hover{background:var(--bg4,var(--border));color:var(--text)}
 .log-sec-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+.log-cnt{display:inline-block;background:rgba(255,255,255,.15);color:inherit;border-radius:8px;padding:0 5px;font-size:.68rem;font-weight:700;margin-right:2px;min-width:14px;text-align:center;line-height:1.55}
+.log-sec-btn:not(.active) .log-cnt{background:rgba(255,255,255,.09);color:var(--text3)}
 </style>
 <script>
 const _initialLines = ${initialLines};
 let _allLines=[];
 let _filter='';
 let _section='all';
+let _badgeRaf=null;
 const _logBox=document.getElementById('logBox');
 const _auto=()=>document.getElementById('autoScroll').checked;
 
@@ -1813,6 +1816,15 @@ function _passes(text){
   return true;
 }
 
+function _updateBadges(){
+  for(const sec of Object.keys(_SECTIONS)){
+    const el=document.getElementById('cnt-'+sec);
+    if(!el)continue;
+    const n=sec==='all'?_allLines.length:_allLines.filter(_SECTIONS[sec]).length;
+    el.textContent=n>0?n:'';
+  }
+}
+
 function addLine(text){
   _allLines.push(text);
   if(_allLines.length>10000)_allLines.shift();
@@ -1824,6 +1836,7 @@ function addLine(text){
     if(_auto())_logBox.scrollTop=_logBox.scrollHeight;
     while(_logBox.children.length>6000)_logBox.removeChild(_logBox.firstChild);
   }
+  if(!_badgeRaf)_badgeRaf=setTimeout(function(){_updateBadges();_badgeRaf=null;},500);
 }
 
 function rerender(){
@@ -1839,10 +1852,11 @@ function rerender(){
   }
   _logBox.appendChild(count);
   if(_auto())_logBox.scrollTop=_logBox.scrollHeight;
+  _updateBadges();
 }
 
 function filterLogs(val){_filter=val;rerender();}
-function clearLogs(){_allLines=[];_logBox.innerHTML='';}
+function clearLogs(){_allLines=[];_logBox.innerHTML='';_updateBadges();}
 function switchSection(btn){
   document.querySelectorAll('.log-sec-btn').forEach(function(b){b.classList.remove('active')});
   btn.classList.add('active');
@@ -1852,6 +1866,8 @@ function switchSection(btn){
 
 // Seed initial lines
 for(const l of _initialLines)addLine(l);
+if(_badgeRaf){clearTimeout(_badgeRaf);_badgeRaf=null;}
+_updateBadges();
 
 let _sse=null;
 function connectSSE(){

@@ -357,7 +357,17 @@ async function forceTierSwitch(api, reason) {
     } catch (_) {}
     // Lock the flag so no new relogin attempt can start during the exit window
     isAttempting = true;
-    setTimeout(() => process.exit(0), RESTART_DELAY);
+    setTimeout(async () => {
+      // Flush Labyrinth E2EE key store before exit to prevent partial-write
+      // corruption (KeyStore._flush is async; give it a chance to complete).
+      try {
+        const _lab = global._labyrinth;
+        if (_lab && _lab.keyStore && typeof _lab.keyStore._flush === 'function') {
+          await _lab.keyStore._flush();
+        }
+      } catch (_) {}
+      process.exit(0);
+    }, RESTART_DELAY);
     return true;
   } catch (saveErr) {
     // [FIX Djamel] — without resetting isAttempting here a save failure
@@ -503,7 +513,17 @@ async function autoRelogin(api, reason) {
 
     // Lock the flag so no new relogin attempt can start during the exit window
     isAttempting = true;
-    setTimeout(() => process.exit(0), RESTART_DELAY);
+    setTimeout(async () => {
+      // Flush Labyrinth E2EE key store before exit to prevent partial-write
+      // corruption (KeyStore._flush is async; give it a chance to complete).
+      try {
+        const _lab = global._labyrinth;
+        if (_lab && _lab.keyStore && typeof _lab.keyStore._flush === 'function') {
+          await _lab.keyStore._flush();
+        }
+      } catch (_) {}
+      process.exit(0);
+    }, RESTART_DELAY);
     return true;
 
   } catch (saveErr) {
