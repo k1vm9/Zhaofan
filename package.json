@@ -1,6 +1,6 @@
 {
   "name": "zao-bot",
-  "version": "1.2.14",
+  "version": "1.7.0",
   "description": "ZAO Facebook Messenger Bot with web admin panel",
   "main": "Main.js",
   "scripts": {

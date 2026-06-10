@@ -98,7 +98,6 @@ function layout(title, body, activeTab = "", opts = {}) {
     ["status",        "M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6", "الرئيسية"],
     ["logs",          "M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z", "السجلات"],
     ["commands",      "M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z", "الأوامر"],
-    ["execute",       "M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z M21 12a9 9 0 11-18 0 9 9 0 0118 0z", "تنفيذ"],
     ["scheduler",     "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z", "الجدولة"],
     ["hold",          "M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z", "التحكم"],
     ["config",        "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z", "الإعدادات"],
@@ -548,7 +547,7 @@ textarea.form-control{resize:vertical;line-height:1.6}
 .log-warn{color:#f5c842}
 .log-ok{color:#30d988}
 .log-info{color:#5aadff}
-.log-dim{color:#2e3755}
+.log-dim{color:#7a8aaa}
 
 /* ─── TOGGLE ─── */
 .toggle-row{
@@ -736,7 +735,7 @@ code{
       <div class="sb-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M1 12s4.5-9 11-9 11 9 11 9-4.5 9-11 9S1 12 1 12z" stroke="rgba(255,255,255,.88)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="4" stroke="rgba(255,255,255,.88)" stroke-width="1.5"/><circle cx="12" cy="12" r="1.8" fill="rgba(255,255,255,.88)"/></svg></div>
       <div>
         <div class="sb-title">ZAO Panel</div>
-        <div class="sb-ver">ZAO Bot v1.2 · Admin</div>
+        <div class="sb-ver">ZAO Bot v1.7 · Admin</div>
       </div>
     </div>
     <button class="sb-close" onclick="closeSidebar()">
@@ -841,7 +840,7 @@ const _ZAO_LANG_DICT={
   'الأصدقاء':'Friends','الاجتماعي':'Social','مركز التطوير':'DevHub','ملفات GitHub':'GitHub Files',
   'لوحة التحكم':'Dashboard','البوت متصل ✓':'Bot Online ✓','البوت غير متصل':'Bot Offline',
   'متصل ومستعد':'Online & Ready','التنقل':'Navigation','تسجيل الخروج':'Logout',
-  'ZAO Bot v1.2 · Admin':'ZAO Bot v1.2 · Admin','ZAO Panel':'ZAO Panel',
+  'ZAO Bot v1.7 · Admin':'ZAO Bot v1.7 · Admin','ZAO Panel':'ZAO Panel',
   // ── Status bar ─────────────────────────────────────────────────
   'إعادة التشغيل':'Restart','إيقاف البوت':'Stop Bot',
   'قفل الأوامر':'Lock Cmds','فتح الأوامر':'Unlock Cmds',
@@ -1364,7 +1363,7 @@ body{
   </div>
   <div class="zaofan-text">
     <div class="zaofan-title">ZAO Bot — نظام التحكم المتكامل
-      <span class="zaofan-tag">v1.2</span>
+      <span class="zaofan-tag">v1.7</span>
     </div>
     <div class="zaofan-sub">مرحباً في لوحة تحكم ZAO — نظام بوت فيسبوك الذكي مع دعم إنستقرام ونظام متعدد الطبقات<br>
     ${new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>
@@ -1744,56 +1743,115 @@ refreshSilentMode();
 
   // ─── LOGS ───────────────────────────────────────────────────────────────────
   app.get('/logs', auth, (req,res) => {
-    const recent = logBuffer.slice(-500).map(e => colorLog(e.text||e)).join('\n');
+    const initialLines = JSON.stringify(logBuffer.slice(-800).map(e => e.text||e));
     const body = `
 <div class="page-header">
   <div class="page-title">📡 سجلات البوت</div>
-  <div class="page-sub">بث مباشر من البوت — يتجدد تلقائياً</div>
+  <div class="page-sub">بث مباشر — ${logBuffer.length} سطر محفوظ</div>
 </div>
-<div class="card">
-  <div class="card-header">
-    <div class="card-title">🔴 بث مباشر</div>
-    <div style="display:flex;gap:8px;align-items:center">
-      <span id="sseStatus" style="font-size:.78rem;color:var(--text3);display:flex;align-items:center;gap:5px">
-        <span id="sseDot" style="width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block"></span>
-        <span id="sseTxt">جارٍ الاتصال...</span>
-      </span>
-      <input type="text" id="logFilter" placeholder="🔍 فلترة..." style="background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:5px 10px;font-size:.8rem;font-family:'Cairo',sans-serif;outline:none;width:160px" oninput="filterLogs(this.value)"/>
-      <label style="display:flex;align-items:center;gap:5px;font-size:.8rem;color:var(--text2);cursor:pointer">
-        <input type="checkbox" id="autoScroll" checked style="width:14px;height:14px"/>تمرير تلقائي
-      </label>
-      <button class="btn btn-outline btn-sm" onclick="clearLogs()">🗑 مسح</button>
-    </div>
+<div class="card" style="padding-bottom:0">
+  <!-- Toolbar -->
+  <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:0 0 12px 0">
+    <span id="sseStatus" style="font-size:.78rem;color:var(--text3);display:flex;align-items:center;gap:5px;flex-shrink:0">
+      <span id="sseDot" style="width:7px;height:7px;border-radius:50%;background:var(--red);display:inline-block"></span>
+      <span id="sseTxt">جارٍ الاتصال...</span>
+    </span>
+    <input type="text" id="logFilter" placeholder="🔍 بحث في السجلات..." style="flex:1;min-width:140px;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:7px;padding:5px 10px;font-size:.8rem;font-family:'Cairo',sans-serif;outline:none" oninput="filterLogs(this.value)"/>
+    <label style="display:flex;align-items:center;gap:5px;font-size:.8rem;color:var(--text2);cursor:pointer;flex-shrink:0">
+      <input type="checkbox" id="autoScroll" style="width:14px;height:14px"/>تمرير تلقائي
+    </label>
+    <button class="btn btn-outline btn-sm" onclick="clearLogs()" style="flex-shrink:0">🗑 مسح</button>
   </div>
-  <div class="log-box" id="logBox" style="max-height:65vh">${recent}</div>
+  <!-- Section tabs -->
+  <div id="logSections" style="display:flex;gap:4px;flex-wrap:wrap;margin-bottom:10px">
+    <button class="log-sec-btn active" data-sec="all"      onclick="switchSection(this)">📋 الكل</button>
+    <button class="log-sec-btn"        data-sec="login"    onclick="switchSection(this)">🔐 تسجيل الدخول</button>
+    <button class="log-sec-btn"        data-sec="messages" onclick="switchSection(this)">💬 الرسائل</button>
+    <button class="log-sec-btn"        data-sec="errors"   onclick="switchSection(this)">❌ الأخطاء</button>
+    <button class="log-sec-btn"        data-sec="warnings" onclick="switchSection(this)">⚠️ التحذيرات</button>
+    <button class="log-sec-btn"        data-sec="system"   onclick="switchSection(this)">⚙️ النظام</button>
+    <button class="log-sec-btn"        data-sec="mqtt"     onclick="switchSection(this)">📡 MQTT</button>
+  </div>
+  <!-- Log box -->
+  <div class="log-box" id="logBox" style="max-height:60vh;border-top:1px solid var(--border);padding-top:8px"></div>
 </div>
+<style>
+.log-sec-btn{background:var(--bg3);border:1px solid var(--border);color:var(--text2);border-radius:20px;padding:3px 11px;font-size:.76rem;cursor:pointer;font-family:'Cairo',sans-serif;transition:all .15s}
+.log-sec-btn:hover{background:var(--bg4,var(--border));color:var(--text)}
+.log-sec-btn.active{background:var(--accent);border-color:var(--accent);color:#fff}
+</style>
 <script>
+const _initialLines = ${initialLines};
 let _allLines=[];
 let _filter='';
+let _section='all';
 const _logBox=document.getElementById('logBox');
 const _auto=()=>document.getElementById('autoScroll').checked;
 
+const _SECTIONS={
+  all:      ()=>true,
+  login:    t=>/\\[\\s*Login\\s*\\]|\\[FCA-DIAG\\]|\\[PATCH\\]|\\[DIAG\\]|Tier \\d|AppState|loginHelper|credential|session/i.test(t),
+  messages: t=>/sendMessage|\\[MOTOR\\]|محرك|\\[INSTA:MSG\\]|\\[MSG\\]|received message|body:|message from/i.test(t),
+  errors:   t=>/❌|\\bERROR\\b|\\bError\\b|failed|exception/i.test(t),
+  warnings: t=>/⚠️|\\bWARN\\b|warning|مفقود|missing/i.test(t),
+  system:   t=>/\\[ZAO\\]|\\[WATCHDOG\\]|\\[PROTECT\\]|\\[INSTA:BOOT\\]|\\[INSTA:CMD\\]|ZAO Is working|Platform:|Port:|PID|restart|started/i.test(t),
+  mqtt:     t=>/MQTT|mqtt|RECONNECT|reconnect|\\[HEALTH\\]|ping|keepalive/i.test(t),
+};
+
+function _classify(text){
+  if(/❌|\\bERROR\\b|\\bError\\b/.test(text))return'log-error';
+  if(/⚠️|\\bWARN\\b/.test(text))return'log-warn';
+  if(/✅|SUCCESS|connected/.test(text))return'log-ok';
+  if(/\\[\\s*ZAO\\s*\\]|\\[\\s*WATCHDOG\\s*\\]|\\[\\s*PROTECT\\s*\\]|\\[\\s*STEALTH\\s*\\]|\\[\\s*HEALTH\\s*\\]|\\[\\s*SESSION\\s*\\]|\\[\\s*SYNC\\s*\\]|\\[\\s*LABYRINTH\\s*\\]|MQTT|MOTOR|RECONNECT|📌/.test(text))return'log-info';
+  if(/\\[Login\\]|\\[FCA-DIAG\\]|\\[PATCH\\]|\\[DIAG\\]|Tier \\d|AppState|loginHelper/.test(text))return'log-info';
+  return'log-dim';
+}
+
+function _passes(text){
+  if(!_SECTIONS[_section](text))return false;
+  if(_filter&&!text.toLowerCase().includes(_filter.toLowerCase()))return false;
+  return true;
+}
+
 function addLine(text){
   _allLines.push(text);
-  if(_allLines.length>8000)_allLines.shift();
-  if(!_filter||text.toLowerCase().includes(_filter.toLowerCase())){
+  if(_allLines.length>10000)_allLines.shift();
+  if(_passes(text)){
     const span=document.createElement('span');
-    let cls='log-dim';
-    if(/\[\s*PROTECT\s*\]|\[\s*ZAO\s*\]|\[\s*WATCHDOG\s*\]|📌|INFO|MQTT|MOTOR/.test(text))cls='log-info';
-    else if(/❌|\bERROR\b/.test(text))cls='log-error';
-    else if(/⚠️|\bWARN\b/.test(text))cls='log-warn';
-    else if(/✅|SUCCESS|connected/.test(text))cls='log-ok';
-    span.className=cls;span.textContent=text+'\\n';
+    span.className=_classify(text);
+    span.textContent=text+'\\n';
     _logBox.appendChild(span);
     if(_auto())_logBox.scrollTop=_logBox.scrollHeight;
-    while(_logBox.children.length>5000)_logBox.removeChild(_logBox.firstChild);
+    while(_logBox.children.length>6000)_logBox.removeChild(_logBox.firstChild);
   }
 }
-function filterLogs(val){
-  _filter=val;_logBox.innerHTML='';
-  for(const l of _allLines){if(!val||l.toLowerCase().includes(val.toLowerCase()))addLine(l)}
+
+function rerender(){
+  _logBox.innerHTML='';
+  let count=document.createDocumentFragment();
+  for(const l of _allLines){
+    if(_passes(l)){
+      const span=document.createElement('span');
+      span.className=_classify(l);
+      span.textContent=l+'\\n';
+      count.appendChild(span);
+    }
+  }
+  _logBox.appendChild(count);
+  if(_auto())_logBox.scrollTop=_logBox.scrollHeight;
 }
-function clearLogs(){_allLines=[];_logBox.innerHTML=''}
+
+function filterLogs(val){_filter=val;rerender();}
+function clearLogs(){_allLines=[];_logBox.innerHTML='';}
+function switchSection(btn){
+  document.querySelectorAll('.log-sec-btn').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  _section=btn.dataset.sec;
+  rerender();
+}
+
+// Seed initial lines
+for(const l of _initialLines)addLine(l);
 
 let _sse=null;
 function connectSSE(){
@@ -1809,7 +1867,7 @@ function connectSSE(){
     setTimeout(connectSSE,3000);
   };
   _sse.onmessage=(e)=>{
-    try{const d=JSON.parse(e.data);addLine(d.text||d);}catch(_){}
+    try{const d=JSON.parse(e.data);if(d.text)addLine(d.text);}catch(_){}
   };
 }
 connectSSE();
@@ -2013,208 +2071,6 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeEditModal();cl
   });
 
   // ─── EXECUTE ────────────────────────────────────────────────────────────────
-  app.get('/execute', auth, (req,res) => {
-    const body = `
-<div class="page-header">
-  <div class="page-title">▶️ تنفيذ أمر</div>
-  <div class="page-sub">أرسل أمراً أو رسالة مباشرة من اللوحة إلى أي مجموعة</div>
-</div>
-
-<div class="card">
-  <div class="card-header">
-    <div class="card-title">⚡ تنفيذ سريع</div>
-    <button class="btn btn-outline btn-sm" onclick="openGroupPicker('exec')">📋 جلب الغروبات</button>
-  </div>
-  <div class="form-grid">
-    <div class="form-group">
-      <label class="form-label">معرف الغروب (Thread ID)</label>
-      <div style="display:flex;gap:8px">
-        <input type="text" id="execThread" class="form-control" placeholder="مثال: 1234567890" style="flex:1"/>
-        <button class="btn btn-outline btn-sm" onclick="openGroupPicker('exec')" title="اختر غروب" style="flex-shrink:0">📋</button>
-      </div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">الأمر والمتغيرات</label>
-      <input type="text" id="execCmdInput" class="form-control" placeholder="مثال: help أو weather cairo"/>
-    </div>
-  </div>
-  <div class="form-group">
-    <label class="form-label">رسالة مباشرة (بديل للأمر — ترسل نصاً للغروب فوراً)</label>
-    <textarea id="execMsg" class="form-control" rows="3" placeholder="نص الرسالة..."></textarea>
-  </div>
-  <!-- Quick command presets -->
-  <div class="form-group" style="margin-top:8px">
-    <label class="form-label" style="margin-bottom:6px">⚡ اختصارات سريعة — انقر لملء الأمر</label>
-    <div style="display:flex;flex-wrap:wrap;gap:6px">
-      <button class="btn btn-outline btn-sm" onclick="setCmd('engine تفعيل')" title="تشغيل المحرك 1">🔴 محرك1 تشغيل</button>
-      <button class="btn btn-outline btn-sm" onclick="setCmd('engine ايقاف')" title="إيقاف المحرك 1">⬛ محرك1 إيقاف</button>
-      <button class="btn btn-outline btn-sm" onclick="setCmd('engine حالة')" title="حالة المحرك 1">📊 محرك1 حالة</button>
-      <button class="btn btn-outline btn-sm" onclick="setCmd('motor2 تفعيل')" title="تشغيل المحرك 2">🟠 محرك2 تشغيل</button>
-      <button class="btn btn-outline btn-sm" onclick="setCmd('motor2 ايقاف')" title="إيقاف المحرك 2">⬛ محرك2 إيقاف</button>
-      <button class="btn btn-outline btn-sm" onclick="setCmd('motor2 حالة')" title="حالة المحرك 2">📊 محرك2 حالة</button>
-      <button class="btn btn-outline btn-sm" onclick="setCmd('nm تفعيل')" title="تفعيل قفل اسم الغروب">🔒 NM تفعيل</button>
-      <button class="btn btn-outline btn-sm" onclick="setCmd('nm ايقاف')" title="إيقاف قفل اسم الغروب">🔓 NM إيقاف</button>
-      <button class="btn btn-outline btn-sm" onclick="setCmd('nicknames تشغيل')" title="تشغيل قفل الكنيات">🏷️ كنيات تشغيل</button>
-      <button class="btn btn-outline btn-sm" onclick="setCmd('nicknames ايقاف')" title="إيقاف قفل الكنيات">🏷️ كنيات إيقاف</button>
-      <button class="btn btn-outline btn-sm" onclick="setCmd('groupname ')" title="تغيير اسم الغروب — أكمل باسم الغروب">✏️ تغيير الاسم</button>
-      <button class="btn btn-outline btn-sm" onclick="setCmd('help')" title="قائمة الأوامر">📋 help</button>
-    </div>
-  </div>
-  <div class="btn-row">
-    <button class="btn btn-primary" onclick="runExecCmd()">⚡ تنفيذ الأمر</button>
-    <button class="btn btn-success" onclick="sendMsg()">📤 إرسال رسالة</button>
-  </div>
-  <div id="execStatus" style="margin-top:12px;font-size:.85rem;min-height:30px"></div>
-</div>
-
-<div class="card">
-  <div class="card-header">
-    <div class="card-title">📤 إرسال رسالة جماعية</div>
-    <button class="btn btn-outline btn-sm" onclick="openGroupPicker('bulk')">📋 جلب الغروبات</button>
-  </div>
-  <div class="form-group">
-    <label class="form-label">قائمة Thread IDs (كل معرف في سطر — أو استخدم جلب الغروبات)</label>
-    <textarea id="bulkThreads" class="form-control" rows="4" placeholder="1234567890&#10;0987654321&#10;..."></textarea>
-  </div>
-  <div class="form-group">
-    <label class="form-label">نص الرسالة</label>
-    <textarea id="bulkMsg" class="form-control" rows="3" placeholder="الرسالة التي ستُرسل لكل الغروبات..."></textarea>
-  </div>
-  <div class="form-group">
-    <label class="form-label">تأخير بين الرسائل (ثانية)</label>
-    <input type="number" id="bulkDelay" class="form-control" value="2" min="1" max="30" style="max-width:120px"/>
-  </div>
-  <button class="btn btn-primary" onclick="sendBulk()">📤 إرسال جماعي</button>
-  <div id="bulkStatus" style="margin-top:12px;font-size:.83rem;min-height:30px"></div>
-</div>
-
-<!-- Groups Picker Modal -->
-<div id="grpPickerModal" style="display:none;position:fixed;inset:0;z-index:9500;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:center;justify-content:center">
-  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);width:min(600px,95vw);max-height:85vh;display:flex;flex-direction:column;overflow:hidden">
-    <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
-      <div style="font-weight:700">📋 اختر غروب</div>
-      <button onclick="closeGrpPicker()" style="background:none;border:none;cursor:pointer;color:var(--text3);font-size:1.1rem">✕</button>
-    </div>
-    <div style="padding:12px 16px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;gap:8px">
-      <input type="text" id="grpPickerSearch" placeholder="🔍 بحث بالاسم أو الـ ID..." oninput="filterPicker()" style="flex:1;background:var(--bg3);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:8px 12px;font-size:.85rem;font-family:'Cairo',sans-serif;outline:none"/>
-      <button class="btn btn-outline btn-sm" onclick="loadGroups()">🔄 تحديث</button>
-    </div>
-    <div id="grpPickerStatus" style="padding:10px 16px;font-size:.83rem;color:var(--text3);flex-shrink:0"></div>
-    <div id="grpPickerList" style="overflow-y:auto;flex:1;padding:8px 0"></div>
-  </div>
-</div>
-
-<script>
-let _pickerTarget='exec';
-let _pickerGroups=[];
-
-async function loadGroups(){
-  const st=document.getElementById('grpPickerStatus');
-  const list=document.getElementById('grpPickerList');
-  st.textContent='⏳ جارٍ جلب الغروبات...';
-  list.innerHTML='';
-  try{
-    const r=await fetch('/api/groups-list');
-    const d=await r.json();
-    _pickerGroups=d.groups||[];
-    st.textContent=_pickerGroups.length?(_pickerGroups.length+' غروب'):'لا توجد غروبات — البوت قد يكون غير متصل';
-    renderPicker(_pickerGroups);
-  }catch(e){
-    st.textContent='❌ فشل جلب الغروبات';
-  }
-}
-
-function renderPicker(groups){
-  const list=document.getElementById('grpPickerList');
-  if(!groups.length){list.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3)">لا توجد نتائج</div>';return;}
-  list.innerHTML=groups.map(function(g){
-    return '<div onclick="pickGroup(this.dataset.tid,this.dataset.gname)" data-tid="'+escH(g.threadID)+'" data-gname="'+escH(g.name||'')+'" style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:12px;transition:background .15s" onmouseover="this.style.background=\\'var(--bg3)\\'" onmouseout="this.style.background=\\'\\'">'+
-      '<div style="flex:1;min-width:0">'+
-        '<div style="font-weight:600;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escH(g.name||'غير مسمى')+'</div>'+
-        '<div style="font-size:.76rem;color:var(--text3);margin-top:2px;font-family:monospace">'+escH(g.threadID)+'</div>'+
-      '</div>'+
-      (g.memberCount?'<span class="badge badge-blue" style="flex-shrink:0">'+g.memberCount+' عضو</span>':'')+
-    '</div>';
-  }).join('');
-}
-
-function filterPicker(){
-  const s=document.getElementById('grpPickerSearch').value.toLowerCase();
-  const filtered=_pickerGroups.filter(g=>(g.name||'').toLowerCase().includes(s)||g.threadID.includes(s));
-  renderPicker(filtered);
-}
-
-function escJ(s){return String(s).replace(/'/g,"\\\\'").replace(/</g,'&lt;')}
-function escH(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
-
-function openGroupPicker(target){
-  _pickerTarget=target;
-  document.getElementById('grpPickerModal').style.display='flex';
-  document.getElementById('grpPickerSearch').value='';
-  loadGroups();
-}
-
-function closeGrpPicker(){document.getElementById('grpPickerModal').style.display='none'}
-
-function pickGroup(id, name){
-  if(_pickerTarget==='exec'){
-    document.getElementById('execThread').value=id;
-    showToast('✅ تم اختيار: '+name,'success');
-  } else if(_pickerTarget==='bulk'){
-    const ta=document.getElementById('bulkThreads');
-    const cur=ta.value.trim();
-    ta.value=cur?(cur+'\\n'+id):id;
-    showToast('✅ تمت إضافة: '+name,'success');
-  }
-  closeGrpPicker();
-}
-
-async function runExecCmd(){
-  const thread=document.getElementById('execThread').value.trim();
-  const cmd=document.getElementById('execCmdInput').value.trim();
-  if(!thread||!cmd)return showToast('أدخل معرف الغروب والأمر','error');
-  const st=document.getElementById('execStatus');
-  st.innerHTML='<span style="color:var(--text3)">⏳ جارٍ التنفيذ...</span>';
-  const r=await api('/api/execute',{threadID:thread,command:cmd});
-  if(r.ok||r.message)st.innerHTML='<span style="color:var(--green)">✅ '+(r.message||'تم التنفيذ')+'</span>';
-  else st.innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>';
-}
-async function sendMsg(){
-  const thread=document.getElementById('execThread').value.trim();
-  const msg=document.getElementById('execMsg').value.trim();
-  if(!thread||!msg)return showToast('أدخل معرف الغروب والرسالة','error');
-  const st=document.getElementById('execStatus');
-  st.innerHTML='<span style="color:var(--text3)">⏳ جارٍ الإرسال...</span>';
-  const r=await api('/api/send',{threadID:thread,message:msg});
-  if(r.ok||r.message)st.innerHTML='<span style="color:var(--green)">✅ تم الإرسال</span>';
-  else st.innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>';
-}
-async function sendBulk(){
-  const threads=document.getElementById('bulkThreads').value.trim().split('\\n').map(t=>t.trim()).filter(Boolean);
-  const msg=document.getElementById('bulkMsg').value.trim();
-  const delay=parseInt(document.getElementById('bulkDelay').value)||2;
-  if(!threads.length||!msg)return showToast('أدخل الغروبات والرسالة','error');
-  const st=document.getElementById('bulkStatus');
-  let ok=0,fail=0;
-  st.innerHTML='⏳ جارٍ الإرسال الجماعي ('+threads.length+' غروب)...';
-  for(const t of threads){
-    const r=await api('/api/send',{threadID:t,message:msg});
-    if(r.ok||r.message)ok++;else fail++;
-    st.innerHTML='📤 '+ok+' ✅ / '+fail+' ❌ — '+Math.round((ok+fail)/threads.length*100)+'%';
-    await new Promise(res=>setTimeout(res,delay*1000));
-  }
-  st.innerHTML='<span style="color:var(--green)">✅ اكتمل: '+ok+' نجح، '+fail+' فشل</span>';
-}
-function setCmd(cmd){
-  const inp=document.getElementById('execCmdInput');
-  inp.value=cmd;
-  inp.focus();
-  if(cmd.endsWith(' '))inp.setSelectionRange(cmd.length,cmd.length);
-}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeGrpPicker()});
-</script>`;
-    res.send(layout('تنفيذ', body, 'execute', pageOpts()));
-  });
 
   // ─── SCHEDULER ──────────────────────────────────────────────────────────────
   app.get('/scheduler', auth, (req,res) => {

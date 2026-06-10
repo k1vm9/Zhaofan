@@ -1,21 +1,5 @@
 [
   {
-    "startTs": 1781050914169,
-    "startDate": "2026-06-10T00:21:54.169Z",
-    "endTs": 1781050923474,
-    "uptimeMs": 9305,
-    "exitCode": 1,
-    "sessionNum": 3
-  },
-  {
-    "startTs": 1781051154206,
-    "startDate": "2026-06-10T00:25:54.206Z",
-    "endTs": null,
-    "uptimeMs": null,
-    "exitCode": null,
-    "sessionNum": 1
-  },
-  {
     "startTs": 1781052385132,
     "startDate": "2026-06-10T00:46:25.132Z",
     "endTs": null,
@@ -74,9 +58,25 @@
   {
     "startTs": 1781106354072,
     "startDate": "2026-06-10T15:45:54.072Z",
-    "endTs": null,
-    "uptimeMs": null,
-    "exitCode": null,
+    "endTs": 1781106363779,
+    "uptimeMs": 9707,
+    "exitCode": 1,
     "sessionNum": 2
+  },
+  {
+    "startTs": 1781106963801,
+    "startDate": "2026-06-10T15:56:03.801Z",
+    "endTs": 1781106973218,
+    "uptimeMs": 9417,
+    "exitCode": 1,
+    "sessionNum": 3
+  },
+  {
+    "startTs": 1781107118662,
+    "startDate": "2026-06-10T15:58:38.662Z",
+    "endTs": 1781107129060,
+    "uptimeMs": 10398,
+    "exitCode": 1,
+    "sessionNum": 1
   }
 ]
