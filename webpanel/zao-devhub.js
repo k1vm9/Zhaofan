@@ -1787,7 +1787,7 @@ function monitorTab() {
 
   window.monRollback = async function(relPath, wrapId) {
     if (!relPath) return;
-    if (!confirm('تراجع عن إصلاح الذكاء الاصطناعي واستعادة الملف الأصلي؟\n\n' + relPath)) return;
+    if (!confirm('تراجع عن إصلاح الذكاء الاصطناعي واستعادة الملف الأصلي؟\\n\\n' + relPath)) return;
     try {
       const r = await fetch('/api/devhub/monitor/rollback', {
         method: 'POST',

@@ -4,3 +4,4 @@
 - [Nickname lock priority system](nickname-lock-priority.md) — nicknameLocks.js v3 has user-level locks (higher priority than group); nicknames.js v6 adds قفل/فك/مقفولون subcommands; enforce interval is 60s not 90s.
 - [Session guard wiring](session-guard-wiring.md) — sessionGuard.js is wired in ZAO.js after syncAllGroups; uses cookieSnapshot internally; state path is process.cwd()/sessions/ZAO-STATE.json.
 - [npm install deadlock guard](npm-install-timeout.md) — both execSync npm install calls in ZAO.js (cmd+evt loaders) have timeout:90_000; without it a slow registry hangs the entire bot boot.
+- [Template literal JS escaping](template-literal-escaping.md) — zao-server.js and zao-devhub.js use backtick template literals to render client-side JS; \' becomes ' and \n becomes newline, breaking client JS parse.

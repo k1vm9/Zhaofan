@@ -1177,14 +1177,27 @@ async function onBot({ models }) {
 
           // Helper: build result from in-memory global.data (populated by syncAllGroups)
           function _fromMemory() {
+            const infoMap = global.data && global.data.threadInfo;
             const ids = global.data && global.data.allThreadID;
-            if (!ids || !ids.length) return [];
-            const infoMap = global.data.threadInfo;
-            return ids.map(tid => {
-              const info = infoMap ? infoMap.get(String(tid)) : null;
+
+            // Collect IDs from allThreadID array AND from threadInfo Map keys
+            const allIds = new Set(Array.isArray(ids) ? ids.map(String) : []);
+            if (infoMap instanceof Map) {
+              for (const [tid, info] of infoMap) {
+                // Include if marked as group, or has a name (groups usually have names unlike DMs)
+                if (info && (info.isGroup || info.threadType === 'GROUP' ||
+                    (info.name && info.name.trim() && info.participantIDs && info.participantIDs.length > 2))) {
+                  allIds.add(String(tid));
+                }
+              }
+            }
+
+            if (!allIds.size) return [];
+            return Array.from(allIds).map(tid => {
+              const info = infoMap ? infoMap.get(tid) : null;
               return {
-                threadID: String(tid),
-                name:     (info && (info.name || info.threadName) || String(tid)).slice(0, 60),
+                threadID: tid,
+                name:     (info && (info.name || info.threadName) || tid).slice(0, 60),
                 members:  info ? (info.participantIDs || []).length : 0,
                 timestamp: info ? (info.timestamp || 0) : 0
               };

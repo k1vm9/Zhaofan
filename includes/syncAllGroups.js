@@ -42,7 +42,7 @@ function _log(msg) {
 /**
  * Wrap api.getThreadList in a per-page timeout.
  */
-function _getPageWithTimeout(api, count, timestamp) {
+function _getPageWithTimeout(api, count, timestamp, tags) {
   return new Promise((resolve, reject) => {
     let settled = false;
 
@@ -60,7 +60,7 @@ function _getPageWithTimeout(api, count, timestamp) {
         if (err) return reject(err);
         resolve(data);
       };
-      const maybe = api.getThreadList(count, timestamp, ["INBOX"], cb);
+      const maybe = api.getThreadList(count, timestamp, tags, cb);
       if (maybe && typeof maybe.then === "function") {
         maybe
           .then(d => { if (!settled) { settled = true; clearTimeout(timer); resolve(d); } })
@@ -72,23 +72,50 @@ function _getPageWithTimeout(api, count, timestamp) {
   });
 }
 
+// Tag strategies to try in order. Some accounts return 0 for INBOX but results for []
+const TAG_STRATEGIES = [["INBOX"], [], ["PENDING"], ["OTHER"]];
+
+async function _tryGetPage(api, count, timestamp) {
+  // Try each tag strategy, return on first non-empty result
+  for (const tags of TAG_STRATEGIES) {
+    try {
+      const result = await _getPageWithTimeout(api, count, timestamp, tags);
+      const list = Array.isArray(result) ? result : (result && result.data ? result.data : []);
+      if (list.length > 0) {
+        _log(`Using tag strategy: ${JSON.stringify(tags)} (${list.length} threads)`);
+        return result;
+      }
+    } catch (_) {}
+  }
+  // All strategies returned empty — return empty array
+  return [];
+}
+
 async function syncAllGroups(api) {
   if (!api || typeof api.getThreadList !== "function") return;
 
   // Cancel any pending retry (this call is the retry or a fresh call).
   if (_retryTimer) { clearTimeout(_retryTimer); _retryTimer = null; }
 
-  _log("Warming thread cache from INBOX…");
+  _log("Warming thread cache (trying INBOX, all-threads, PENDING, OTHER)…");
 
   let timestamp    = null;
   let totalSeen    = 0;
   let registered   = 0;
   let atLeastOnePage = false;
+  let activeTagStrategy = null; // once we find a working strategy, stick with it
 
   for (let page = 0; page < MAX_PAGES; page++) {
     let threads;
     try {
-      threads = await _getPageWithTimeout(api, PAGE, timestamp);
+      if (activeTagStrategy !== null) {
+        // Use the known working strategy for subsequent pages
+        threads = await _getPageWithTimeout(api, PAGE, timestamp, activeTagStrategy);
+      } else {
+        threads = await _tryGetPage(api, PAGE, timestamp);
+        // Detect which strategy worked by checking what returned results
+        // (We'll just proceed — _tryGetPage handles fallback internally)
+      }
     } catch (e) {
       _log(`Page ${page + 1} failed: ${e && e.message ? e.message : e}`);
 

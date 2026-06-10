@@ -1776,7 +1776,7 @@ function addLine(text){
     else if(/❌|\bERROR\b/.test(text))cls='log-error';
     else if(/⚠️|\bWARN\b/.test(text))cls='log-warn';
     else if(/✅|SUCCESS|connected/.test(text))cls='log-ok';
-    span.className=cls;span.textContent=text+'\n';
+    span.className=cls;span.textContent=text+'\\n';
     _logBox.appendChild(span);
     if(_auto())_logBox.scrollTop=_logBox.scrollHeight;
     while(_logBox.children.length>5000)_logBox.removeChild(_logBox.firstChild);
@@ -2121,7 +2121,7 @@ function renderPicker(groups){
   const list=document.getElementById('grpPickerList');
   if(!groups.length){list.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3)">لا توجد نتائج</div>';return;}
   list.innerHTML=groups.map(function(g){
-    return '<div onclick="pickGroup(\''+escJ(g.threadID)+'\',\''+escJ(g.name)+'\')" style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:12px;transition:background .15s" onmouseover="this.style.background=\'var(--bg3)\'" onmouseout="this.style.background=\'\'">'+
+    return '<div onclick="pickGroup(this.dataset.tid,this.dataset.gname)" data-tid="'+escH(g.threadID)+'" data-gname="'+escH(g.name||'')+'" style="padding:12px 16px;border-bottom:1px solid var(--border);cursor:pointer;display:flex;align-items:center;gap:12px;transition:background .15s" onmouseover="this.style.background=\\'var(--bg3)\\'" onmouseout="this.style.background=\\'\\'">'+
       '<div style="flex:1;min-width:0">'+
         '<div style="font-weight:600;font-size:.88rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+escH(g.name||'غير مسمى')+'</div>'+
         '<div style="font-size:.76rem;color:var(--text3);margin-top:2px;font-family:monospace">'+escH(g.threadID)+'</div>'+
@@ -2482,10 +2482,10 @@ function filterHoldPicker(){const s=document.getElementById('holdPickerSearch').
 function renderHoldPicker(groups){
   const list=document.getElementById('holdPickerList');
   if(!groups.length){list.innerHTML='<div style="text-align:center;padding:32px;color:var(--text3)">لا توجد نتائج</div>';return;}
-  list.innerHTML=groups.map(function(g){return '<div onclick="pickHoldGroup(\''+g.threadID+'\')" style="cursor:pointer;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600">'+htmlE(g.name||'\u2014')+'</span><code style="font-size:.75rem;color:var(--text3)">'+g.threadID+'</code></div>';}).join('');
+  list.innerHTML=groups.map(function(g){return '<div onclick="pickHoldGroup(this)" data-tid="'+g.threadID+'" style="cursor:pointer;padding:10px 14px;border-radius:8px;border:1px solid var(--border);background:var(--bg3);display:flex;justify-content:space-between;align-items:center"><span style="font-weight:600">'+htmlE(g.name||'\u2014')+'</span><code style="font-size:.75rem;color:var(--text3)">'+g.threadID+'</code></div>';}).join('');
 }
-function htmlE(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-function pickHoldGroup(id){document.getElementById('holdTid').value=id;closeHoldPicker();loadHoldStatus();}
+function htmlE(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function pickHoldGroup(el){var id=el.dataset?el.dataset.tid:el;document.getElementById('holdTid').value=id;closeHoldPicker();loadHoldStatus();}
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){ closeHoldPicker(); closeMsgModal(); }});
 
 async function autoLoadHoldGroups(){
@@ -2547,8 +2547,8 @@ async function loadMsgRequests(){
         '<div><div style="font-weight:600;color:var(--text)">'+name+'</div>' +
         '<div style="font-size:.75rem;color:var(--text3);margin-top:2px;display:flex;gap:6px;align-items:center"><code style="font-size:.73rem">'+id+'</code>'+isGrp+folderBadge+'</div></div>' +
         '<div style="display:flex;gap:6px;flex-shrink:0">' +
-        '<button class="btn btn-outline btn-sm" style="color:var(--green)" onclick="msgReqAction(\''+id+'\',\'accept\',\''+name+'\')">✅ قبول</button>' +
-        '<button class="btn btn-outline btn-sm" style="color:var(--red)"   onclick="msgReqAction(\''+id+'\',\'decline\',\''+name+'\')">❌ رفض</button>' +
+        '<button class="btn btn-outline btn-sm" style="color:var(--green)" data-rid="'+id+'" data-rname="'+name+'" onclick="msgReqAction(this.dataset.rid,\\'accept\\',this.dataset.rname)">✅ قبول</button>' +
+        '<button class="btn btn-outline btn-sm" style="color:var(--red)"   data-rid="'+id+'" data-rname="'+name+'" onclick="msgReqAction(this.dataset.rid,\\'decline\\',this.dataset.rname)">❌ رفض</button>' +
         '</div></div>';
     }).join('');
   }catch(e){
@@ -3553,7 +3553,7 @@ function _showSlashMenu(query){
   if(!items.length){_q('slashMenu').style.display='none';return;}
   container.innerHTML=items.map(function(item,i){
     return '<div class="_slashItem" data-idx="'+i+'" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;transition:background .12s" '
-      +'onmouseenter="this.style.background=\'var(--bg3)\'" onmouseleave="this.style.background=\'none\'">'
+      +'onmouseenter="this.style.background=\\'var(--bg3)\\'" onmouseleave="this.style.background=\\'none\\'">'
       +'<span style="font-size:1.1rem">'+item.icon+'</span>'
       +'<div><div style="font-size:.84rem;font-weight:600;color:var(--text)">'+_h(item.label)+'</div>'
       +'<div style="font-size:.73rem;color:var(--text3)">'+_h(item.desc)+'</div></div>'
@@ -3595,7 +3595,7 @@ function _renderTree(groups){
     var lastT=g.lastTime?_fmt(g.lastTime):'';
     var unr=g.unread?'<span class="msng-unread-badge" style="margin-right:4px">'+g.unread+'</span>':'';
     return '<div class="_treeRow" data-tid="'+_h(g.threadID)+'" style="display:flex;align-items:center;gap:10px;padding:9px 14px;cursor:pointer;border-radius:8px;margin:2px 4px;'+(isSel?'background:rgba(255,60,95,.1);border:1px solid rgba(255,60,95,.2)':'border:1px solid transparent')+'" '
-      +'onmouseenter="if(!this.style.borderColor||this.style.borderColor===\'transparent\')this.style.background=\'var(--bg3)\'" onmouseleave="if(\''+g.threadID+'\'!==_selTID){this.style.background=\'none\';this.style.borderColor=\'transparent\';}">'
+      +'onmouseenter="if(!this.style.borderColor||this.style.borderColor===\\'transparent\\')this.style.background=\\'var(--bg3)\\'" onmouseleave="if(this.dataset.tid!==_selTID){this.style.background=\\'none\\';this.style.borderColor=\\'transparent\\';}">'
       +'<div class="msng-grp-ava" style="background:linear-gradient('+_grad(g.threadID)+');flex-shrink:0">'+_ini(g.name)+'</div>'
       +'<div style="flex:1;min-width:0">'
         +'<div style="display:flex;align-items:center;gap:6px;justify-content:space-between">'
@@ -3604,7 +3604,7 @@ function _renderTree(groups){
         +'</div>'
         +'<div style="font-size:.73rem;color:var(--text3);margin-top:2px"><code style="font-size:.7rem;opacity:.7">'+g.threadID+'</code>'+(g.memberCount?' · '+g.memberCount+' عضو':'')+'</div>'
       +'</div>'
-      +'<button onclick="event.stopPropagation();_treeOpenSettings(\''+_h(g.threadID)+'\')" style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:.75rem;color:var(--text3);flex-shrink:0" title="إعدادات الغروب">⚙️</button>'
+      +'<button onclick="event.stopPropagation();_treeOpenSettings(this.dataset.tid)" data-tid="'+_h(g.threadID)+'" style="background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:4px 8px;cursor:pointer;font-size:.75rem;color:var(--text3);flex-shrink:0" title="إعدادات الغروب">⚙️</button>'
     +'</div>';
   }).join('');
   list.querySelectorAll('._treeRow').forEach(function(el){
@@ -3874,7 +3874,7 @@ function _renderBubble(m,myID){
   for(var i=0;i<aa.length;i++){
     var a=aa[i];
     if((a.type==='photo'||a.type==='sticker')&&a.url){
-      attaches+='<div style="margin-top:5px"><img src="'+_h(a.url)+'" style="max-width:180px;max-height:180px;border-radius:10px;cursor:pointer;display:block" onclick="window.open(\''+_h(a.url)+'\',\'_blank\')" onerror="this.parentElement.style.display=\'none\'"/></div>';
+      attaches+='<div style="margin-top:5px"><img src="'+_h(a.url)+'" style="max-width:180px;max-height:180px;border-radius:10px;cursor:pointer;display:block" onclick="window.open(\\''+_h(a.url)+'\\',\\'_blank\\')" onerror="this.parentElement.style.display=\\'none\\'"/></div>';
     }else if(a.type==='audio'&&a.url){
       attaches+='<div style="margin-top:5px"><audio src="'+_h(a.url)+'" controls style="max-width:200px;height:32px"></audio></div>';
     }else if(a.type==='video'&&a.url){
@@ -4369,8 +4369,8 @@ async function _reportMessage(msgID){
             +'</div>'
           +'</div>'
           +'<div style="display:flex;gap:6px;flex-shrink:0">'
-            +'<button class="btn btn-outline btn-sm" style="color:var(--green);font-size:.8rem" onclick="this._act(\'accept\')" data-tid="'+tid+'" data-name="'+name+'">✅ قبول</button>'
-            +'<button class="btn btn-outline btn-sm" style="color:var(--red);font-size:.8rem" onclick="this._act(\'decline\')" data-tid="'+tid+'" data-name="'+name+'">❌ رفض</button>'
+            +'<button class="btn btn-outline btn-sm" style="color:var(--green);font-size:.8rem" onclick="this._act(\\'accept\\')" data-tid="'+tid+'" data-name="'+name+'">✅ قبول</button>'
+            +'<button class="btn btn-outline btn-sm" style="color:var(--red);font-size:.8rem" onclick="this._act(\\'decline\\')" data-tid="'+tid+'" data-name="'+name+'">❌ رفض</button>'
           +'</div>'
         +'</div>';
       }).join('');
