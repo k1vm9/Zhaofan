@@ -22,15 +22,6 @@
   },
   "OPKs": [
     {
-      "id": "3ab92c4e",
-      "kp": {
-        "pub": "MCowBQYDK2VuAyEAaXNZf0/rw2olN84WOazpDl8zpzfYMrxJ3Rkgarked3w=",
-        "priv": {
-          "plain": "MC4CAQAwBQYDK2VuBCIEICiDOOJqCSEoCxWWcXA78Jy3waTVPuK5TfiUpGUAscRG"
-        }
-      }
-    },
-    {
       "id": "dbeb9e15",
       "kp": {
         "pub": "MCowBQYDK2VuAyEA6lB6m8WKW/zDf9v+MXG+dHyE8hFYtXWhWPwGuz5XODY=",

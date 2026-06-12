@@ -686,6 +686,11 @@ code{
 </style>
 </head>
 <body>
+<script>
+function openSidebar(){var s=document.getElementById('mainSidebar'),b=document.getElementById('sbBackdrop'),m=document.getElementById('menuBtn');if(!s)return;s.classList.add('open');if(b)b.classList.add('show');if(m)m.classList.add('active');document.body.style.overflow='hidden'}
+function closeSidebar(){var s=document.getElementById('mainSidebar'),b=document.getElementById('sbBackdrop'),m=document.getElementById('menuBtn');if(!s)return;s.classList.remove('open');if(b)b.classList.remove('show');if(m)m.classList.remove('active');document.body.style.overflow=''}
+function toggleSidebar(){var s=document.getElementById('mainSidebar');if(s&&s.classList.contains('open'))closeSidebar();else openSidebar()}
+</script>
 
 <div class="sb-backdrop" id="sbBackdrop" onclick="closeSidebar()"></div>
 
