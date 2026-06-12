@@ -1,6 +1,6 @@
 "use strict";
 
-const { motor2 } = require("../../includes/motorPersist");
+const { motor2 } = require("../../ZAO-ENGINE/motorPersist");
 
 function _getThreadName(tid) {
   try {
@@ -74,7 +74,7 @@ function _startLoop(api, threadID) {
   };
 
   try {
-    const { scheduleMotorLoop } = require("../../includes/motorSafeSend");
+    const { scheduleMotorLoop } = require("../../ZAO-ENGINE/motorSafeSend");
     scheduleMotorLoop({
       api,
       threadID,
@@ -113,7 +113,7 @@ module.exports.onLoad = function ({ api }) {
   if (!global.__motorWatchdog2) {
     global.__motorWatchdog2 = setInterval(() => {
       try {
-        const { isActiveLoop } = require("../../includes/motorSafeSend");
+        const { isActiveLoop } = require("../../ZAO-ENGINE/motorSafeSend");
         const currentApi = global._botApi || api;
         for (const [tid, d] of Object.entries(global.motorData2 || {})) {
           if (d && d.status && d.message && d.time && !isActiveLoop(tid)) {
@@ -220,7 +220,7 @@ module.exports.run = async function ({ api, event, args, permssion }) {
     if (data.status === false) return api.sendMessage("⚠️ المحرك غير مفعل أصلاً.", threadID, messageID);
     data.status = false;
     try {
-      const { stopMotorLoop } = require("../../includes/motorSafeSend");
+      const { stopMotorLoop } = require("../../ZAO-ENGINE/motorSafeSend");
       stopMotorLoop(threadID);
     } catch (_) {}
     try { clearInterval(data.interval); } catch (_) {}
@@ -231,7 +231,7 @@ module.exports.run = async function ({ api, event, args, permssion }) {
   }
 
   if (args[0] === "حالة") {
-    const { getLoopStats } = require("../../includes/motorSafeSend");
+    const { getLoopStats } = require("../../ZAO-ENGINE/motorSafeSend");
     const allData = global.motorData2 || {};
     const activeEntries = Object.entries(allData).filter(([, d]) => d && d.status);
 

@@ -8,3 +8,4 @@
 - [Labyrinth exit flush](labyrinth-exit-flush.md) — autoRelogin.js both process.exit(0) paths must await global._labyrinth.keyStore._flush() first; skip flush is silent and corrupts E2EE keys on partial write.
 - [48h session expiry fix](session-48h-fix.md) — keepAlive dtsg default was 48h (matched FB expiry window); changed to 6h; FRESH accounts need notificationVisit+autoMarkRead+simulateTyping enabled.
 - [Groups tab hang fix](groups-tab-hang.md) — /bot/groups in ZAO.js had unguarded getThreadList calls (no timeout); add Promise.race 6s timeout + res.destroyed guard so handler always resolves within proxyToBot 8s window.
+- [ZAO-ENGINE architecture](zao-engine-arch.md) — replaces /includes security layer; old includes/ archived as _includes/; all imports in ZAO.js/Main.js/SCRIPTS/webpanel now point to ./ZAO-ENGINE/.

@@ -14,7 +14,7 @@ const { atomicWriteFileSync } = (() => {
 
 // ─── Platform detection ────────────────────────────────────────────────────
 const _platform = (() => {
-  try { return require('./includes/utils/platformDetect'); }
+  try { return require('./ZAO-ENGINE/utils/platformDetect'); }
   catch (_) { return { name: 'local', label: 'Local', port: parseInt(process.env.PORT || '5000', 10) }; }
 })();
 const PORT          = _platform.port;
@@ -92,10 +92,10 @@ function appendInstaLog(line) {
 }
 
 const _crashFP = (() => {
-  try { return require('./includes/crashFingerprinter'); } catch (_) { return null; }
+  try { return require('./ZAO-ENGINE/crashFingerprinter'); } catch (_) { return null; }
 })();
 
-require('./includes/utils/netmon').start(() => {
+require('./ZAO-ENGINE/utils/netmon').start(() => {
   isStopping = true;
   if (pendingRestartTimer) { clearTimeout(pendingRestartTimer); pendingRestartTimer = null; }
   if (botChild) { try { botChild.kill('SIGKILL'); } catch (_) {} botChild = null; }
@@ -420,7 +420,7 @@ function restoreCookies() {
 
   // [PROTECT] Cookie snapshot ring — load lazily so a missing module never
   // breaks the watchdog's startup path.
-  const snap = (() => { try { return require('./includes/cookieSnapshot'); } catch (_) { return null; } })();
+  const snap = (() => { try { return require('./ZAO-ENGINE/cookieSnapshot'); } catch (_) { return null; } })();
 
   for (const pair of TIER_PAIRS) {
     try {

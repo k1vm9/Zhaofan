@@ -10,7 +10,7 @@
  * أي شخص آخر يغيّر كنية → تُعاد فوراً للقيمة المحفوظة.
  */
 
-const NickProtect = require("../../includes/nickProtect");
+const NickProtect = require("../../ZAO-ENGINE/nickProtect");
 
 module.exports.config = {
   name:            "حماية",

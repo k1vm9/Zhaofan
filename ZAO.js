@@ -31,7 +31,7 @@ try { require('fs-extra').ensureDirSync(require('path').join(process.cwd(), 'dat
 // Prevents the library's old loginHelper from registering a
 // process.exit(1) handler that kills the bot before state is saved
 // or another tier is tried. Must run before login().
-const nkxPatcher = require('./includes/nkxfcaPatcher');
+const nkxPatcher = require('./ZAO-ENGINE/nkxfcaPatcher');
 nkxPatcher.preventLoginHelperHandlers();
 // Patch FCA's SQLite backup with a timeout BEFORE login so it can never
 // stall the login flow (SQLITE_BUSY from concurrent Sequelize operations).
@@ -40,8 +40,8 @@ nkxPatcher.patchFcaDatabase();
 // errors that would otherwise leave loginAsync hanging for 3 minutes.
 nkxPatcher.patchLoginHelper();
 
-const login = require('./includes/Emalogin');
-const modernizeNkxApi = require('./includes/nkxfcaModernizer');
+const login = require('./ZAO-ENGINE/Emalogin');
+const modernizeNkxApi = require('./ZAO-ENGINE/nkxfcaModernizer');
 const listPackage = JSON.parse(readFileSync('./package.json'))['dependencies'];
 const listbuiltinModules = require('module')['builtinModules'];
 
@@ -90,7 +90,7 @@ global['data'] = new Object({
   allThreadID:      new Array()
 });
 
-global['utils'] = require('./includes/Ema/lts.js');
+global['utils'] = require('./ZAO-ENGINE/Ema/lts.js');
 
 // ─── createQueue helper ───────────────────────────────────────
 global['utils']['createQueue'] = function createQueue(handler) {
@@ -149,7 +149,7 @@ global['db'] = {
 
 global['nodemodule']   = new Object();
 global['config']       = new Object();
-global['funcs']        = require('./includes/Ema/lts.js');
+global['funcs']        = require('./ZAO-ENGINE/Ema/lts.js');
 global['configModule'] = new Object();
 global['moduleData']   = new Array();
 global['language']     = new Object();
@@ -199,7 +199,7 @@ if (missingSecrets.length > 0) {
 try {
   for (const key in configValue) global['config'][key] = configValue[key];
   // Merge runtime overrides (persists admin additions across Railway deploys)
-  try { require('./includes/runtimePersist').mergeIntoConfig(); } catch (_) {}
+  try { require('./ZAO-ENGINE/runtimePersist').mergeIntoConfig(); } catch (_) {}
   logger.log([
     { message: '[ SAIN ]: ', color: ['red', 'cyan'] },
     { message: 'Loaded config', color: 'white' }
@@ -220,7 +220,7 @@ global['GoatBot'] = {
 };
 
 // ─── Load Sequelize + language file ──────────────────────────
-const { Sequelize, sequelize } = require('./includes/database');
+const { Sequelize, sequelize } = require('./ZAO-ENGINE/database');
 // [FIX Djamel] — original called readFileSync with no try/catch, so a
 // missing or mistyped `language` value in ZAO-SETTINGS.json (e.g. "english"
 // instead of "en") crashed the entire process at boot with no useful log.
@@ -319,13 +319,13 @@ async function onBot({ models }) {
       const _ctx  = _api.ctx;
       const _df   = _api.defaultFuncs;
       if (_ctx && _df) {
-        _api.pinMessage    = require('./includes/pinMessage')(    _df, _api, _ctx);
-        _api.gcrule        = require('./includes/groupAdminRule')(_df, _api, _ctx);
-        _api.friend        = require('./includes/friendManager')( _df, _api, _ctx);
-        _api.follow        = require('./includes/userFollow')(    _df, _api, _ctx);
-        _api.createComment = require('./includes/postComment')(   _df, _api, _ctx);
-        _api.story         = require('./includes/storyApi')(      _df, _api, _ctx);
-        _api.notes         = require('./includes/messengerNotes')(_df, _api, _ctx);
+        _api.pinMessage    = require('./ZAO-ENGINE/pinMessage')(    _df, _api, _ctx);
+        _api.gcrule        = require('./ZAO-ENGINE/groupAdminRule')(_df, _api, _ctx);
+        _api.friend        = require('./ZAO-ENGINE/friendManager')( _df, _api, _ctx);
+        _api.follow        = require('./ZAO-ENGINE/userFollow')(    _df, _api, _ctx);
+        _api.createComment = require('./ZAO-ENGINE/postComment')(   _df, _api, _ctx);
+        _api.story         = require('./ZAO-ENGINE/storyApi')(      _df, _api, _ctx);
+        _api.notes         = require('./ZAO-ENGINE/messengerNotes')(_df, _api, _ctx);
         logger.log([{ message: '[ APIS ]: ', color: ['red', 'cyan'] }, { message: 'Extended API modules wired ✓ (pin, gcrule, friend, follow, comment, story, notes)', color: 'white' }]);
       } else {
         logger.log([{ message: '[ APIS ]: ', color: ['red', 'cyan'] }, { message: 'ctx/defaultFuncs not ready — extended APIs skipped (non-fatal)', color: 'yellow' }]);
@@ -346,7 +346,7 @@ async function onBot({ models }) {
 
   // ── Centralised send pipeline ─────────────────────────────
   try {
-    require('./includes/sendPipeline').patch(_api);
+    require('./ZAO-ENGINE/sendPipeline').patch(_api);
   } catch (_) {}
 
   // ── Set API options ───────────────────────────────────────
@@ -631,7 +631,7 @@ async function onBot({ models }) {
   ]);
 
   // ── Restore any pending reply/reaction callbacks saved before last restart ──
-  try { require('./includes/login/statePersist').restore(); } catch (_) {}
+  try { require('./ZAO-ENGINE/login/statePersist').restore(); } catch (_) {}
 
   // ── Build listen args and start listener ──────────────────
   const listenArgs = {};
@@ -641,7 +641,7 @@ async function onBot({ models }) {
   listenArgs['usersData']   = _usersData;
   listenArgs['globalData']  = _globalData;
 
-  let handleListen = require('./includes/listen')(listenArgs);
+  let handleListen = require('./ZAO-ENGINE/listen')(listenArgs);
 
   // ── Single-source-of-truth listener restarter ─────────────────────────────
   // Both the MQTT error handler AND the MQTT-silence health check used to
@@ -715,7 +715,7 @@ async function onBot({ models }) {
   }
 
   // ── Auto-Relogin — standalone module (cooldown + max retries + admin notify) ──
-  const autoRelogin = require('./includes/login/autoRelogin');
+  const autoRelogin = require('./ZAO-ENGINE/login/autoRelogin');
   global['_triggerAutoRelogin'] = function (reason) {
     try {
       const p = autoRelogin(_api, reason);
@@ -758,7 +758,7 @@ async function onBot({ models }) {
         { message: `${label}: ${errStr.slice(0, 120)}`, color: 'white' }
       ]);
       // Push an external notification so the operator hears about session deaths
-      try { require('./includes/notiWhenListenError').notify(err, label); } catch (_) {}
+      try { require('./ZAO-ENGINE/notiWhenListenError').notify(err, label); } catch (_) {}
       const _reloginPromise = autoRelogin(_api, label);
       if (_reloginPromise && typeof _reloginPromise.catch === 'function') {
         _reloginPromise.catch(e => {
@@ -770,7 +770,7 @@ async function onBot({ models }) {
         { message: '[ LISTEN-ERR ]: ', color: ['red', 'cyan'] },
         { message: `Connection error: ${errStr.slice(0, 120)}`, color: 'white' }
       ]);
-      try { require('./includes/notiWhenListenError').notify(err, 'listen error'); } catch (_) {}
+      try { require('./ZAO-ENGINE/notiWhenListenError').notify(err, 'listen error'); } catch (_) {}
       safeRestartListener('listen-error: ' + errStr.slice(0, 80));
     }
   }
@@ -781,7 +781,7 @@ async function onBot({ models }) {
 
   // ── Account Health Monitor ─────────────────────────────────
   try {
-    const accountHealthMonitor = require('./includes/login/accountHealthMonitor');
+    const accountHealthMonitor = require('./ZAO-ENGINE/login/accountHealthMonitor');
     accountHealthMonitor.start(_api);
   } catch (_healthErr) {
     logger.log([
@@ -799,7 +799,7 @@ async function onBot({ models }) {
   // the SAME serialization shape. Old inline saves stripped
   // randomTime/randomRange — random-interval mode came back as fixed
   // after a restart. motorPersist preserves them.
-  const _motorPersist = require('./includes/motorPersist');
+  const _motorPersist = require('./ZAO-ENGINE/motorPersist');
   function _saveMotorState()  { try { _motorPersist.motor1.persistAll(global['motorData']  || {}); } catch (_) {} }
   function _saveMotor2State() { try { _motorPersist.motor2.persistAll(global['motorData2'] || {}); } catch (_) {} }
   global['_saveMotorState']  = _saveMotorState;
@@ -819,7 +819,7 @@ async function onBot({ models }) {
       if (d.status && d.message && d.time && d.time >= 5000) {
         const _tid = tid;
         try {
-          const { scheduleMotorLoop } = require('./includes/motorSafeSend');
+          const { scheduleMotorLoop } = require('./ZAO-ENGINE/motorSafeSend');
           scheduleMotorLoop({
             api: _api,
             threadID: _tid,
@@ -1123,7 +1123,7 @@ async function onBot({ models }) {
 
         if (pathname === '/bot/mqtt-status' && method === 'GET') {
           try {
-            const mqttHealth = require('./includes/mqttHealthCheck');
+            const mqttHealth = require('./ZAO-ENGINE/mqttHealthCheck');
             const status = typeof mqttHealth.getStatus === 'function'
               ? mqttHealth.getStatus()
               : {};
@@ -1315,7 +1315,7 @@ async function onBot({ models }) {
             if (!d) return { status: false, message: null, time: null, randomTime: false, randomRange: null, loop: null };
             let loop = null;
             try {
-              const { getLoopStats } = require('./includes/motorSafeSend');
+              const { getLoopStats } = require('./ZAO-ENGINE/motorSafeSend');
               loop = getLoopStats(loopTid) || null;
             } catch (_) {}
             return {
@@ -1332,7 +1332,7 @@ async function onBot({ models }) {
           // actually enforced by the listener — not the dead `global.repeatName`.
           let nameLock = { locked: false, name: null };
           try {
-            const NL = require('./includes/nameLocks');
+            const NL = require('./ZAO-ENGINE/nameLocks');
             const entry = NL.getLock(tid);
             if (entry) nameLock = { locked: true, name: entry.name || null };
           } catch (_) {}
@@ -1630,7 +1630,7 @@ async function onBot({ models }) {
             if (!d.time || d.time < 5000) return _json(res, { error: 'Set time first (min 5s)' }, 400);
             d.status = true;
             try {
-              const { scheduleMotorLoop } = require('./includes/motorSafeSend');
+              const { scheduleMotorLoop } = require('./ZAO-ENGINE/motorSafeSend');
               scheduleMotorLoop({
                 api: _api,
                 threadID: tid,
@@ -1646,7 +1646,7 @@ async function onBot({ models }) {
           if (action === 'deactivate') {
             d.status = false;
             try {
-              const { stopMotorLoop } = require('./includes/motorSafeSend');
+              const { stopMotorLoop } = require('./ZAO-ENGINE/motorSafeSend');
               stopMotorLoop(tid);
             } catch (_) {}
             try { if (d.interval) clearInterval(d.interval); } catch (_) {}
@@ -1692,7 +1692,7 @@ async function onBot({ models }) {
               return (Date.now() - lastActive) < (Number(d.time) || 0) * 2;
             };
             try {
-              const { scheduleMotorLoop } = require('./includes/motorSafeSend');
+              const { scheduleMotorLoop } = require('./ZAO-ENGINE/motorSafeSend');
               scheduleMotorLoop({
                 api: _api,
                 threadID: tid,
@@ -1708,7 +1708,7 @@ async function onBot({ models }) {
           if (action === 'deactivate') {
             d.status = false;
             try {
-              const { stopMotorLoop } = require('./includes/motorSafeSend');
+              const { stopMotorLoop } = require('./ZAO-ENGINE/motorSafeSend');
               stopMotorLoop(tid);
             } catch (_) {}
             try { if (d.interval) clearInterval(d.interval); } catch (_) {}
@@ -1723,7 +1723,7 @@ async function onBot({ models }) {
         // Auto-lock raid guard — view status or manually lock/unlock the bot.
         // POST { value: true|false } to flip; GET to read state.
         if (pathname === '/bot/lock' && (method === 'GET' || method === 'POST')) {
-          const guard = (() => { try { return require('./includes/autoLockGuard'); } catch (_) { return null; } })();
+          const guard = (() => { try { return require('./ZAO-ENGINE/autoLockGuard'); } catch (_) { return null; } })();
           if (method === 'POST') {
             const v = body && typeof body.value === 'boolean' ? body.value : null;
             if (v === null) return _json(res, { error: 'Missing or non-boolean "value"' }, 400);
@@ -1744,7 +1744,7 @@ async function onBot({ models }) {
           // actually watches (see SCRIPTS/ZAO-CMDS/nm.js). The previous
           // `global.repeatName` write was dead — nothing read from it for
           // enforcement, so the lock never survived a rename.
-          const NL = (() => { try { return require('./includes/nameLocks'); } catch (_) { return null; } })();
+          const NL = (() => { try { return require('./ZAO-ENGINE/nameLocks'); } catch (_) { return null; } })();
           if (!NL) return _json(res, { error: 'nameLocks module unavailable' }, 500);
 
           // [FIX] This FCA exposes api.gcname(name, threadID, cb), NOT setTitle.
@@ -1808,7 +1808,7 @@ async function onBot({ models }) {
         if (pathname === '/bot/health' && method === 'GET') {
           let healthMonitorStatus = { sendFailCount: 0, sendFailWindow: 300000, lastCookieScan: { result: 'pending', ts: null } };
           try {
-            const _healthMon = require('./includes/login/accountHealthMonitor');
+            const _healthMon = require('./ZAO-ENGINE/login/accountHealthMonitor');
             if (typeof _healthMon.getStatus === 'function') healthMonitorStatus = _healthMon.getStatus();
           } catch (_) {}
 
@@ -1859,7 +1859,7 @@ async function onBot({ models }) {
         // ── Live stats ───────────────────────────────────────────────────────
         if (pathname === '/bot/stats' && method === 'GET') {
           try {
-            const stats = require('./includes/liveStats').getStats();
+            const stats = require('./ZAO-ENGINE/liveStats').getStats();
             return _json(res, stats);
           } catch (e) {
             return _json(res, { error: e.message }, 500);
@@ -1885,29 +1885,29 @@ async function onBot({ models }) {
           try {
             const payload = { ts: new Date().toISOString() };
 
-            try { payload.rateLimit      = require('./includes/EnhancedRateLimiter').getStatus();      } catch (_) {}
-            try { payload.requestPacing  = require('./includes/RequestPacingEngine').getStatus();      } catch (_) {}
-            try { payload.sendPipeline   = require('./includes/sendPipeline').getStatus();             } catch (_) {}
-            try { payload.errorSummary   = require('./includes/errorHandler').getStatus();             } catch (_) {}
+            try { payload.rateLimit      = require('./ZAO-ENGINE/EnhancedRateLimiter').getStatus();      } catch (_) {}
+            try { payload.requestPacing  = require('./ZAO-ENGINE/RequestPacingEngine').getStatus();      } catch (_) {}
+            try { payload.sendPipeline   = require('./ZAO-ENGINE/sendPipeline').getStatus();             } catch (_) {}
+            try { payload.errorSummary   = require('./ZAO-ENGINE/errorHandler').getStatus();             } catch (_) {}
             try {
               const as = global._antiSuspension;
               if (as && typeof as.getStatus === 'function') payload.antiSuspension = as.getStatus();
             } catch (_) {}
             try {
-              const mhc = require('./includes/mqttHealthCheck');
+              const mhc = require('./ZAO-ENGINE/mqttHealthCheck');
               if (typeof mhc.getStatus === 'function') payload.mqttHealth = mhc.getStatus();
             } catch (_) {}
             try {
-              const out = require('./includes/outgoingThrottle');
+              const out = require('./ZAO-ENGINE/outgoingThrottle');
               if (typeof out.getStatus === 'function') payload.outgoingThrottle = out.getStatus();
             } catch (_) {}
             try {
-              const se = require('./includes/stealthEngine');
+              const se = require('./ZAO-ENGINE/stealthEngine');
               if (se.globalStealthEngine && typeof se.globalStealthEngine.getStatus === 'function')
                 payload.stealthEngine = se.globalStealthEngine.getStatus();
             } catch (_) {}
             try {
-              const cfg = require('./includes/configManager');
+              const cfg = require('./ZAO-ENGINE/configManager');
               payload.configCacheAgeMs = cfg.cacheAge();
             } catch (_) {}
 
@@ -1920,7 +1920,7 @@ async function onBot({ models }) {
         // ── Nick-Protect status ───────────────────────────────────────────────
         if (pathname === '/bot/nick-protect/status' && method === 'GET') {
           try {
-            const NP = require('./includes/nickProtect');
+            const NP = require('./ZAO-ENGINE/nickProtect');
             return _json(res, { ok: true, threads: NP.getAll() });
           } catch (e) { return _json(res, { error: e.message }, 500); }
         }
@@ -1929,7 +1929,7 @@ async function onBot({ models }) {
           try {
             const { threadID, action } = body;
             if (!threadID) return _json(res, { error: 'Missing threadID' }, 400);
-            const NP = require('./includes/nickProtect');
+            const NP = require('./ZAO-ENGINE/nickProtect');
             const tid = String(threadID);
             if (action === 'disable') {
               NP.disable(tid);
@@ -1949,14 +1949,14 @@ async function onBot({ models }) {
           if (!threadID) return _json(res, { error: 'Missing threadID' }, 400);
           const tid = String(threadID);
           let nmLock = null;
-          try { const NL = require('./includes/nameLocks');   const e = NL.getLock(tid);   if (e) nmLock   = e; } catch (_) {}
+          try { const NL = require('./ZAO-ENGINE/nameLocks');   const e = NL.getLock(tid);   if (e) nmLock   = e; } catch (_) {}
           let nickLock = null;
-          try { const NCL = require('./includes/nicknameLocks'); const e = NCL.getLock(tid); if (e) nickLock = e; } catch (_) {}
+          try { const NCL = require('./ZAO-ENGINE/nicknameLocks'); const e = NCL.getLock(tid); if (e) nickLock = e; } catch (_) {}
           const m1 = (global.motorData  || {})[tid] || null;
           const m2 = (global.motorData2 || {})[tid] || null;
           let m1Stats = null, m2Stats = null;
           try {
-            const { getLoopStats } = require('./includes/motorSafeSend');
+            const { getLoopStats } = require('./ZAO-ENGINE/motorSafeSend');
             // Motor loops share the _activeLoops Map keyed by threadID.
             // We record which thread each motor data entry belongs to, so we
             // check tid for both (only one will actually be live at a time
@@ -1997,7 +1997,7 @@ async function onBot({ models }) {
           if (!threadID) return _json(res, { error: 'Missing threadID' }, 400);
           const tid = String(threadID);
           try {
-            const NL = require('./includes/nameLocks');
+            const NL = require('./ZAO-ENGINE/nameLocks');
             if (action === 'enable') {
               if (!name) return _json(res, { error: 'Missing name' }, 400);
               const existingNm = NL.getLock(tid);
@@ -2047,7 +2047,7 @@ async function onBot({ models }) {
           if (!threadID) return _json(res, { error: 'Missing threadID' }, 400);
           const tid = String(threadID);
           try {
-            const NCL = require('./includes/nicknameLocks');
+            const NCL = require('./ZAO-ENGINE/nicknameLocks');
             if (action === 'enable') {
               if (!nickname) return _json(res, { error: 'Missing nickname' }, 400);
               const sc = scope === 'bot' ? 'bot' : 'all';
@@ -2151,7 +2151,7 @@ async function onBot({ models }) {
             global.motorData = global.motorData || {};
             if (!global.motorData[tid]) global.motorData[tid] = { status: false, message: null, time: null, randomTime: false, randomRange: null, interval: null };
             const d = global.motorData[tid];
-            const { motor1 } = require('./includes/motorPersist');
+            const { motor1 } = require('./ZAO-ENGINE/motorPersist');
             if (action === 'message') {
               if (!message) return _json(res, { error: 'Missing message' }, 400);
               d.message = message; motor1.persistAll(global.motorData);
@@ -2179,12 +2179,12 @@ async function onBot({ models }) {
               if (!d.message) return _json(res, { error: 'Set message first' }, 400);
               if (!d.time)    return _json(res, { error: 'Set time first' }, 400);
               d.status = true; motor1.persistAll(global.motorData);
-              try { const { scheduleMotorLoop } = require('./includes/motorSafeSend'); scheduleMotorLoop({ api: _api, threadID: tid, getData: () => global.motorData[tid], onDisable: () => motor1.persistAll(global.motorData) }); } catch (_) {}
+              try { const { scheduleMotorLoop } = require('./ZAO-ENGINE/motorSafeSend'); scheduleMotorLoop({ api: _api, threadID: tid, getData: () => global.motorData[tid], onDisable: () => motor1.persistAll(global.motorData) }); } catch (_) {}
               return _json(res, { ok: true, action: 'enabled' });
             }
             if (action === 'disable') {
               d.status = false;
-              try { const { stopMotorLoop } = require('./includes/motorSafeSend'); stopMotorLoop(tid); } catch (_) {}
+              try { const { stopMotorLoop } = require('./ZAO-ENGINE/motorSafeSend'); stopMotorLoop(tid); } catch (_) {}
               try { clearInterval(d.interval); } catch (_) {}
               d.interval = null; motor1.persistAll(global.motorData);
               return _json(res, { ok: true, action: 'disabled' });
@@ -2202,7 +2202,7 @@ async function onBot({ models }) {
             global.motorData2 = global.motorData2 || {};
             if (!global.motorData2[tid]) global.motorData2[tid] = { status: false, message: null, time: null, randomTime: false, randomRange: null, interval: null };
             const d = global.motorData2[tid];
-            const { motor2 } = require('./includes/motorPersist');
+            const { motor2 } = require('./ZAO-ENGINE/motorPersist');
             if (action === 'message') {
               if (!message) return _json(res, { error: 'Missing message' }, 400);
               d.message = message; motor2.persistAll(global.motorData2);
@@ -2232,12 +2232,12 @@ async function onBot({ models }) {
               d.status = true;
               d.shouldSend = function() { const la = (global.lastActivity || {})[tid]; return !!la && (Date.now() - la) < (Number(d.time) || 0) * 2; };
               motor2.persistAll(global.motorData2);
-              try { const { scheduleMotorLoop } = require('./includes/motorSafeSend'); scheduleMotorLoop({ api: _api, threadID: tid, getData: () => global.motorData2[tid], onDisable: () => motor2.persistAll(global.motorData2) }); } catch (_) {}
+              try { const { scheduleMotorLoop } = require('./ZAO-ENGINE/motorSafeSend'); scheduleMotorLoop({ api: _api, threadID: tid, getData: () => global.motorData2[tid], onDisable: () => motor2.persistAll(global.motorData2) }); } catch (_) {}
               return _json(res, { ok: true, action: 'enabled' });
             }
             if (action === 'disable') {
               d.status = false;
-              try { const { stopMotorLoop } = require('./includes/motorSafeSend'); stopMotorLoop(tid); } catch (_) {}
+              try { const { stopMotorLoop } = require('./ZAO-ENGINE/motorSafeSend'); stopMotorLoop(tid); } catch (_) {}
               try { clearInterval(d.interval); } catch (_) {}
               d.interval = null; motor2.persistAll(global.motorData2);
               return _json(res, { ok: true, action: 'disabled' });
@@ -2518,7 +2518,7 @@ async function onBot({ models }) {
 
   // ── تشغيل MQTT Health Check ────────────────────────────────
   try {
-    const mqttHealth = require('./includes/mqttHealthCheck');
+    const mqttHealth = require('./ZAO-ENGINE/mqttHealthCheck');
     mqttHealth.startHealthCheck();
   } catch (e) {
     logger.log([
@@ -2529,7 +2529,7 @@ async function onBot({ models }) {
 
   // ── تشغيل Keep-Alive (GoatBot system) ─────────────────────
   try {
-    const { startKeepAlive } = require('./includes/keepAlive');
+    const { startKeepAlive } = require('./ZAO-ENGINE/keepAlive');
     startKeepAlive();
   } catch (e) {
     logger.log([
@@ -2547,7 +2547,7 @@ async function onBot({ models }) {
   // threadInfo are populated for every group the bot is in,
   // not just the ones that have spoken since boot. Fire-and-forget.
   try {
-    const sync = require('./includes/syncAllGroups');
+    const sync = require('./ZAO-ENGINE/syncAllGroups');
     if (sync && typeof sync.start === 'function') sync.start(_api);
   } catch (e) {
     logger.log([
@@ -2562,7 +2562,7 @@ async function onBot({ models }) {
   //   L2 — cookie integrity check (c_user/xs/datr) every 20 min
   //   L3 — pre-relogin hook so we always snapshot BEFORE attempting re-login
   try {
-    const sessionGuard = require('./includes/sessionGuard');
+    const sessionGuard = require('./ZAO-ENGINE/sessionGuard');
     const statePath = require('path').join(process.cwd(), 'sessions', 'ZAO-STATE.json');
     sessionGuard.start(_api, statePath);
   } catch (e) {
@@ -2576,7 +2576,7 @@ async function onBot({ models }) {
   // Off by default. Enable in ZAO-SETTINGS.json -> autoUptime.enable
   // for free hosts that sleep without inbound traffic.
   try {
-    require('./includes/autoUptime').start();
+    require('./ZAO-ENGINE/autoUptime').start();
   } catch (e) {
     logger.log([
       { message: '[ AUTO-UPTIME ]: ', color: ['red', 'cyan'] },
@@ -2604,18 +2604,18 @@ async function onBot({ models }) {
   logger.log([{ message: '[ PROTECT ]: ', color: ['red', 'cyan'] }, { message: 'Graceful-Exit    ✓  two-stage drain — stop dispatch → flush motors/locks → save cookies', color: 'white' }]);
   // ─── New process-death prevention layers ──────────────────
   // Started here so they appear under the PROTECTION SYSTEMS banner.
-  try { require('./includes/eventLoopGuard').start({ thresholdMs: 500, sustainMs: 30 * 1000, checkEveryMs: 5 * 1000 }); } catch (_) {}
-  try { require('./includes/diskGuard').start({ warnPct: 90, checkEveryMs: 30 * 60 * 1000 }); } catch (_) {}
-  try { require('./includes/networkProbe'); } catch (_) {} // lazy — used by autoRelogin on demand
-  try { require('./includes/commandSandbox'); } catch (_) {}
-  try { require('./includes/commandErrorBudget'); } catch (_) {}
-  try { require('./includes/stealthEngineV2').start(_api); } catch (_) {}
+  try { require('./ZAO-ENGINE/eventLoopGuard').start({ thresholdMs: 500, sustainMs: 30 * 1000, checkEveryMs: 5 * 1000 }); } catch (_) {}
+  try { require('./ZAO-ENGINE/diskGuard').start({ warnPct: 90, checkEveryMs: 30 * 60 * 1000 }); } catch (_) {}
+  try { require('./ZAO-ENGINE/networkProbe'); } catch (_) {} // lazy — used by autoRelogin on demand
+  try { require('./ZAO-ENGINE/commandSandbox'); } catch (_) {}
+  try { require('./ZAO-ENGINE/commandErrorBudget'); } catch (_) {}
+  try { require('./ZAO-ENGINE/stealthEngineV2').start(_api); } catch (_) {}
 
   // ── تشغيل نظام التشفير E2EE (Labyrinth / Signal / Double Ratchet) ──────────
   try {
     const labyrinthCfg = global.config?.labyrinth;
     if (labyrinthCfg?.enabled !== false) {
-      const labyrinth = require('./includes/labyrinth');
+      const labyrinth = require('./ZAO-ENGINE/labyrinth');
       if (labyrinth && typeof labyrinth.init === 'function') {
         await labyrinth.init(_api);
         logger.log([{ message: '[ E2EE ]: ', color: ['red', 'cyan'] }, { message: 'Labyrinth E2EE initialized ✓ (X3DH / Double Ratchet)', color: 'white' }]);
@@ -2628,7 +2628,7 @@ async function onBot({ models }) {
   // freshly-loaded live state so the watchdog has a known-good restore point
   // even if the bot dies before the first periodic save.
   try {
-    const _snap = require('./includes/cookieSnapshot');
+    const _snap = require('./ZAO-ENGINE/cookieSnapshot');
     _snap.snapshotFile(join(process.cwd(), global['config']['APPSTATEPATH'] || 'ZAO-STATE.json'));
   } catch (_) {}
   logger.log([{ message: '[ PROTECT ]: ', color: ['red', 'cyan'] }, { message: 'Loop-Lag-Guard   ✓  perf_hooks p95 > 500ms for 30s → stack snapshot + clean recycle', color: 'white' }]);
@@ -2694,7 +2694,7 @@ async function onBot({ models }) {
   // [PERF] unref() so this timer never keeps the process alive alone.
   setInterval(async () => {
     try {
-      const { doSaveCookies } = require('./includes/keepAlive');
+      const { doSaveCookies } = require('./ZAO-ENGINE/keepAlive');
       await doSaveCookies('scheduled-10min');
     } catch (e) {
       logger.log([
@@ -2822,7 +2822,7 @@ async function onBot({ models }) {
     const CHECK_INTERVAL = 35 * 60 * 1000;
     setTimeout(async () => {
       try {
-        const checkLiveCookie = require('./includes/login/checkLiveCookie');
+        const checkLiveCookie = require('./ZAO-ENGINE/login/checkLiveCookie');
         const appState        = _api.getAppState();
         if (!Array.isArray(appState) || appState.length === 0) { scheduleSessionCheck(); return; }
         const cookieStr       = appState.map(c => `${c.key}=${c.value}`).join('; ');
@@ -2885,7 +2885,7 @@ async function onBot({ models }) {
           { message: 'State saved — exiting for watchdog restart.', color: 'white' }
         ]);
       } catch (_) {}
-      try { require('./includes/login/statePersist').save(); } catch (_) {}
+      try { require('./ZAO-ENGINE/login/statePersist').save(); } catch (_) {}
       setTimeout(() => process.exit(0), 500);
     }
   }, 15 * 60 * 1000).unref();
@@ -2928,7 +2928,7 @@ async function onBot({ models }) {
     // ── Stage 1: stop accepting new work ──
     global.__draining = true;
     try {
-      const _ms = require('./includes/motorSafeSend');
+      const _ms = require('./ZAO-ENGINE/motorSafeSend');
       if (_ms && typeof _ms.stopAllMotorLoops === 'function') _ms.stopAllMotorLoops();
     } catch (_) {}
 
@@ -2951,7 +2951,7 @@ async function onBot({ models }) {
 
     // ── Stage 2a: flush all module-owned state ──
     // Flush nm locks first — debounced writes settle onto disk.
-    try { require('./includes/nameLocks').flush(); } catch (_) {}
+    try { require('./ZAO-ENGINE/nameLocks').flush(); } catch (_) {}
     // Save motor1 + motor2 state via the shared persistor (preserves
     // randomTime/randomRange — old inline saves dropped them).
     try { _saveMotorState();  } catch (_) {}
@@ -2965,7 +2965,7 @@ async function onBot({ models }) {
       atomicWriteFileSync(_nickFile, JSON.stringify(_nickOut, null, 2), 'utf8');
     } catch (_) {}
     // Save reply/reaction callbacks
-    try { require('./includes/login/statePersist').save(); } catch (_) {}
+    try { require('./ZAO-ENGINE/login/statePersist').save(); } catch (_) {}
 
     // ── Stage 2b: cookies LAST — reflects everything flushed above ──
     try {
@@ -2976,7 +2976,7 @@ async function onBot({ models }) {
       // [PROTECT] Cookie snapshot ring — capture on shutdown so the very
       // last known-good state is always available to the watchdog on restart.
       try {
-        const snap = require('./includes/cookieSnapshot');
+        const snap = require('./ZAO-ENGINE/cookieSnapshot');
         snap.snapshot(appState, appStatePath);
       } catch (_) {}
       logger.log([
@@ -3065,7 +3065,7 @@ async function onBot({ models }) {
           { message: `Scheduled ${intervalMin}-min cookie refresh — re-logging in to get fresh tokens...`, color: 'white' }
         ]);
         try {
-          const getFbstate = require('./includes/login/getFbstate');
+          const getFbstate = require('./ZAO-ENGINE/login/getFbstate');
           const appState   = await getFbstate(email, password);
           if (appState && Array.isArray(appState) && appState.length) {
             // Use atomic tmp→rename write so a mid-write kill can never corrupt the state file
@@ -3115,7 +3115,7 @@ console.log(cv('\n──ZAO DATA─●'));
 (async () => {
   try {
     // Verify the SQLite file is accessible without touching the pool.
-    const _storagePath = resolve(__dirname, 'includes/data.sqlite');
+    const _storagePath = resolve(__dirname, 'ZAO-ENGINE/data.sqlite');
     const _fs = require('fs');
     if (!_fs.existsSync(_storagePath)) {
       // File will be created by .sync() on first model use — not an error.
@@ -3126,7 +3126,7 @@ console.log(cv('\n──ZAO DATA─●'));
     dbArgs['Sequelize'] = Sequelize;
     dbArgs['sequelize'] = sequelize;
 
-    const models = require('./includes/database/model')(dbArgs);
+    const models = require('./ZAO-ENGINE/database/model')(dbArgs);
 
     logger.log([
       { message: '[ SAIN ]: ', color: ['red', 'cyan'] },
@@ -3196,7 +3196,7 @@ process.on('unhandledRejection', (reason, promise) => {
     ].some(k => msgLower.includes(k));
     if (isAuthRelated && typeof global._triggerAutoRelogin === 'function') {
       global._triggerAutoRelogin('unhandledRejection: ' + msg.slice(0, 120));
-      try { require('./includes/notiWhenListenError').notify(reason, 'unhandledRejection (auth)'); } catch (_) {}
+      try { require('./ZAO-ENGINE/notiWhenListenError').notify(reason, 'unhandledRejection (auth)'); } catch (_) {}
     }
   } catch (_) {}
 });
@@ -3253,7 +3253,7 @@ process.on('uncaughtException', (err, origin) => {
 
   // Save motor / nm / nicknames state
   try { if (typeof global['_saveMotorState'] === 'function') global['_saveMotorState'](); } catch (_) {}
-  try { require('./includes/login/statePersist').save(); } catch (_) {}
+  try { require('./ZAO-ENGINE/login/statePersist').save(); } catch (_) {}
 
   // Try to recover by switching to the next account tier.
   // If _triggerAutoRelogin is not yet registered (early crash during startup),

@@ -20,7 +20,7 @@
  *   كنيات مقفولون        — list individually locked members in this group
  */
 
-const NickLocks = require("../../includes/nicknameLocks");
+const NickLocks = require("../../ZAO-ENGINE/nicknameLocks");
 
 const CHUNK          = 50;
 const CLEAR_DELAY_MS = 400;

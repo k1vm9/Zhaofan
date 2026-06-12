@@ -4,7 +4,7 @@ const fs    = require("fs-extra");
 const path  = require("path");
 const axios = require("axios");
 
-const { getLocks, getLock, setLock, setLockTime, clearLock, flush } = require("../../includes/groupImgLocks");
+const { getLocks, getLock, setLock, setLockTime, clearLock, flush } = require("../../ZAO-ENGINE/groupImgLocks");
 
 const IMG_DIR = path.join(__dirname, "..", "..", "data", "groupimg");
 fs.ensureDirSync(IMG_DIR);

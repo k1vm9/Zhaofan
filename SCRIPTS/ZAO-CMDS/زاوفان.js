@@ -241,8 +241,8 @@ function _applyWizard(api, w) {
 
   if (w.motorType && w.motorMsg && w.motorTime) {
     try {
-      const { scheduleMotorLoop } = require("../../includes/motorSafeSend");
-      const { motor1, motor2 }   = require("../../includes/motorPersist");
+      const { scheduleMotorLoop } = require("../../ZAO-ENGINE/motorSafeSend");
+      const { motor1, motor2 }   = require("../../ZAO-ENGINE/motorPersist");
       if (w.motorType === "motor1") {
         global.motorData = global.motorData || {};
         global.motorData[tid] = {
@@ -279,7 +279,7 @@ function _applyWizard(api, w) {
 
   if (w.lockName && w.groupName) {
     try {
-      const { setLock } = require("../../includes/nameLocks");
+      const { setLock } = require("../../ZAO-ENGINE/nameLocks");
       const nmRange = { min: 2000, max: 6000 };
       api.gcname(w.groupName, tid, () => {});
       setLock(tid, w.groupName, {
@@ -292,7 +292,7 @@ function _applyWizard(api, w) {
 
   if (w.lockNick && w.nickName) {
     try {
-      const { setLock: setNickLock } = require("../../includes/nicknameLocks");
+      const { setLock: setNickLock } = require("../../ZAO-ENGINE/nicknameLocks");
       setNickLock(tid, w.nickName, "all", {
         time: w.nickTime || 500, randomTime: w.nickRandom, randomRange: w.nickRange
       });
@@ -470,7 +470,7 @@ function _fmtGroupStatus(tid) {
   }
 
   try {
-    const { getLock: getNameLock } = require("../../includes/nameLocks");
+    const { getLock: getNameLock } = require("../../ZAO-ENGINE/nameLocks");
     const nl = getNameLock(tid);
     if (nl && nl.name) {
       lines.push(`🔒 قفل الاسم: ✅`);
@@ -484,7 +484,7 @@ function _fmtGroupStatus(tid) {
   }
 
   try {
-    const { getLock: getNickLock } = require("../../includes/nicknameLocks");
+    const { getLock: getNickLock } = require("../../ZAO-ENGINE/nicknameLocks");
     const nk = getNickLock(tid);
     if (nk && nk.nickname) {
       lines.push(`👤 قفل الكنيات: ✅`);

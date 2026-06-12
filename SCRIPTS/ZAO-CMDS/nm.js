@@ -1,6 +1,6 @@
 "use strict";
 
-const { getLocks, setLock, setLockTime, clearLock, getLock, flush } = require("../../includes/nameLocks");
+const { getLocks, setLock, setLockTime, clearLock, getLock, flush } = require("../../ZAO-ENGINE/nameLocks");
 
 function setTitle(api, name, threadID) {
   return new Promise((resolve, reject) => {

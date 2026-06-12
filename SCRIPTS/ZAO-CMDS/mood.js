@@ -49,13 +49,13 @@ module.exports.run = async function ({ api, event }) {
   const { threadID, messageID } = event;
 
   let sim;
-  try { sim = require("../../includes/HumanActivitySimulator"); }
+  try { sim = require("../../ZAO-ENGINE/HumanActivitySimulator"); }
   catch (e) {
     return api.sendMessage("❌ Could not load Human Activity Simulator.", threadID, messageID);
   }
 
   let eng;
-  try { eng = require("../../includes/OnlinePresenceEngine"); }
+  try { eng = require("../../ZAO-ENGINE/OnlinePresenceEngine"); }
   catch (_) { eng = null; }
 
   const s  = sim.getStatus();

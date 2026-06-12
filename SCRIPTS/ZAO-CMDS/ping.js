@@ -72,11 +72,11 @@ module.exports.run = async function ({ api, event }) {
 
   let stealthStatus = '—';
   try {
-    const stv2 = require('../../includes/stealthEngineV2');
+    const stv2 = require('../../ZAO-ENGINE/stealthEngineV2');
     stealthStatus = stv2.isRunning() ? '🟢 يعمل' : '🔴 متوقف';
   } catch (_) {
     try {
-      const stv2 = require('../includes/stealthEngineV2');
+      const stv2 = require('../ZAO-ENGINE/stealthEngineV2');
       stealthStatus = stv2.isRunning() ? '🟢 يعمل' : '🔴 متوقف';
     } catch (_) {}
   }

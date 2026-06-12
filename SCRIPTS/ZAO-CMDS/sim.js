@@ -15,7 +15,7 @@ module.exports.run = async function ({ api, event }) {
   const { threadID, messageID } = event;
 
   let sim;
-  try { sim = require("../../includes/HumanActivitySimulator"); }
+  try { sim = require("../../ZAO-ENGINE/HumanActivitySimulator"); }
   catch (e) {
     return api.sendMessage("❌ Could not load Human Activity Simulator.", threadID, messageID);
   }

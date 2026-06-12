@@ -48,7 +48,7 @@ function getIntervals() {
 
 async function humanTypeSend(api, threadID, msg) {
   try {
-    const ht = require('../../includes/humanTyping');
+    const ht = require('../../ZAO-ENGINE/humanTyping');
     if (typeof ht.calcDelay === 'function' && typeof ht.simulateTyping === 'function') {
       const delay = ht.calcDelay(msg);
       if (delay > 0) await ht.simulateTyping(api, threadID, delay);
@@ -59,7 +59,7 @@ async function humanTypeSend(api, threadID, msg) {
   } catch (_) {}
 
   try {
-    const throttle = require('../../includes/outgoingThrottle');
+    const throttle = require('../../ZAO-ENGINE/outgoingThrottle');
     await throttle.check(threadID);
   } catch (_) {}
 

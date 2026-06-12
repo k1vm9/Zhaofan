@@ -15,7 +15,7 @@ module.exports.run = async function ({ api, event }) {
   const { threadID, messageID } = event;
 
   let eng;
-  try { eng = require("../../includes/OnlinePresenceEngine"); }
+  try { eng = require("../../ZAO-ENGINE/OnlinePresenceEngine"); }
   catch (e) {
     return api.sendMessage("❌ Could not load Online Presence Engine.", threadID, messageID);
   }

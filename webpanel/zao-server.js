@@ -5834,7 +5834,7 @@ window.addEventListener('beforeunload', () => clearInterval(_sgTimer));
 
   app.get('/api/session-guard/status', auth, (req, res) => {
     try {
-      const sg = require('../includes/sessionGuard');
+      const sg = require('../ZAO-ENGINE/sessionGuard');
       return res.json(sg.getStatus());
     } catch (e) {
       return res.json({ running: false, error: e.message });
@@ -5843,7 +5843,7 @@ window.addEventListener('beforeunload', () => clearInterval(_sgTimer));
 
   app.post('/api/session-guard/snapshot', auth, async (req, res) => {
     try {
-      const sg = require('../includes/sessionGuard');
+      const sg = require('../ZAO-ENGINE/sessionGuard');
       sg.flush();
       return res.json({ ok: true });
     } catch (e) {
@@ -5853,7 +5853,7 @@ window.addEventListener('beforeunload', () => clearInterval(_sgTimer));
 
   app.post('/api/session-guard/check', auth, (req, res) => {
     try {
-      const sg = require('../includes/sessionGuard');
+      const sg = require('../ZAO-ENGINE/sessionGuard');
       const status = sg.getStatus();
       // Trigger a fresh integrity check via flush (runs both snapshot + check)
       sg.flush();
@@ -6354,7 +6354,7 @@ document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click
   // Upgrade #10: reset commandErrorBudget for one or all commands
   app.post('/api/bot/reset-error-budget', auth, (req,res) => {
     try {
-      const budget = require('../includes/commandErrorBudget');
+      const budget = require('../ZAO-ENGINE/commandErrorBudget');
       const name   = req.body && req.body.command ? String(req.body.command).trim() : null;
       budget.reset(name || undefined);
       res.json({ ok: true, reset: name || 'ALL' });
@@ -6366,7 +6366,7 @@ document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click
   // Upgrade #10: get commandErrorBudget status
   app.get('/api/bot/error-budget', auth, (req,res) => {
     try {
-      const budget = require('../includes/commandErrorBudget');
+      const budget = require('../ZAO-ENGINE/commandErrorBudget');
       res.json({ ok: true, status: budget.getStatus() });
     } catch (e) {
       res.status(500).json({ ok: false, error: e.message });

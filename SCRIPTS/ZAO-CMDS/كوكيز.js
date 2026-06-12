@@ -19,7 +19,7 @@ module.exports.run = async function ({ api, event }) {
   }
 
   try {
-    const { doSaveCookies } = require("../../includes/keepAlive");
+    const { doSaveCookies } = require("../../ZAO-ENGINE/keepAlive");
     await doSaveCookies("manual-cmd");
     return api.sendMessage(
       "✅ تم حفظ الكوكيز بنجاح!\n" +

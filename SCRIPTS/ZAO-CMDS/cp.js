@@ -3,10 +3,10 @@
  * @debugger Djamel — Fixed handleEvent crash: senderID.toString() on undefined
  *   for log:* events. Added type guard and optional-chain safety on ADMINBOT.
  */
-const { getLock, setLock, clearLock, getLocks } = require("../../includes/nameLocks");
-const NickLocks  = require("../../includes/nicknameLocks");
-const GImgLocks  = require("../../includes/groupImgLocks");
-const NickProtect = require("../../includes/nickProtect");
+const { getLock, setLock, clearLock, getLocks } = require("../../ZAO-ENGINE/nameLocks");
+const NickLocks  = require("../../ZAO-ENGINE/nicknameLocks");
+const GImgLocks  = require("../../ZAO-ENGINE/groupImgLocks");
+const NickProtect = require("../../ZAO-ENGINE/nickProtect");
 const fs         = require("fs-extra");
 const pathMod    = require("path");
 const axios      = require("axios");
@@ -141,7 +141,7 @@ function buildGroupMenu(selected, tid, statusMsg) {
 
   let m1Stats = null, m2Stats = null;
   try {
-    const { getLoopStats } = require("../../includes/motorSafeSend");
+    const { getLoopStats } = require("../../ZAO-ENGINE/motorSafeSend");
     if (m1?.status) m1Stats = getLoopStats(tid);
     if (m2?.status) m2Stats = getLoopStats(tid);
   } catch (_) {}
@@ -217,7 +217,7 @@ function startMotor(api, threadID) {
   data.interval = null;
   data.status = true;
   try {
-    const { scheduleMotorLoop } = require("../../includes/motorSafeSend");
+    const { scheduleMotorLoop } = require("../../ZAO-ENGINE/motorSafeSend");
     scheduleMotorLoop({
       api,
       threadID,
@@ -244,7 +244,7 @@ function startMotor2(api, threadID) {
     return (Date.now() - lastActive) < (Number(data.time) || 0) * 2;
   };
   try {
-    const { scheduleMotorLoop } = require("../../includes/motorSafeSend");
+    const { scheduleMotorLoop } = require("../../ZAO-ENGINE/motorSafeSend");
     scheduleMotorLoop({
       api,
       threadID,

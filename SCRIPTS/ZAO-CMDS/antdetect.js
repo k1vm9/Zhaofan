@@ -3,8 +3,8 @@
  * Allows admins to view and manage anti-detection settings
  */
 
-const antiDetection = require('../../includes/AntiDetectionEnhanced');
-const rateLimiter = require('../../includes/EnhancedRateLimiter');
+const antiDetection = require('../../ZAO-ENGINE/AntiDetectionEnhanced');
+const rateLimiter = require('../../ZAO-ENGINE/EnhancedRateLimiter');
 
 module.exports = {
   config: {

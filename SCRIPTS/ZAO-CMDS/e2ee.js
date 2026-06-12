@@ -365,8 +365,8 @@ module.exports.run = async function ({ api, event, args }) {
   // ── selftest — comprehensive external round-trip test ─────────────────────
   if (action === "selftest") {
     try {
-      const DR   = require("../../includes/labyrinth/DoubleRatchet");
-      const X3DH = require("../../includes/labyrinth/X3DH");
+      const DR   = require("../../ZAO-ENGINE/labyrinth/DoubleRatchet");
+      const X3DH = require("../../ZAO-ENGINE/labyrinth/X3DH");
       const crypto = require("crypto");
 
       const results = [];

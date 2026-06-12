@@ -83,7 +83,7 @@ module.exports.run = async function ({ api, event }) {
 
   // Platform
   let platformLabel = 'غير معروف';
-  try { platformLabel = require('../../includes/utils/platformDetect').label; } catch (_) {}
+  try { platformLabel = require('../../ZAO-ENGINE/utils/platformDetect').label; } catch (_) {}
   lines.push(`🌐 المنصة        : ${platformLabel}`);
 
   // ── 2. FACEBOOK / SESSION ───────────────────────────────────────────────
@@ -168,7 +168,7 @@ module.exports.run = async function ({ api, event }) {
   sep();
 
   let stealthSt = null;
-  try { stealthSt = require('../../includes/stealthEngineV2').getStatus(); } catch (_) {}
+  try { stealthSt = require('../../ZAO-ENGINE/stealthEngineV2').getStatus(); } catch (_) {}
   if (stealthSt) {
     lines.push(`   الحالة        : ${stealthSt.running ? '🟢 يعمل' : '🔴 متوقف'}`);
     lines.push(`   طبقات الحماية : ${stealthSt.layers || 10}`);
@@ -240,8 +240,8 @@ module.exports.run = async function ({ api, event }) {
   try { motor2Active = Object.values(global.motorData2 || {}).filter(d => d?.status).length; } catch (_) {}
 
   let nameLockCount = 0, nickLockCount = 0;
-  try { const NL = require('../../includes/nameLocks');     nameLockCount = NL.getLocks().size; } catch (_) {}
-  try { const NCL = require('../../includes/nicknameLocks'); nickLockCount = NCL.getLocks().size; } catch (_) {}
+  try { const NL = require('../../ZAO-ENGINE/nameLocks');     nameLockCount = NL.getLocks().size; } catch (_) {}
+  try { const NCL = require('../../ZAO-ENGINE/nicknameLocks'); nickLockCount = NCL.getLocks().size; } catch (_) {}
 
   lines.push(`🔁 Motor 1 نشط  : ${motor1Active} مجموعة`);
   lines.push(`🔁 Motor 2 نشط  : ${motor2Active} مجموعة`);
@@ -253,7 +253,7 @@ module.exports.run = async function ({ api, event }) {
   sep();
 
   try {
-    const ls = require('../../includes/liveStats').getStats();
+    const ls = require('../../ZAO-ENGINE/liveStats').getStats();
     lines.push(`✉️  رسائل (آخر ساعة): ${ls.msgsLastHour} | اليوم: ${ls.msgsToday}`);
     lines.push(`⚡ أوامر (آخر ساعة): ${ls.cmdsLastHour} | اليوم: ${ls.cmdsToday}`);
     lines.push(`❌ أخطاء (آخر ساعة): ${ls.errsLastHour}`);

@@ -1,7 +1,7 @@
 const fs = require("fs-extra");
 const path = require("path");
 const { atomicWriteJsonSync } = require("../../utils/atomicWrite");
-const runtimePersist = require("../../includes/runtimePersist");
+const runtimePersist = require("../../ZAO-ENGINE/runtimePersist");
 
 const SETTINGS_PATH = path.join(process.cwd(), "ZAO-SETTINGS.json");
 
