@@ -71,6 +71,17 @@ function parseCookieInput(raw) {
           secure: c.secure ?? true, httpOnly: c.httpOnly ?? false, sameSite: c.sameSite || "None",
         })).filter(c => c.key));
       }
+      // Single cookie object
+      if (obj.key && obj.value) return dedup([obj]);
+      // Android fbsettings format: { "c_user": "123", "xs": "abc" }
+      const keys = ["c_user","xs","fr","wd","datr","sb","m_sess","spin"];
+      const found = Object.entries(obj).filter(([k]) => keys.some(kk => k === kk || k.toLowerCase() === kk));
+      if (found.length > 0) {
+        return dedup(found.map(([k, v]) => ({
+          key: k, value: String(v),
+          domain: ".facebook.com", path: "/", secure: true, httpOnly: false, sameSite: "None",
+        })));
+      }
     } catch (_) {}
   }
 
