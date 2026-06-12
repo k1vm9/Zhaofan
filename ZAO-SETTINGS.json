@@ -370,5 +370,9 @@
   "tierLimit": 5,
   "_tierLimitNote": "عدد حسابات Facebook المدعومة (1-5). Tier 1: ZAO-STATE.json/alt.json | Tier 2: ZAO-STATEX.json/altx.json | Tier 3: ZAO-STATEV.json/altv.json | Tier 4: ZAO-STATE4.json/alt4.json | Tier 5: ZAO-STATE5.json/alt5.json. لإضافة حساب رابع: ارفع ملف cookies إلى ZAO-STATE4.json واضبط tierLimit=4.",
   "devGroupID": "",
-  "_devGroupIDNote": "معرّف مجموعة التطوير — تُرسل إليها نتائج أمر .اصنع (AI code generation). ضع هنا threadID المجموعة أو اتركه فارغاً وسيطلبه الأمر منك عند الاستخدام الأول."
+  "_devGroupIDNote": "معرّف مجموعة التطوير — تُرسل إليها نتائج أمر .اصنع (AI code generation). ضع هنا threadID المجموعة أو اتركه فارغاً وسيطلبه الأمر منك عند الاستخدام الأول.",
+  "openrouterKeyInternal": "",
+  "_openrouterKeyInternalNote": "مفتاح OpenRouter لنظام DevHub الداخلي (الوكلاء الخمسة + المراقب). احصل على مفتاح مجاني من https://openrouter.ai/keys ثم الصقه هنا أو من خلال DevHub ← الإعدادات.",
+  "openrouterKeyExternal": "",
+  "_openrouterKeyExternalNote": "مفتاح OpenRouter لأوامر الذكاء الاصطناعي الخارجية (أمر زاو / زاوفان في المحادثات). يمكن أن يكون نفس مفتاح openrouterKeyInternal أو مختلفاً."
 }

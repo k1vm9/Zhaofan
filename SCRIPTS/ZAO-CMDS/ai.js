@@ -2,11 +2,16 @@ const axios = require("axios");
 const fs    = require("fs");
 const path  = require("path");
 
-// R04 fix: API key must come from the environment or DevHub settings only.
-// Never embed a fallback key in source code — it gets committed to git and
-// exposed to anyone who can read the repo.
-const OPENROUTER_API_KEY = process.env.OPENROUTER_API_KEY ||
-  (() => { try { const c = require("../../devhub-openrouter.json"); return c.apiKey || c.api_key || ""; } catch (_) { return ""; } })();
+// API key is read fresh on every call so the user can add/change it in
+// ZAO-SETTINGS.json (openrouterKeyExternal) without restarting the bot.
+// Falls back to the OPENROUTER_API_KEY env var for backwards compatibility.
+function _getOpenRouterKey() {
+  if (process.env.OPENROUTER_API_KEY) return process.env.OPENROUTER_API_KEY;
+  try {
+    const s = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "..", "ZAO-SETTINGS.json"), "utf8"));
+    return s.openrouterKeyExternal || "";
+  } catch (_) { return ""; }
+}
 
 // ── Free OpenRouter models, ranked best-first.
 // The bot tries them in order and moves to the next one whenever it hits
@@ -618,7 +623,7 @@ async function askAI(history, senderID) {
 
   const headers = {
     "Content-Type": "application/json",
-    "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+    "Authorization": `Bearer ${_getOpenRouterKey()}`,
     "HTTP-Referer": "https://zaobot.replit.app",
     "X-OpenRouter-Title": "ZAO Bot"
   };
@@ -703,7 +708,7 @@ async function askAI(history, senderID) {
 }
 
 module.exports.handleEvent = async function ({ api, event }) {
-  if (!OPENROUTER_API_KEY) return;
+  if (!_getOpenRouterKey()) return;
 
   const { threadID, messageID, senderID, body, messageReply } = event;
 
@@ -762,10 +767,10 @@ module.exports.handleEvent = async function ({ api, event }) {
 module.exports.run = async function ({ api, event, args }) {
   const { threadID, messageID, senderID } = event;
 
-  // Guard: OPENROUTER_API_KEY must be set via environment variable
-  if (!OPENROUTER_API_KEY) {
+  // Guard: openrouterKeyExternal must be set in ZAO-SETTINGS.json (or OPENROUTER_API_KEY env var)
+  if (!_getOpenRouterKey()) {
     return api.sendMessage(
-      "⚠️ OPENROUTER_API_KEY is not configured. Set it via environment secrets to enable AI.",
+      "⚠️ مفتاح OpenRouter غير مضبوط. أضف openrouterKeyExternal في ZAO-SETTINGS.json أو في متغيرات البيئة (OPENROUTER_API_KEY).",
       threadID, messageID
     );
   }

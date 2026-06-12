@@ -2,31 +2,41 @@
 const fs   = require("fs");
 const path = require("path");
 
-const ROOT       = path.join(__dirname, "..");
-const CFG_FILE   = path.join(__dirname, "devhub-config.json");
+const ROOT        = path.join(__dirname, "..");
+const CFG_FILE    = path.join(__dirname, "devhub-config.json");
 const OR_CFG_FILE = path.join(__dirname, "devhub-openrouter.json");
+const ZAO_SETTINGS_FILE = path.join(ROOT, "ZAO-SETTINGS.json");
 
+// ─── ZAO-SETTINGS helpers ─────────────────────────────────────────────────────
+function loadZaoSettings() {
+  try { return JSON.parse(fs.readFileSync(ZAO_SETTINGS_FILE, "utf8")); }
+  catch(_) { return {}; }
+}
+function saveZaoSettings(patch) {
+  const cur = loadZaoSettings();
+  const updated = Object.assign(cur, patch);
+  fs.writeFileSync(ZAO_SETTINGS_FILE, JSON.stringify(updated, null, 2), "utf8");
+}
+
+// ─── OpenRouter config ────────────────────────────────────────────────────────
+// Key comes from ZAO-SETTINGS.json (openrouterKeyInternal).
+// Models remain in devhub-openrouter.json so they can be changed from the panel.
 function loadOpenRouterCfg() {
+  const zao = loadZaoSettings();
+  let models = ["openai/gpt-4o-mini","meta-llama/llama-3.1-8b-instruct:free","google/gemma-2-9b-it:free"];
   try {
     const c = JSON.parse(fs.readFileSync(OR_CFG_FILE, "utf8"));
-    return {
-      apiKey: c.apiKey || "",
-      models: Array.isArray(c.models) && c.models.length ? c.models.slice(0,3) : [
-        "openai/gpt-4o-mini",
-        "meta-llama/llama-3.1-8b-instruct:free",
-        "google/gemma-2-9b-it:free"
-      ]
-    };
-  } catch(_) {
-    return {
-      apiKey: "",
-      models: ["openai/gpt-4o-mini","meta-llama/llama-3.1-8b-instruct:free","google/gemma-2-9b-it:free"]
-    };
-  }
+    if (Array.isArray(c.models) && c.models.length) models = c.models.slice(0,3);
+  } catch(_) {}
+  return { apiKey: zao.openrouterKeyInternal || "", models };
 }
 
 function saveOpenRouterCfg(c) {
-  fs.writeFileSync(OR_CFG_FILE, JSON.stringify(c, null, 2));
+  if (c.apiKey !== undefined) saveZaoSettings({ openrouterKeyInternal: c.apiKey });
+  let existing = {};
+  try { existing = JSON.parse(fs.readFileSync(OR_CFG_FILE, "utf8")); } catch(_) {}
+  if (Array.isArray(c.models)) existing.models = c.models;
+  fs.writeFileSync(OR_CFG_FILE, JSON.stringify(existing, null, 2));
 }
 const VERSIONS_F = path.join(__dirname, "devhub-versions.json");
 
@@ -1827,14 +1837,14 @@ function settingsTab(cfg, hasToken) {
   <!-- OpenRouter AI Settings -->
   <div class="card" style="border-color:rgba(99,102,241,.35)">
     <div class="card-header">
-      <div class="card-title">🤖 OpenRouter AI</div>
+      <div class="card-title">🤖 OpenRouter AI — DevHub</div>
       <span class="badge ${or.apiKey ? 'badge-green' : 'badge-red'}">${or.apiKey ? '✅ مفعّل' : '❌ يحتاج مفتاح'}</span>
     </div>
     <div style="font-size:.76rem;color:var(--text3);margin-bottom:10px">
-      احصل على مفتاح مجاني من <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--accent)">openrouter.ai/keys</a>
+      المفتاح يُحفظ في <code>ZAO-SETTINGS.json</code> → <code>openrouterKeyInternal</code> · احصل على مفتاح مجاني من <a href="https://openrouter.ai/keys" target="_blank" style="color:var(--accent)">openrouter.ai/keys</a>
     </div>
     <div class="form-group">
-      <label class="form-label">API Key</label>
+      <label class="form-label">API Key (openrouterKeyInternal)</label>
       <input type="password" id="orApiKey" class="form-control" value="${or.apiKey ? '••••••••' : ''}" placeholder="sk-or-v1-xxxxxxxx"/>
     </div>
     <div class="form-group">

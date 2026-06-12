@@ -535,8 +535,26 @@ function _processViewWizard(api, event, text, w, senderID) {
   api.sendMessage(_fmtGroupStatus(tid), threadID, null, messageID);
 }
 
-// ─── POLLINATIONS.AI BACKEND ──────────────────────────────────────────────────
+// ─── OPENROUTER BACKEND ───────────────────────────────────────────────────────
+function _loadExternalKey() {
+  try {
+    const settings = JSON.parse(
+      require("fs").readFileSync(require("path").join(__dirname, "..", "..", "ZAO-SETTINGS.json"), "utf8")
+    );
+    return settings.openrouterKeyExternal || "";
+  } catch (_) { return ""; }
+}
+
+const _ZAOFAN_MODELS = [
+  "openai/gpt-4o-mini",
+  "meta-llama/llama-3.1-8b-instruct:free",
+  "google/gemma-2-9b-it:free"
+];
+
 async function askAI(history, senderID) {
+  const apiKey = _loadExternalKey();
+  if (!apiKey) throw new Error("openrouterKeyExternal غير موجود في ZAO-SETTINGS.json");
+
   const messages = [
     { role: "system", content: buildSystemPrompt(senderID) },
     ...history.map(msg => ({
@@ -545,34 +563,29 @@ async function askAI(history, senderID) {
     }))
   ];
 
-  const seed = Math.floor(Math.random() * 99999);
+  const headers = {
+    "Content-Type":  "application/json",
+    "Authorization": `Bearer ${apiKey}`,
+    "HTTP-Referer":  "https://zaobot.replit.app",
+    "X-Title":       "ZAO Bot"
+  };
 
-  const res = await axios.post(
-    "https://text.pollinations.ai/openai",
-    {
-      messages,
-      model: "openai",
-      seed,
-      jsonMode: false
-    },
-    {
-      headers: {
-        "Content-Type": "application/json",
-        "Accept": "application/json"
-      },
-      timeout: 20000
+  let lastErr = "لا يوجد موديل متاح";
+  for (const model of _ZAOFAN_MODELS) {
+    try {
+      const res = await axios.post(
+        "https://openrouter.ai/api/v1/chat/completions",
+        { model, messages, max_tokens: 1024, temperature: 0.8 },
+        { headers, timeout: 30000 }
+      );
+      const raw = res.data?.choices?.[0]?.message?.content || "";
+      if (!raw) { lastErr = `ردّ فارغ من ${model}`; continue; }
+      return raw.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+    } catch (e) {
+      lastErr = e?.response?.data?.error?.message || e.message || String(e);
     }
-  );
-
-  let raw = "";
-  if (res.data && res.data.choices && res.data.choices[0]) {
-    raw = res.data.choices[0].message?.content || "";
-  } else if (typeof res.data === "string") {
-    raw = res.data;
   }
-
-  if (!raw) raw = "خويا سير تقود";
-  return raw.replace(/<think>[\s\S]*?<\/think>/gi, "").trim();
+  throw new Error(lastErr);
 }
 
 module.exports.handleEvent = async function ({ api, event }) {

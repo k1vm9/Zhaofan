@@ -100,3 +100,58 @@ The global interval is intentional but can accumulate if the command runs multip
 | `SCRIPTS/ZAO-EVTS/artoeine.js` | Cooldown + null guard + try/catch |
 | `SCRIPTS/ZAO-EVTS/ADMINATEK.js` | Null guard for logMessageData |
 | `agent.md` | This file |
+
+---
+
+## Session — 2026-06-12
+
+### 1. OpenRouter key unification — two keys in ZAO-SETTINGS.json
+
+**Files changed:**
+- `ZAO-SETTINGS.json` *(two new keys added)*
+- `SCRIPTS/ZAO-CMDS/زاوفان.js`
+- `SCRIPTS/ZAO-CMDS/ai.js`
+- `webpanel/zao-devhub.js`
+
+**What changed:**
+
+Added to `ZAO-SETTINGS.json`:
+- `"openrouterKeyInternal": ""` — for DevHub AI agents (zao-devhub.js)
+- `"openrouterKeyExternal": ""` — for bot commands زاو and زاوفان
+
+`زاوفان.js` — completely replaced `askAI()`: removed pollinations.ai backend, added OpenRouter backend (`_loadExternalKey()` reads `openrouterKeyExternal` from ZAO-SETTINGS.json fresh on every call, `_ZAOFAN_MODELS` fallback loop).
+
+`ai.js` — replaced static `OPENROUTER_API_KEY` constant with `_getOpenRouterKey()` function (reads `openrouterKeyExternal` from ZAO-SETTINGS.json each time, so no restart needed when key changes). Updated all 3 call sites.
+
+`zao-devhub.js` — added `loadZaoSettings()` / `saveZaoSettings()` helpers. `loadOpenRouterCfg()` now reads key from `openrouterKeyInternal` in ZAO-SETTINGS.json (models still from devhub-openrouter.json). `saveOpenRouterCfg()` writes key to ZAO-SETTINGS.json. Settings tab UI label updated to show key source.
+
+**How to activate:**
+1. Get a free key from https://openrouter.ai/keys
+2. Open `ZAO-SETTINGS.json` and paste it into `openrouterKeyInternal` (for DevHub) and/or `openrouterKeyExternal` (for زاو / زاوفان commands)
+3. OR use DevHub → الإعدادات → OpenRouter AI card (saves to ZAO-SETTINGS.json)
+
+---
+
+### 2. Bug fixes (ZAO-AUDIT.md)
+
+**Files changed:**
+- `includes/handle/handleCommand.js`
+
+**What changed:**
+
+L-01 fix: `!![]` → `true` at line 275 (setMessageReaction 4th arg — `!![]` always evaluates to `true` but is semantically misleading).
+
+M-01 fix: `humanTyping.calcDelay(msg)` → `humanTyping.calcDelay(preview || '')` at line 333. `msg` can be a string or object; `preview` is already the extracted text string computed earlier in the same closure.
+
+---
+
+### Summary of Files Changed
+
+| File | Change |
+|---|---|
+| `ZAO-SETTINGS.json` | Added openrouterKeyInternal + openrouterKeyExternal keys |
+| `SCRIPTS/ZAO-CMDS/زاوفان.js` | Replaced pollinations.ai askAI() with OpenRouter + ZAO-SETTINGS.json key |
+| `SCRIPTS/ZAO-CMDS/ai.js` | _getOpenRouterKey() reads openrouterKeyExternal from ZAO-SETTINGS.json dynamically |
+| `webpanel/zao-devhub.js` | loadOpenRouterCfg() reads key from ZAO-SETTINGS.json openrouterKeyInternal |
+| `includes/handle/handleCommand.js` | L-01: !![] → true; M-01: calcDelay(preview) not calcDelay(msg) |
+| `agent.md` | This file |

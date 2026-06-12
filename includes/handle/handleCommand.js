@@ -272,7 +272,7 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
           err
             ? logger("حدث خطأ أثناء تنفيذ setMessageReaction", "warn")
             : "",
-        !![]
+        true
       );
     // [FIX Djamel] — set cooldown BEFORE invoking command.run(). Async
     // commands previously left a window between dispatch and timestamps.set
@@ -327,7 +327,7 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
             chalk.hex("#ffffff")(preview.slice(0, 300))
           );
           if (!api.__nkxModernized && humanTyping) {
-            const delay = humanTyping.calcDelay(msg);
+            const delay = humanTyping.calcDelay(preview || '');
             if (delay > 0) await humanTyping.simulateTyping(api, tid || threadID, delay);
           }
           return _origSend(msg, tid, ...rest);
