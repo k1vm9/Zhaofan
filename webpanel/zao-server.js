@@ -1601,6 +1601,110 @@ body{
 })();
 </script>
 
+<!-- ── Randomizer Timers Live Dashboard ───────────────────────────────── -->
+<div class="card" id="rand-timers-card">
+  <div class="card-header">
+    <div class="card-title">🎲 المُعشِّش — لوحة التوقيتات الحية</div>
+    <div style="display:flex;align-items:center;gap:10px">
+      <span id="rt-ts" style="font-size:.75rem;color:var(--text3)">جارٍ التحميل...</span>
+      <button class="btn btn-outline btn-sm" onclick="refreshRandTimers()">🔄</button>
+    </div>
+  </div>
+
+  <!-- Row 1: Randomizer Engine + MQTT Health -->
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px;margin-bottom:16px">
+
+    <!-- Randomizer Engine card -->
+    <div style="background:var(--card2,rgba(255,255,255,.04));border-radius:10px;padding:16px;border:1px solid var(--border)">
+      <div style="font-size:.75rem;color:var(--text3);margin-bottom:10px;letter-spacing:.4px;font-weight:600">⚙️ محرك المُعشِّش AI</div>
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:.82rem;color:var(--text2)">الوضع</span>
+          <span id="rt-mode" style="font-weight:700;font-size:.9rem">—</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:.82rem;color:var(--text2)">المجمّع المتاح</span>
+          <span id="rt-pool" style="font-weight:700;color:var(--cyan)">—</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:.82rem;color:var(--text2)">إجمالي طلبات AI</span>
+          <span id="rt-total" style="font-weight:700">—</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:.82rem;color:var(--text2)">الإخفاقات</span>
+          <span id="rt-fails" style="font-weight:700">—</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:.82rem;color:var(--text2)">آخر طلب AI</span>
+          <span id="rt-last-call" style="font-weight:700;color:var(--purple)">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- MQTT Health card -->
+    <div style="background:var(--card2,rgba(255,255,255,.04));border-radius:10px;padding:16px;border:1px solid var(--border)">
+      <div style="font-size:.75rem;color:var(--text3);margin-bottom:10px;letter-spacing:.4px;font-weight:600">📡 فحص صحة MQTT</div>
+      <div style="display:flex;flex-direction:column;gap:9px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:.82rem;color:var(--text2)">حالة MQTT</span>
+          <span id="rt-mqtt-alive" style="font-weight:700;font-size:.9rem">—</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:.82rem;color:var(--text2)">الفحص القادم (عشوائي 2–4د)</span>
+          <span id="rt-mqtt-next" style="font-weight:700;color:var(--orange,#f97316)">—</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:.82rem;color:var(--text2)">صامت منذ</span>
+          <span id="rt-mqtt-silent" style="font-weight:700">—</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:.82rem;color:var(--text2)">Backoff</span>
+          <span id="rt-mqtt-backoff" style="font-weight:700;color:var(--yellow,#ffc107)">—</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-size:.82rem;color:var(--text2)">إعادات التشغيل</span>
+          <span id="rt-mqtt-restarts" style="font-weight:700">—</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Row 2: Keep-Alive Timers table -->
+  <div style="margin-bottom:16px">
+    <div style="font-size:.75rem;color:var(--text3);margin-bottom:8px;letter-spacing:.4px;font-weight:600">⏱️ مؤقتات الجلسة — كل فترة عشوائية مستقلة</div>
+    <table class="table">
+      <thead><tr><th>المؤقت</th><th>النطاق العشوائي</th><th style="text-align:left">التالي بعد</th></tr></thead>
+      <tbody id="rt-keepalive-body">
+        <tr><td colspan="3" style="text-align:center;color:var(--text3);padding:14px">جارٍ التحميل...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Row 3: Motor Loops table -->
+  <div style="margin-bottom:16px">
+    <div style="font-size:.75rem;color:var(--text3);margin-bottom:8px;letter-spacing:.4px;font-weight:600">⚙️ محركات نشطة — Motor Loops</div>
+    <table class="table">
+      <thead><tr><th>الغروب</th><th>آخر إرسال</th><th>الإرسال القادم</th><th>Backoff</th></tr></thead>
+      <tbody id="rt-motors-body">
+        <tr><td colspan="4" style="text-align:center;color:var(--text3);padding:14px">جارٍ التحميل...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Row 4: Name Locks (nm) table -->
+  <div>
+    <div style="font-size:.75rem;color:var(--text3);margin-bottom:8px;letter-spacing:.4px;font-weight:600">🔒 أقفال الأسماء nm — فترات عشوائية</div>
+    <table class="table">
+      <thead><tr><th>الغروب</th><th>الاسم المقفول</th><th>الفترة</th><th>التطبيق القادم</th></tr></thead>
+      <tbody id="rt-nm-body">
+        <tr><td colspan="4" style="text-align:center;color:var(--text3);padding:14px">جارٍ التحميل...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
 <div class="card">
   <div class="card-header">
     <div class="card-title">🎮 التحكم بالبوت</div>
@@ -1836,6 +1940,164 @@ async function testRandomizer() {
 }
 refreshRandomizerStat();
 setInterval(refreshRandomizerStat, 30000);
+// ── Randomizer Timers Live Dashboard ────────────────────────────────────────
+function _rtFmtRem(ms) {
+  if (ms === null || ms === undefined || isNaN(ms)) return '—';
+  var rem = Math.max(0, ms);
+  var h = Math.floor(rem / 3600000);
+  var m = Math.floor((rem % 3600000) / 60000);
+  var s = Math.floor((rem % 60000) / 1000);
+  if (h > 0) return h + 'س ' + m + 'د';
+  if (m > 0) return m + 'د ' + s + 'ث';
+  return s + 'ث';
+}
+function _rtFmtAgo(ts, now) {
+  if (!ts) return '—';
+  var diff = Math.round((now - Number(ts)) / 1000);
+  if (diff < 0) return 'قريباً';
+  if (diff < 60) return 'منذ ' + diff + 'ث';
+  if (diff < 3600) return 'منذ ' + Math.floor(diff / 60) + 'د';
+  return 'منذ ' + Math.floor(diff / 3600) + 'س';
+}
+async function refreshRandTimers() {
+  try {
+    var d = await fetch('/api/randomizer/timers').then(function(r){return r.json();}).catch(function(){return {};});
+    var now = Date.now();
+    var rs  = d.randomizer || {};
+    var mq  = d.mqtt       || {};
+    var ka  = d.keepAlive  || {};
+    var motors  = d.motors  || [];
+    var nmLocks = d.nmLocks || [];
+
+    // ── Randomizer Engine ──────────────────────────────────────────────────
+    var modeEl = document.getElementById('rt-mode');
+    if (modeEl) {
+      if (rs.mode === 'ai')       { modeEl.textContent = '🤖 AI';       modeEl.style.color = 'var(--green)'; }
+      else if (rs.mode === 'fallback') { modeEl.textContent = '🔀 Fallback'; modeEl.style.color = 'var(--yellow,#ffc107)'; }
+      else                        { modeEl.textContent = '—';            modeEl.style.color = ''; }
+    }
+    var poolEl = document.getElementById('rt-pool');
+    if (poolEl) poolEl.textContent = rs.poolSize != null ? rs.poolSize + ' رقم' : '—';
+    var totalEl = document.getElementById('rt-total');
+    if (totalEl) totalEl.textContent = rs.totalAiCalls != null ? rs.totalAiCalls : '—';
+    var failsEl = document.getElementById('rt-fails');
+    if (failsEl) {
+      failsEl.textContent = rs.failCount != null ? rs.failCount : '—';
+      failsEl.style.color = rs.failCount > 0 ? 'var(--red)' : 'var(--green)';
+    }
+    var lcEl = document.getElementById('rt-last-call');
+    if (lcEl) lcEl.textContent = _rtFmtAgo(rs.lastCallAt, now);
+
+    // ── MQTT Health ────────────────────────────────────────────────────────
+    var aliveEl = document.getElementById('rt-mqtt-alive');
+    if (aliveEl) {
+      if (mq.mqttAlive) { aliveEl.textContent = '✅ نشط'; aliveEl.style.color = 'var(--green)'; }
+      else              { aliveEl.textContent = '⭕ صامت'; aliveEl.style.color = mq.silentForSec > 300 ? 'var(--red)' : 'var(--yellow,#ffc107)'; }
+    }
+    var mqNextEl = document.getElementById('rt-mqtt-next');
+    if (mqNextEl) {
+      if (mq.nextCheckAt) {
+        mqNextEl.textContent = _rtFmtRem(Number(mq.nextCheckAt) - now);
+        mqNextEl.style.color = 'var(--orange,#f97316)';
+      } else {
+        mqNextEl.textContent = mq.watcherActive ? 'قريباً' : 'معطّل';
+        mqNextEl.style.color = mq.watcherActive ? 'var(--yellow,#ffc107)' : 'var(--text3)';
+      }
+    }
+    var silentEl = document.getElementById('rt-mqtt-silent');
+    if (silentEl) {
+      if (mq.silentForSec != null) {
+        var s = mq.silentForSec;
+        silentEl.textContent = s < 60 ? s + 'ث' : s < 3600 ? Math.round(s/60) + 'د' : Math.round(s/3600) + 'س';
+        silentEl.style.color = s < 120 ? 'var(--green)' : s < 480 ? 'var(--yellow,#ffc107)' : 'var(--red)';
+      } else { silentEl.textContent = '—'; silentEl.style.color = ''; }
+    }
+    var bkEl = document.getElementById('rt-mqtt-backoff');
+    if (bkEl) {
+      bkEl.textContent = mq.backoffMs > 0 ? Math.round(mq.backoffMs / 1000) + 'ث' : '—';
+      bkEl.style.color = mq.backoffMs > 0 ? 'var(--yellow,#ffc107)' : 'var(--text3)';
+    }
+    var rstEl = document.getElementById('rt-mqtt-restarts');
+    if (rstEl) {
+      rstEl.textContent = mq.restartCount != null ? mq.restartCount + ' / ' + (mq.maxRestarts || 8) : '—';
+      rstEl.style.color = mq.restartCount > 0 ? 'var(--yellow,#ffc107)' : 'var(--green)';
+    }
+
+    // ── Keep-Alive Timers table ────────────────────────────────────────────
+    var kaBody = document.getElementById('rt-keepalive-body');
+    if (kaBody) {
+      var kaRows = [
+        { name: '🔔 Ping الجلسة',       range: '8 – 22 دقيقة',   nextAt: ka.nextPingAt },
+        { name: '🔑 تجديد fb_dtsg',      range: '6 – 8 ساعات',    nextAt: ka.nextDtsgAt },
+        { name: '🔔 زيارة الإشعارات',    range: '60 – 180 دقيقة', nextAt: ka.nextNotiAt },
+        { name: '💾 حفظ الكوكيز',        range: '25 – 45 دقيقة',  nextAt: ka.nextSaveAt },
+      ];
+      kaBody.innerHTML = kaRows.map(function(r) {
+        var rem = r.nextAt ? _rtFmtRem(Number(r.nextAt) - now) : '—';
+        var col = r.nextAt ? 'var(--cyan)' : 'var(--text3)';
+        return '<tr><td>' + r.name + '</td>' +
+          '<td style="color:var(--text3);font-size:.78rem">' + r.range + '</td>' +
+          '<td style="color:' + col + ';font-weight:700">' + rem + '</td></tr>';
+      }).join('');
+    }
+
+    // ── Motor Loops table ──────────────────────────────────────────────────
+    var mBody = document.getElementById('rt-motors-body');
+    if (mBody) {
+      if (!motors.length) {
+        mBody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:14px">لا توجد محركات نشطة</td></tr>';
+      } else {
+        mBody.innerHTML = motors.map(function(m) {
+          var tid   = m.threadID || '?';
+          var disp  = m.name || (tid.length > 18 ? tid.slice(0,16) + '…' : tid);
+          var last  = _rtFmtAgo(m.lastSentAt, now);
+          var nxt   = m.nextSendAt ? _rtFmtRem(m.nextSendAt - now) : '—';
+          var bk    = m.backoffMs > 0 ? Math.round(m.backoffMs / 1000) + 'ث' : '—';
+          var nxtCol = m.nextSendAt && m.nextSendAt > now ? 'var(--green)' : 'var(--text3)';
+          return '<tr>' +
+            '<td style="font-size:.78rem;color:var(--text3)" title="' + tid + '">' + disp + '</td>' +
+            '<td>' + last + '</td>' +
+            '<td style="color:' + nxtCol + ';font-weight:700">' + nxt + '</td>' +
+            '<td style="color:var(--yellow,#ffc107)">' + bk + '</td>' +
+            '</tr>';
+        }).join('');
+      }
+    }
+
+    // ── nm Name Locks table ────────────────────────────────────────────────
+    var nmBody = document.getElementById('rt-nm-body');
+    if (nmBody) {
+      if (!nmLocks.length) {
+        nmBody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:14px">لا توجد أقفال أسماء نشطة</td></tr>';
+      } else {
+        nmBody.innerHTML = nmLocks.map(function(n) {
+          var tid  = n.threadID || '?';
+          var disp = tid.length > 18 ? tid.slice(0,16) + '…' : tid;
+          var nm   = (n.name || '—').slice(0, 22);
+          var timeStr;
+          if (n.randomTime) {
+            timeStr = n.randomRange ? 'عشوائي ' + n.randomRange[0] + '–' + n.randomRange[1] + 'ث' : 'عشوائي';
+          } else {
+            timeStr = n.time ? Math.round(n.time / 1000) + 'ث' : '—';
+          }
+          var nxt = n.nextApplyAt ? _rtFmtRem(Number(n.nextApplyAt) - now) : '—';
+          var nxtCol = n.nextApplyAt ? 'var(--purple)' : 'var(--text3)';
+          return '<tr>' +
+            '<td style="font-size:.75rem;color:var(--text3)" title="' + tid + '">' + disp + '</td>' +
+            '<td style="color:var(--cyan)">' + nm + '</td>' +
+            '<td style="color:var(--text2);font-size:.8rem">' + timeStr + '</td>' +
+            '<td style="color:' + nxtCol + ';font-weight:700">' + nxt + '</td>' +
+            '</tr>';
+        }).join('');
+      }
+    }
+
+    var ts = document.getElementById('rt-ts');
+    if (ts) ts.textContent = 'آخر تحديث: ' + new Date().toLocaleTimeString('ar-EG');
+  } catch(_) {}
+}
+refreshRandTimers();
+setInterval(refreshRandTimers, 10000);
 </script>`;
     res.send(layout('الرئيسية', body, 'status', pageOpts()));
   });
@@ -6326,6 +6588,15 @@ document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click
       setTimeout(() => { try { restartBotFn(); } catch(_) {} }, 500);
       res.json({ ok:true });
     } catch(e) { res.json({ error:e.message }); }
+  });
+
+  // ─── Randomizer timers (all random-interval data in one payload) ───────────
+  app.get('/api/randomizer/timers', auth, async (req,res) => {
+    try {
+      const r = await proxyToBot('GET', '/bot/randomizer-timers', null);
+      if (r && r.data && typeof r.data === 'object') return res.json(r.data);
+    } catch(_) {}
+    res.json({ ok:false, error:'Bot offline' });
   });
 
   // ─── Randomizer status + refill ────────────────────────────────────────────

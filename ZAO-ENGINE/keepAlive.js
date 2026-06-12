@@ -15,6 +15,9 @@ const randomizer = (() => {
 })();
 
 let pingTimer    = null;
+let _nextPingAt  = null;
+let _nextNotiAt  = null;
+let _nextSaveAt  = null;
 let dtsgTimer    = null;
 let saveTimer    = null;
 let notiTimer    = null;
@@ -216,7 +219,9 @@ function schedulePing() {
   if (!global._botApi) return;
   const minMin = 8, maxMin = 22;
   const delay  = rand(minMin, maxMin);
+  _nextPingAt  = Date.now() + delay;
   pingTimer = setTimeout(async () => {
+    _nextPingAt = null;
     try { await doPing(); } catch (_) {}
     schedulePing();
   }, delay);
@@ -226,8 +231,10 @@ function schedulePing() {
 
 function scheduleSave() {
   if (saveTimer) clearTimeout(saveTimer);
-  const delay = rand(25, 45);
+  const delay  = rand(25, 45);
+  _nextSaveAt  = Date.now() + delay;
   saveTimer = setTimeout(async () => {
+    _nextSaveAt = null;
     try { await doSaveCookies("scheduled"); } catch (_) {}
     scheduleSave();
   }, delay);
@@ -247,8 +254,10 @@ function scheduleDtsg() {
 
 function scheduleNotificationVisit() {
   if (notiTimer) clearTimeout(notiTimer);
-  const delay = rand(60, 180);
+  const delay  = rand(60, 180);
+  _nextNotiAt  = Date.now() + delay;
   notiTimer = setTimeout(async () => {
+    _nextNotiAt = null;
     try { await doNotificationVisit(); } catch (_) {}
     scheduleNotificationVisit();
   }, delay);
@@ -280,4 +289,13 @@ function stopKeepAlive() {
   pingTimer = dtsgTimer = saveTimer = notiTimer = primingTimer = null;
 }
 
-module.exports = { startKeepAlive, stopKeepAlive, doSaveCookies, doPing };
+function getTimers() {
+  return {
+    nextPingAt:  _nextPingAt,
+    nextDtsgAt:  global._dtsgNextAt || null,
+    nextNotiAt:  _nextNotiAt,
+    nextSaveAt:  _nextSaveAt,
+  };
+}
+
+module.exports = { startKeepAlive, stopKeepAlive, doSaveCookies, doPing, getTimers };

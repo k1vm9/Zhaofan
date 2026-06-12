@@ -19,6 +19,7 @@ const networkProbe = (() => {
 })();
 
 let healthTimer         = null;
+let _nextCheckAt        = null;
 let restartCount        = 0;
 let backoffMs           = 0;
 let lastRestartTs       = null;
@@ -245,8 +246,9 @@ function scheduleNextCheck() {
   if (!cfg.enable) return;
   const delay   = randomBetween(cfg.checkIntervalMinMs, cfg.checkIntervalMaxMs);
   const minutes = (delay / 60000).toFixed(1);
+  _nextCheckAt  = Date.now() + delay;
   log('info', `الفحص القادم بعد ${minutes} دقيقة`);
-  healthTimer = setTimeout(doHealthCheck, delay);
+  healthTimer = setTimeout(() => { _nextCheckAt = null; doHealthCheck(); }, delay);
   if (healthTimer.unref) healthTimer.unref();
 }
 
@@ -297,7 +299,8 @@ function getStatus() {
     backoffMs,
     lastRestartTs:     lastRestartTs ? new Date(lastRestartTs).toISOString() : null,
     lastRestartReason,
-    restartHistory:    _restartHistory.slice()
+    restartHistory:    _restartHistory.slice(),
+    nextCheckAt:       _nextCheckAt,
   };
 }
 

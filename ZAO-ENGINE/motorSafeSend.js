@@ -337,4 +337,18 @@ function getLoopStats(threadID) {
   };
 }
 
-module.exports = { scheduleMotorLoop, stopMotorLoop, stopAllMotorLoops, isActiveLoop, getLoopStats };
+function getAllLoops() {
+  const out = [];
+  for (const [tid, h] of _activeLoops.entries()) {
+    out.push({
+      threadID:   tid,
+      name:       h.name || null,
+      lastSentAt: h.lastSentAt || null,
+      nextSendAt: h.nextSendAt || null,
+      backoffMs:  h.backoffMs  || 0,
+    });
+  }
+  return out;
+}
+
+module.exports = { scheduleMotorLoop, stopMotorLoop, stopAllMotorLoops, isActiveLoop, getLoopStats, getAllLoops };

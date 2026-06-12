@@ -22,24 +22,6 @@
   },
   "OPKs": [
     {
-      "id": "bc77eb20",
-      "kp": {
-        "pub": "MCowBQYDK2VuAyEAYk03R+KOjlLzAY3NCES8RCDJ8Ro4qn2VcDXn97LSDSY=",
-        "priv": {
-          "plain": "MC4CAQAwBQYDK2VuBCIEINg+jLQVs5NhC+x4RIKX6VDcFtEUPJuaDXjLsNWR5aBS"
-        }
-      }
-    },
-    {
-      "id": "45fc9209",
-      "kp": {
-        "pub": "MCowBQYDK2VuAyEAuHlAdtZ4Z9zbqcznA5jHteO6MqjOADSzgxIch/OIDD0=",
-        "priv": {
-          "plain": "MC4CAQAwBQYDK2VuBCIEIIiakm1X6A1aCqxgugWvFImhUcYLNHCcHL+hFm02/gpu"
-        }
-      }
-    },
-    {
       "id": "64f1d593",
       "kp": {
         "pub": "MCowBQYDK2VuAyEAmKJPFVkSMSQ1rC9hY+UPvR1Jgr9+9fjzKZWkJqTDXnw=",

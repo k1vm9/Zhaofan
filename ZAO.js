@@ -2413,6 +2413,35 @@ async function onBot({ models }) {
         if (pathname === '/bot/randomizer-status' && method === 'GET') {
           return _json(res, { ok: true, ...randomizer.getStatus() });
         }
+        if (pathname === '/bot/randomizer-timers' && method === 'GET') {
+          try {
+            const randStatus = randomizer.getStatus();
+            const mqttStatus = (() => { try { return require('./ZAO-ENGINE/mqttHealthCheck').getStatus(); } catch(_) { return {}; } })();
+            const kaTimers   = (() => { try { return require('./ZAO-ENGINE/keepAlive').getTimers(); } catch(_) { return {}; } })();
+            const { getAllLoops } = require('./ZAO-ENGINE/motorSafeSend');
+            const motors = getAllLoops ? getAllLoops() : [];
+            const NL = (() => { try { return require('./ZAO-ENGINE/nameLocks'); } catch(_) { return null; } })();
+            const nmAll = NL ? (NL.getLocks ? NL.getLocks() : null) : null;
+            const nmLocks = nmAll ? [...nmAll.entries()].map(([tid, v]) => ({
+              threadID:    tid,
+              name:        v.name || null,
+              time:        v.time || null,
+              randomTime:  v.randomTime || false,
+              randomRange: v.randomRange || null,
+              nextApplyAt: (global._nmNextApply && global._nmNextApply.get(tid)) || null,
+            })) : [];
+            return _json(res, {
+              ok:        true,
+              randomizer: randStatus,
+              mqtt:       mqttStatus,
+              keepAlive:  kaTimers,
+              motors,
+              nmLocks,
+            });
+          } catch(e) {
+            return _json(res, { ok: false, error: String(e.message || e).slice(0, 200) });
+          }
+        }
         if (pathname === '/bot/randomizer-refill' && method === 'POST') {
           try {
             const st = await randomizer.refillNow();
