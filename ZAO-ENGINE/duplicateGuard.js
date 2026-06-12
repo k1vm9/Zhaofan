@@ -25,13 +25,15 @@ function start(api) {
   _active = true;
 
   const orig = api.sendMessage.bind(api);
-  api.sendMessage = function(msg, threadID, callback) {
+  // Accept all args so reply-to messageID (4th arg) and any other extras
+  // are forwarded to the real sendMessage instead of being silently dropped.
+  api.sendMessage = function(msg, threadID, callback, ...rest) {
     const body = typeof msg === "string" ? msg : (msg?.body || "");
     if (isDuplicateOutgoing(threadID, body)) {
       if (typeof callback === "function") callback(null, { deduplicated: true });
       return;
     }
-    return orig(msg, threadID, callback);
+    return orig(msg, threadID, callback, ...rest);
   };
 }
 

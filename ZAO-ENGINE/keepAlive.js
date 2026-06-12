@@ -204,7 +204,7 @@ function schedulePing() {
   const minMin = 8, maxMin = 22;
   const delay  = rand(minMin, maxMin);
   pingTimer = setTimeout(async () => {
-    await doPing();
+    try { await doPing(); } catch (_) {}
     schedulePing();
   }, delay);
   if (pingTimer.unref) pingTimer.unref();
@@ -215,7 +215,7 @@ function scheduleSave() {
   if (saveTimer) clearTimeout(saveTimer);
   const delay = rand(25, 45);
   saveTimer = setTimeout(async () => {
-    await doSaveCookies("scheduled");
+    try { await doSaveCookies("scheduled"); } catch (_) {}
     scheduleSave();
   }, delay);
   if (saveTimer.unref) saveTimer.unref();
@@ -227,7 +227,7 @@ function scheduleDtsg() {
   const delay  = Math.round(hours * 60 * 60 * 1000);
   global._dtsgNextAt = Date.now() + delay;
   dtsgTimer = setTimeout(async () => {
-    await doRefreshDtsg();
+    try { await doRefreshDtsg(); } catch (_) {}
     scheduleDtsg();
   }, delay);
   if (dtsgTimer.unref) dtsgTimer.unref();
@@ -237,7 +237,7 @@ function scheduleNotificationVisit() {
   if (notiTimer) clearTimeout(notiTimer);
   const delay = rand(60, 180);
   notiTimer = setTimeout(async () => {
-    await doNotificationVisit();
+    try { await doNotificationVisit(); } catch (_) {}
     scheduleNotificationVisit();
   }, delay);
   if (notiTimer.unref) notiTimer.unref();

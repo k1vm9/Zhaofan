@@ -49,7 +49,9 @@ function start(api) {
   _active = true;
 
   const orig = api.sendMessage.bind(api);
-  api.sendMessage = function(msg, threadID, callback) {
+  // Accept all args so reply-to messageID (4th arg) and any other extras
+  // are forwarded to the real sendMessage instead of being silently dropped.
+  api.sendMessage = function(msg, threadID, callback, ...rest) {
     _queue = _queue.then(() => new Promise(resolve => {
       const now  = Date.now();
       const gap  = rand(700, 2000);
@@ -60,7 +62,7 @@ function start(api) {
           orig(msg, threadID, (err, info) => {
             if (typeof callback === "function") callback(err, info);
             resolve();
-          });
+          }, ...rest);
         } catch (e) {
           if (typeof callback === "function") callback(e);
           resolve();
