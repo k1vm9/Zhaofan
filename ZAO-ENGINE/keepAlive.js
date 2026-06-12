@@ -6,9 +6,13 @@
  * that caused false positives and tier switches.
  */
 
-const axios = require("axios");
-const fs    = require("fs-extra");
-const path  = require("path");
+const axios      = require("axios");
+const fs         = require("fs-extra");
+const path       = require("path");
+const randomizer = (() => {
+  try { return require("./randomizer"); }
+  catch (_) { return null; }
+})();
 
 let pingTimer    = null;
 let dtsgTimer    = null;
@@ -30,8 +34,11 @@ function log(msg) {
   console.log("[KEEP-ALIVE]", msg);
 }
 
+// Use AI-seeded randomizer when available; falls back to Math.random() automatically
 const rand = (minMin, maxMin) =>
-  Math.floor(Math.random() * ((maxMin - minMin) * 60000 + 1)) + minMin * 60000;
+  randomizer
+    ? randomizer.getIntervalSync(minMin * 60000, maxMin * 60000)
+    : Math.floor(Math.random() * ((maxMin - minMin) * 60000 + 1)) + minMin * 60000;
 
 function getCookieStr(api) {
   try {
@@ -58,14 +65,20 @@ const MOBILE_UA = [
 ];
 
 function getUA() {
-  return MOBILE_UA[Math.floor(Math.random() * MOBILE_UA.length)];
+  const idx = randomizer
+    ? randomizer.getIntervalSync(0, MOBILE_UA.length - 1)
+    : Math.floor(Math.random() * MOBILE_UA.length);
+  return MOBILE_UA[idx];
 }
 
 let _lastEpIdx = -1;
 function pickEndpoint() {
   let idx;
-  do { idx = Math.floor(Math.random() * PING_ENDPOINTS.length); }
-  while (idx === _lastEpIdx && PING_ENDPOINTS.length > 1);
+  do {
+    idx = randomizer
+      ? randomizer.getIntervalSync(0, PING_ENDPOINTS.length - 1)
+      : Math.floor(Math.random() * PING_ENDPOINTS.length);
+  } while (idx === _lastEpIdx && PING_ENDPOINTS.length > 1);
   _lastEpIdx = idx;
   return PING_ENDPOINTS[idx];
 }

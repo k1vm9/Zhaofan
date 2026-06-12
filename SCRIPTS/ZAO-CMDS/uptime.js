@@ -240,7 +240,17 @@ async function buildImage() {
   const disk = getDisk();
 
   const nodeVer = process.version;
-  const upStr = fmtUptime(process.uptime());
+  // Use first-start.json for true system uptime (survives bot restarts),
+  // falling back to process.uptime() if the file isn't available yet.
+  const upStr = (() => {
+    try {
+      const f = path.join(__dirname, "..", "..", "data", "first-start.json");
+      const d = JSON.parse(fs.readFileSync(f, "utf-8"));
+      const sec = Math.floor((Date.now() - Number(d.ts || 0)) / 1000);
+      if (sec > 0) return fmtUptime(sec);
+    } catch (_) {}
+    return fmtUptime(process.uptime());
+  })();
 
   const cities = [
     { name: "Gomel",        tz: "Europe/Minsk" },

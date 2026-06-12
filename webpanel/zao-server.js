@@ -101,7 +101,6 @@ function layout(title, body, activeTab = "", opts = {}) {
     ["scheduler",     "M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z", "الجدولة"],
     ["hold",          "M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z", "التحكم"],
     ["config",        "M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z", "الإعدادات"],
-    ["accounts",      "M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z", "الحسابات"],
     ["tier-settings", "M4 6h16M4 12h16M4 18h7", "إعدادات التيرات"],
     ["groups",        "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z", "الغروبات"],
     ["health",        "M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z", "الصحة"],
@@ -1411,6 +1410,12 @@ body{
     <div class="stat-val" id="stat-uptime" style="font-size:1rem">${getUptime(STARTED_AT)}</div>
     <div class="stat-lbl">وقت التشغيل</div>
   </div>
+  <div class="stat stat-purple" id="rand-stat" style="cursor:pointer" onclick="testRandomizer()" title="اضغط لتعبئة المجمّع">
+    <div class="stat-glow"></div>
+    <div class="stat-icon">🎲</div>
+    <div class="stat-val" id="rand-mode" style="font-size:.95rem">—</div>
+    <div class="stat-lbl">المُعشِّش AI</div>
+  </div>
 </div>
 
 <!-- ── Session Health Widget ─────────────────────────────────────────── -->
@@ -1802,6 +1807,35 @@ async function toggleSilentMode() {
   else showToast('❌ ' + (r.error || 'فشل'), 'error');
 }
 refreshSilentMode();
+// ── Randomizer status widget ──────────────────────────────────────────────
+async function refreshRandomizerStat() {
+  try {
+    const d = await fetch('/api/randomizer/status').then(r=>r.json()).catch(()=>({}));
+    const el = document.getElementById('rand-mode');
+    if (!el) return;
+    if (d.mode === 'ai') {
+      el.textContent = '🤖 AI';
+      el.style.color = 'var(--green)';
+    } else if (d.mode === 'fallback') {
+      el.textContent = '🔀 Fallback';
+      el.style.color = 'var(--yellow,#ffc107)';
+    } else {
+      el.textContent = '—';
+      el.style.color = '';
+    }
+    const st = document.getElementById('rand-stat');
+    if (st) st.title = d.pool != null ? 'المجمّع: ' + d.pool + ' رقم — اضغط للتعبئة' : 'اضغط للتعبئة';
+  } catch(_) {}
+}
+async function testRandomizer() {
+  showToast('⏳ جارٍ تعبئة مجمّع المُعشِّش...', 'info');
+  const r = await api('/api/randomizer/test', {});
+  if (r.ok) showToast('✅ المجمّع ممتلئ — ' + (r.pool||'') + ' رقم جاهز', 'success');
+  else showToast('❌ ' + (r.error || 'تعذّر التعبئة'), 'error');
+  refreshRandomizerStat();
+}
+refreshRandomizerStat();
+setInterval(refreshRandomizerStat, 30000);
 </script>`;
     res.send(layout('الرئيسية', body, 'status', pageOpts()));
   });
@@ -2972,121 +3006,8 @@ function formatJson(){
   });
 
   // ─── ACCOUNTS ───────────────────────────────────────────────────────────────
-  app.get('/accounts', auth, (req,res) => {
-    let activeTier = null;
-    try { activeTier = JSON.parse(fs.readFileSync(path.join(DATA_DIR,'active-tier.json'),'utf-8')).tier; } catch(_) {}
-
-    function fileStatus(filename) {
-      const full = path.join(ROOT, filename);
-      try {
-        if (!fs.existsSync(full)) return { exists:false, size:0, valid:false };
-        const st = fs.statSync(full);
-        let valid = false;
-        try { const d=JSON.parse(fs.readFileSync(full,'utf-8')); valid=Array.isArray(d)&&d.length>0; } catch(_) {}
-        return { exists:true, size:st.size, valid };
-      } catch(_) { return { exists:false, size:0, valid:false }; }
-    }
-
-    const tierCards = TIER_FILES.map(t => {
-      const s = fileStatus(t.stateFile);
-      const a = fileStatus(t.altFile);
-      const isActive = activeTier === t.tier;
-      return `<div class="card" style="${isActive?'border-color:rgba(0,212,255,.3)':''}">
-        <div class="card-header">
-          <div class="card-title">🔑 Tier ${t.tier} ${isActive?'<span class="badge badge-green" style="margin-right:8px">✅ نشط</span>':''}</div>
-          <div style="display:flex;gap:6px">
-            ${!isActive?`<button class="btn btn-outline btn-sm" onclick="switchTier(${t.tier})">🔄 تفعيل</button>`:''}
-          </div>
-        </div>
-        <div style="display:grid;gap:8px">
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--bg3);border-radius:8px">
-            <span style="font-size:.83rem;color:var(--text2)">📄 ${t.stateFile}</span>
-            <span class="badge ${s.valid?'badge-green':s.exists?'badge-yellow':'badge-red'}">${s.valid?'✅ صالح':s.exists?'⚠️ تالف':'❌ غير موجود'}</span>
-          </div>
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:8px;background:var(--bg3);border-radius:8px">
-            <span style="font-size:.83rem;color:var(--text2)">🔁 ${t.altFile} (نسخة احتياطية)</span>
-            <span class="badge ${a.valid?'badge-green':a.exists?'badge-yellow':'badge-red'}">${a.valid?'✅ صالح':a.exists?'⚠️ تالف':'❌ غير موجود'}</span>
-          </div>
-        </div>
-        <div class="btn-row" style="margin-top:12px">
-          <button class="btn btn-primary btn-sm" onclick="loadTier(${t.tier},'${t.stateFile}')">👁 عرض الكوكيز</button>
-          <button class="btn btn-success btn-sm" onclick="openPasteTier(${t.tier},'${t.stateFile}')">📋 لصق AppState</button>
-          <button class="btn btn-outline btn-sm" onclick="backupTier(${t.tier},'${t.stateFile}','${t.altFile}')">💾 نسخ احتياطي</button>
-        </div>
-      </div>`;
-    }).join('');
-
-    const body = `
-<div class="page-header">
-  <div class="page-title">👤 إدارة الحسابات</div>
-  <div class="page-sub">إدارة AppState لكل Tier — الطبقة النشطة: <strong style="color:var(--accent)">${activeTier!==null?'T'+activeTier:'غير محدد'}</strong></div>
-</div>
-
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px">
-  ${tierCards}
-</div>
-
-<!-- View/Edit Modal -->
-<div id="tierModal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:center;justify-content:center">
-  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);width:min(700px,95vw);max-height:85vh;display:flex;flex-direction:column;overflow:hidden">
-    <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
-      <div style="font-weight:700" id="tierModalTitle">AppState</div>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-success btn-sm" onclick="saveTierState()">💾 حفظ</button>
-        <button class="btn btn-outline btn-sm" onclick="closeTierModal()">✕</button>
-      </div>
-    </div>
-    <textarea id="tierStateArea" style="flex:1;background:#03040d;color:#cdd6f4;font-family:monospace;font-size:.76rem;padding:16px;border:none;outline:none;resize:none;min-height:300px" placeholder="AppState JSON..."></textarea>
-    <div id="tierSaveStatus" style="padding:6px 16px;font-size:.8rem;min-height:26px"></div>
-  </div>
-</div>
-
-<script>
-let _curTierFile='';
-async function loadTier(tier,file){
-  _curTierFile=file;
-  document.getElementById('tierModalTitle').textContent='👁 Tier '+tier+' — '+file;
-  document.getElementById('tierStateArea').value='⏳ جارٍ التحميل...';
-  document.getElementById('tierModal').style.display='flex';
-  const r=await fetch('/api/accounts/state?file='+encodeURIComponent(file));
-  const d=await r.json();
-  document.getElementById('tierStateArea').value=d.content||d.error||'';
-}
-function openPasteTier(tier,file){
-  _curTierFile=file;
-  document.getElementById('tierModalTitle').textContent='📋 Tier '+tier+' — لصق AppState جديد';
-  document.getElementById('tierStateArea').value='';
-  document.getElementById('tierModal').style.display='flex';
-  document.getElementById('tierStateArea').focus();
-}
-function closeTierModal(){document.getElementById('tierModal').style.display='none'}
-async function saveTierState(){
-  const content=document.getElementById('tierStateArea').value.trim();
-  const st=document.getElementById('tierSaveStatus');
-  if(!content)return showToast('لصق AppState أولاً','error');
-  let parsed;
-  try{parsed=JSON.parse(content)}catch(e){return showToast('❌ JSON غير صالح: '+e.message,'error')}
-  if(!Array.isArray(parsed)||!parsed.length)return showToast('❌ AppState يجب أن يكون مصفوفة غير فارغة','error');
-  st.innerHTML='<span style="color:var(--text3)">⏳ جارٍ الحفظ...</span>';
-  const r=await api('/api/accounts/state',{file:_curTierFile,content});
-  if(r.ok){st.innerHTML='<span style="color:var(--green)">✅ تم الحفظ</span>';showToast('✅ تم حفظ AppState','success')}
-  else{st.innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>'}
-}
-async function switchTier(tier){
-  if(!confirm('تفعيل Tier '+tier+'؟ سيعيد تشغيل البوت.'))return;
-  const r=await api('/api/accounts/switch',{tier});
-  if(r.ok)showToast('✅ تم تفعيل Tier '+tier+' — سيعيد البوت التشغيل','success');
-  else showToast('❌ '+(r.error||'فشل'),'error');
-}
-async function backupTier(tier,stateFile,altFile){
-  const r=await api('/api/accounts/backup',{stateFile,altFile});
-  if(r.ok)showToast('✅ تم النسخ الاحتياطي لـ Tier '+tier,'success');
-  else showToast('❌ '+(r.error||'فشل'),'error');
-}
-document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTierModal()});
-</script>`;
-    res.send(layout('الحسابات', body, 'accounts', pageOpts()));
-  });
+  // Accounts tab merged into tier-settings — redirect old URL
+  app.get('/accounts', auth, (req,res) => res.redirect('/tier-settings'));
 
   // ─── TIER SETTINGS ───────────────────────────────────────────────────────────
   app.get('/tier-settings', auth, (req,res) => {
@@ -3201,7 +3122,53 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape')closeTierModal()});
       ${[1,2,3,4,5].map(n => `<button class="btn ${tierLimit===n?'btn-primary':'btn-outline'}" onclick="setTierLimit(${n})">${n} ${n===1?'(1 حساب)':n===2?'(2 حسابات)':n===3?'(3 حسابات)':n===4?'(4 حسابات)':'(5 حسابات)'}</button>`).join('')}
     </div>
     <div id="tl-status" style="margin-top:12px;font-size:.83rem;min-height:20px"></div>
-    <p style="color:var(--text3);font-size:.78rem;margin-top:10px">💡 لإضافة حساب جديد: ارفع ملف كوكيز إلى ZAO-STATE4.json أو ZAO-STATE5.json من تبويب الحسابات، ثم اضبط tierLimit لتشمله.</p>
+    <p style="color:var(--text3);font-size:.78rem;margin-top:10px">💡 لإضافة حساب جديد: ارفع ملف كوكيز إلى ZAO-STATE4.json أو ZAO-STATE5.json من قسم "إدارة AppState" أدناه، ثم اضبط tierLimit لتشمله.</p>
+  </div>
+</div>
+
+<!-- ── Accounts Management (merged from old Accounts tab) ──────────── -->
+<div class="card" style="margin-bottom:16px">
+  <div class="card-header">
+    <div class="card-title">🔑 إدارة AppState (الكوكيز)</div>
+    <div style="font-size:.78rem;color:var(--text3)">Tier ${activeTierNum} نشط حالياً</div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;padding:4px 0">
+    ${TIER_FILES.map(t => {
+      const isActive = activeTierNum === t.tier;
+      const stOk = fileOk(t.stateFile);
+      const altOk = fileOk(t.altFile);
+      return `<div style="background:var(--bg3);border-radius:10px;padding:14px;border:1px solid ${isActive?'rgba(0,212,255,.3)':'var(--border)'};display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <strong>Tier ${t.tier}</strong>
+          ${isActive ? '<span class="badge badge-green">✅ نشط</span>' : ''}
+        </div>
+        <div style="font-size:.78rem;color:var(--text3);display:flex;flex-direction:column;gap:5px">
+          <div style="display:flex;justify-content:space-between"><span>${t.stateFile}</span><span>${stOk}</span></div>
+          <div style="display:flex;justify-content:space-between"><span>${t.altFile} (احتياطي)</span><span>${altOk}</span></div>
+        </div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:4px">
+          <button class="btn btn-primary btn-sm" onclick="acctView(${t.tier},'${t.stateFile}')">👁 عرض</button>
+          <button class="btn btn-success btn-sm" onclick="acctPaste(${t.tier},'${t.stateFile}')">📋 لصق</button>
+          <button class="btn btn-outline btn-sm" onclick="acctBackup(${t.tier},'${t.stateFile}','${t.altFile}')">💾 نسخ احتياطي</button>
+          ${!isActive ? `<button class="btn btn-outline btn-sm" onclick="switchTier(${t.tier})">🔄 تفعيل</button>` : ''}
+        </div>
+      </div>`;
+    }).join('')}
+  </div>
+</div>
+
+<!-- AppState Modal -->
+<div id="acctModal" style="display:none;position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,.85);backdrop-filter:blur(8px);align-items:center;justify-content:center">
+  <div style="background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);width:min(700px,95vw);max-height:85vh;display:flex;flex-direction:column;overflow:hidden">
+    <div style="padding:16px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0">
+      <div style="font-weight:700" id="acctModalTitle">AppState</div>
+      <div style="display:flex;gap:8px">
+        <button class="btn btn-success btn-sm" onclick="acctSave()">💾 حفظ</button>
+        <button class="btn btn-outline btn-sm" onclick="document.getElementById('acctModal').style.display='none'">✕</button>
+      </div>
+    </div>
+    <textarea id="acctStateArea" style="flex:1;background:#03040d;color:#cdd6f4;font-family:monospace;font-size:.76rem;padding:16px;border:none;outline:none;resize:none;min-height:300px" placeholder="AppState JSON..."></textarea>
+    <div id="acctSaveStatus" style="padding:6px 16px;font-size:.8rem;min-height:26px"></div>
   </div>
 </div>
 
@@ -3245,6 +3212,42 @@ setInterval(() => {
   const s=Math.floor(diff/1000),m=Math.floor(s/60),h=Math.floor(m/60),d=Math.floor(h/24);
   el.textContent = d>0?d+'ي '+( h%24)+'س ':h>0?h+'س '+(m%60)+'د ':m>0?m+'د '+(s%60)+'ث ':s+'ث';
 }, 1000);
+// ── Accounts management functions ───────────────────────────────────────────
+let _acctFile='';
+async function acctView(tier,file){
+  _acctFile=file;
+  document.getElementById('acctModalTitle').textContent='👁 Tier '+tier+' — '+file;
+  document.getElementById('acctStateArea').value='⏳ جارٍ التحميل...';
+  document.getElementById('acctModal').style.display='flex';
+  const r=await fetch('/api/accounts/state?file='+encodeURIComponent(file));
+  const d=await r.json();
+  document.getElementById('acctStateArea').value=d.content||d.error||'';
+}
+function acctPaste(tier,file){
+  _acctFile=file;
+  document.getElementById('acctModalTitle').textContent='📋 Tier '+tier+' — لصق AppState جديد';
+  document.getElementById('acctStateArea').value='';
+  document.getElementById('acctModal').style.display='flex';
+  document.getElementById('acctStateArea').focus();
+}
+async function acctSave(){
+  const content=document.getElementById('acctStateArea').value.trim();
+  const st=document.getElementById('acctSaveStatus');
+  if(!content)return showToast('لصق AppState أولاً','error');
+  let parsed;
+  try{parsed=JSON.parse(content)}catch(e){return showToast('❌ JSON غير صالح: '+e.message,'error')}
+  if(!Array.isArray(parsed)||!parsed.length)return showToast('❌ AppState يجب أن يكون مصفوفة غير فارغة','error');
+  st.innerHTML='<span style="color:var(--text3)">⏳ جارٍ الحفظ...</span>';
+  const r=await api('/api/accounts/state',{file:_acctFile,content});
+  if(r.ok){st.innerHTML='<span style="color:var(--green)">✅ تم الحفظ</span>';showToast('✅ تم حفظ AppState','success')}
+  else{st.innerHTML='<span style="color:var(--red)">❌ '+(r.error||'فشل')+'</span>'}
+}
+async function acctBackup(tier,stateFile,altFile){
+  const r=await api('/api/accounts/backup',{stateFile,altFile});
+  if(r.ok)showToast('✅ تم النسخ الاحتياطي لـ Tier '+tier,'success');
+  else showToast('❌ '+(r.error||'فشل'),'error');
+}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')document.getElementById('acctModal').style.display='none'});
 </script>`;
     res.send(layout('إعدادات التيرات', body, 'tier-settings', pageOpts()));
   });
@@ -6323,6 +6326,23 @@ document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click
       setTimeout(() => { try { restartBotFn(); } catch(_) {} }, 500);
       res.json({ ok:true });
     } catch(e) { res.json({ error:e.message }); }
+  });
+
+  // ─── Randomizer status + refill ────────────────────────────────────────────
+  app.get('/api/randomizer/status', auth, async (req,res) => {
+    try {
+      const r = await proxyToBot('GET', '/bot/randomizer-status', null);
+      if (r && r.data && typeof r.data === 'object') return res.json(r.data);
+    } catch(_) {}
+    res.json({ ok:true, mode:'unknown', pool:null, total:0 });
+  });
+
+  app.post('/api/randomizer/test', auth, async (req,res) => {
+    try {
+      const r = await proxyToBot('POST', '/bot/randomizer-refill', '{}');
+      if (r && r.data && typeof r.data === 'object') return res.json(r.data);
+    } catch(_) {}
+    res.json({ ok:false, error:'Bot offline or randomizer not available' });
   });
 
   // Bot control endpoints

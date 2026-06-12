@@ -6886,3 +6886,35 @@ GC now prunes each array against the configured `threadWindowMinutes` window bef
 | `DB/controller/usersData.js` | Modified | S2-03 | `CustomError`, `messageQueue`, `creatingUserData` moved inside exported function |
 | `DB/controller/threadsData.js` | Modified | S2-03 | `CustomError`, `messageQueue`, `creatingThreadData` moved inside exported function |
 | `ZAO.md` | Updated | — | This changelog (Session 17) |
+
+---
+
+## Session 18 — Bug Fixes, AI Randomizer, UI Merge
+
+### Overview
+
+Six tasks completed in this session:
+
+1. **Uptime discrepancy fix** — `uptime` command now reads `data/first-start.json` (same source as panel) instead of `process.uptime()`, so bot command and panel always show the same elapsed time.
+
+2. **كنيات تنظيف anti-ban** — Nickname clear rewritten: 5-member chunks, 3–6.5 s per API call (randomized), 35–65 s rest between chunks, live progress messages. Estimate shown at start. `NickLocks.clearLock(tid)` called at the end so the enforce loop doesn't re-apply old values.
+
+3. **AI Randomizer** (`ZAO-ENGINE/randomizer.js`) — Replaces raw `Math.random()` with OpenRouter-backed two-call chain (meta-prompt → number extraction). Pool-based pre-fetch (target 40 numbers, batch 12). `getIntervalSync()` is a drop-in sync replacement. `validateKey()` throws on missing/invalid key (wired in `onBot()` — bot won't start without a valid key). `getStatus()` reports mode/pool/total. Fallback to `Math.random()` if pool exhausted.
+
+4. **Groups tab hang fix** — `getThreadHistory` inside `/bot/thread-history` handler wrapped in `Promise.race` with 6 s timeout so the handler always resolves before the 8 s `proxyToBot` outer window expires.
+
+5. **Tab merge: Accounts → إعدادات التيرات** — Old `/accounts` nav entry removed. Route redirects to `/tier-settings`. Tier cards (view AppState, paste, backup, switch) merged into تيرات page as new "إدارة AppState" section with modal + `acctView/acctPaste/acctSave/acctBackup` JS. `/accounts` URL still works via redirect.
+
+6. **Randomizer panel widget** — Stats-grid in dashboard gets a 🎲 AI card (click-to-refill). Polls `/api/randomizer/status` every 30 s (shows `🤖 AI` or `🔀 Fallback`). `POST /api/randomizer/test` triggers refill via bot API. Both routes proxy through `proxyToBot`.
+
+### Session 18 — Files Changed
+
+| File | Change | Description |
+|------|---------|-------------|
+| `SCRIPTS/ZAO-CMDS/uptime.js` | Modified | Reads `data/first-start.json` instead of `process.uptime()` |
+| `SCRIPTS/ZAO-CMDS/nicknames.js` | Modified | تنظيف: chunked (5/batch), 3–6.5 s per call, 35–65 s rest, progress, clearLock |
+| `ZAO-ENGINE/randomizer.js` | Created | AI randomizer module — pool, validateKey, getIntervalSync, getStatus, refillNow |
+| `ZAO-ENGINE/keepAlive.js` | Modified | getIntervalSync() used for rand, UA, endpoint selection (Math.random fallback) |
+| `ZAO-ENGINE/nicknameLocks.js` | Modified | ENFORCE_INTERVAL 60 s→300 s, CALL_DELAY 900 ms→3 s, randomized first-fire 30–90 s |
+| `ZAO.js` | Modified | `require('./ZAO-ENGINE/randomizer')` wired, validateKey() in onBot(), `/bot/randomizer-status`, `/bot/randomizer-refill` handlers, `getThreadHistory` wrapped in 6 s Promise.race |
+| `webpanel/zao-server.js` | Modified | Accounts tab removed from nav, `/accounts` → redirect, tier-settings gets AppState cards + modal + acctView/Paste/Save/Backup JS, 🎲 randomizer stat card, `/api/randomizer/status` + `/api/randomizer/test` routes |

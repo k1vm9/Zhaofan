@@ -22,8 +22,13 @@
 
 const NickLocks = require("../../ZAO-ENGINE/nicknameLocks");
 
-const CHUNK          = 50;
-const CLEAR_DELAY_MS = 400;
+const CHUNK              = 50;
+const CLEAR_DELAY_MS     = 400; // legacy — not used for تنظيف anymore
+const CLEAR_CALL_MIN_MS  = 3000;  // minimum delay between individual clear calls
+const CLEAR_CALL_MAX_MS  = 6500;  // maximum delay between individual clear calls
+const CLEAR_CHUNK_SIZE   = 5;     // members per batch before taking a longer rest
+const CLEAR_REST_MIN_MS  = 35000; // rest between chunks (min)
+const CLEAR_REST_MAX_MS  = 65000; // rest between chunks (max)
 
 function _delay(ms) { return new Promise(r => setTimeout(r, ms)); }
 function _live(api)  { return global._botApi || api; }
@@ -344,19 +349,57 @@ module.exports.run = async function ({ api, event, args }) {
     if (!ids.length)
       return api.sendMessage("❌ لا يوجد أعضاء في المجموعة.", threadID, messageID);
 
+    // Estimate time: (members × avg_call_delay) + (chunks × avg_rest)
+    const avgCall  = (CLEAR_CALL_MIN_MS + CLEAR_CALL_MAX_MS) / 2;
+    const avgRest  = (CLEAR_REST_MIN_MS + CLEAR_REST_MAX_MS) / 2;
+    const chunks   = Math.ceil(ids.length / CLEAR_CHUNK_SIZE);
+    const estMins  = Math.ceil((ids.length * avgCall + chunks * avgRest) / 60000);
+
     await api.sendMessage(
-      `🧹 جاري مسح كنيات ${ids.length} عضو...\n⏳ هذا قد يأخذ بعض الوقت.`,
+      `🧹 جاري مسح كنيات ${ids.length} عضو...\n` +
+      `⚡ دفعات من ${CLEAR_CHUNK_SIZE} أعضاء — مع راحة بين كل دفعة لحماية الحساب.\n` +
+      `⏳ المدة التقريبية: ${estMins}–${estMins + 2} دقيقة.`,
       threadID, messageID
     );
 
     let done = 0, failed = 0;
-    for (const uid of ids) {
-      try { await botApi.changeNickname("", tid, uid); done++; } catch (_) { failed++; }
-      await _delay(CLEAR_DELAY_MS);
+    for (let i = 0; i < ids.length; i++) {
+      const uid = ids[i];
+      try {
+        if (typeof botApi.changeNickname === "function")
+          await botApi.changeNickname("", tid, uid);
+        else if (typeof botApi.nickname === "function")
+          await botApi.nickname("", tid, uid);
+        done++;
+      } catch (_) { failed++; }
+
+      // Randomized delay between individual API calls (avoids detectable cadence)
+      const callDelay = CLEAR_CALL_MIN_MS + Math.floor(Math.random() * (CLEAR_CALL_MAX_MS - CLEAR_CALL_MIN_MS));
+      await _delay(callDelay);
+
+      // After each chunk: send progress, then take a longer rest
+      const isLastOfChunk = (i + 1) % CLEAR_CHUNK_SIZE === 0;
+      const isLast        = i + 1 === ids.length;
+      if (isLastOfChunk && !isLast) {
+        const remaining = ids.length - (i + 1);
+        try {
+          await api.sendMessage(
+            `⏳ تقدم: ${i + 1} / ${ids.length}\n` +
+            `✔️ نجح: ${done} | ❌ فشل: ${failed} | 🔄 متبقي: ${remaining}\n` +
+            `💤 راحة قصيرة لحماية الحساب...`,
+            threadID
+          );
+        } catch (_) {}
+        const restDelay = CLEAR_REST_MIN_MS + Math.floor(Math.random() * (CLEAR_REST_MAX_MS - CLEAR_REST_MIN_MS));
+        await _delay(restDelay);
+      }
     }
 
+    // Clear locks after cleaning so enforce loop doesn't re-apply old nicknames
+    NickLocks.clearLock(tid);
+
     return api.sendMessage(
-      `✅ تم تنظيف الكنيات!\n✔️ تم مسح: ${done}\n❌ فشل: ${failed}`,
+      `✅ تم تنظيف الكنيات!\n✔️ نجح: ${done}\n❌ فشل: ${failed}\n🔓 تم مسح أقفال الكنيات أيضاً.`,
       threadID, messageID
     );
   }

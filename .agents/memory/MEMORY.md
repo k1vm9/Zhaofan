@@ -1,7 +1,8 @@
 - [Dual-tier bot system](dual-tier-bot.md) — BOT_TIER + BOT_API_PORT env vars let Main.js run two ZAO.js instances; Emalogin locks to forced tier without fallback.
 - [INSTA MQTT hybrid](insta-mqtt.md) — instagram_mqtt withRealtime wraps IgApiClient; MQTT event triggers poll, 60s safety poll always runs, falls back to pollInterval on disconnect.
 - [DevHub OpenRouter](devhub-openrouter.md) — callAI uses OpenRouter; key from ZAO-SETTINGS.json openrouterKeyInternal; models from devhub-openrouter.json; external cmds use openrouterKeyExternal.
-- [Nickname lock priority system](nickname-lock-priority.md) — nicknameLocks.js v3 has user-level locks (higher priority than group); nicknames.js v6 adds قفل/فك/مقفولون subcommands; enforce interval is 60s not 90s.
+- [Nickname lock priority system](nickname-lock-priority.md) — nicknameLocks.js has user-level locks (higher priority than group); enforce interval bumped to 300s; تنظيف uses 5-member chunks, 3–6.5s per call, 35–65s rest between chunks.
+- [Randomizer module](randomizer-module.md) — ZAO-ENGINE/randomizer.js; OpenRouter two-call chain; Math.random fallback when key absent; validateKey() is NON-BLOCKING (warns, not exits); global._randomizer set in ZAO.js; status exposed via /bot/randomizer-status.
 - [Session guard wiring](session-guard-wiring.md) — sessionGuard.js is wired in ZAO.js after syncAllGroups; uses cookieSnapshot internally; state path is process.cwd()/sessions/ZAO-STATE.json.
 - [npm install deadlock guard](npm-install-timeout.md) — both execSync npm install calls in ZAO.js (cmd+evt loaders) have timeout:90_000; without it a slow registry hangs the entire bot boot.
 - [Template literal JS escaping](template-literal-escaping.md) — zao-server.js and zao-devhub.js use backtick template literals to render client-side JS; \' becomes ' and \n becomes newline, breaking client JS parse.

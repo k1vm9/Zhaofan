@@ -43,6 +43,9 @@ nkxPatcher.patchLoginHelper();
 // version — prevents e.entity=null TypeError → unhandledRejection spam every 30s.
 nkxPatcher.patchGetThreadHistory();
 
+const randomizer      = require('./ZAO-ENGINE/randomizer');
+global._randomizer    = randomizer;
+
 const login = require('./ZAO-ENGINE/Emalogin');
 const modernizeNkxApi = require('./ZAO-ENGINE/nkxfcaModernizer');
 const listPackage = (() => { try { return JSON.parse(readFileSync('./package.json'))['dependencies'] || {}; } catch (_) { return {}; } })();
@@ -283,6 +286,24 @@ async function onBot({ models }) {
   console.log('[DIAG] onBot: started');
   const _models = models;
   let _api, _threadsData, _usersData, _globalData;
+
+  // ── Randomizer key validation (non-blocking — warns and falls back) ──────
+  try {
+    await randomizer.validateKey();
+    logger.log([
+      { message: '[ RANDOMIZER ]: ', color: ['red', 'cyan'] },
+      { message: '✅ OpenRouter key validated — AI randomizer active', color: 'white' }
+    ]);
+  } catch (randErr) {
+    logger.log([
+      { message: '[ RANDOMIZER ]: ', color: ['red', 'cyan'] },
+      { message: '⚠️  ' + randErr.message, color: 'yellow' }
+    ]);
+    logger.log([
+      { message: '[ RANDOMIZER ]: ', color: ['red', 'cyan'] },
+      { message: 'Continuing with Math.random() fallback — set openrouterKeyInternal for AI mode', color: 'yellow' }
+    ]);
+  }
 
   console.log('[DIAG] onBot: starting login...');
   // ── Login ────────────────────────────────────────────────
@@ -2315,13 +2336,19 @@ async function onBot({ models }) {
           if (!_thTID) return _json(res, { error: 'Missing threadID' }, 400);
           if (!_api) return _json(res, { ok: false, messages: [], error: 'Bot not connected' });
           try {
-            const history = await new Promise((resolve, reject) => {
-              if (typeof _api.getThreadHistory !== 'function') return resolve([]);
-              _api.getThreadHistory(String(_thTID), _thCount, undefined, (err, data) => {
-                if (err) reject(err);
-                else resolve(Array.isArray(data) ? data : []);
-              });
-            });
+            // Wrap with a 6 s timeout — getThreadHistory can hang waiting for
+            // Facebook to respond, and proxyToBot will kill the request after 8 s
+            // from outside, so we need to resolve ourselves before that happens.
+            const history = await Promise.race([
+              new Promise((resolve, reject) => {
+                if (typeof _api.getThreadHistory !== 'function') return resolve([]);
+                _api.getThreadHistory(String(_thTID), _thCount, undefined, (err, data) => {
+                  if (err) reject(err);
+                  else resolve(Array.isArray(data) ? data : []);
+                });
+              }),
+              new Promise((_, reject) => setTimeout(() => reject(new Error('getThreadHistory timed out')), 6000))
+            ]);
             const msgs = history.slice(-_thCount).map(m => ({
               messageID: m.messageID || null,
               senderID: String(m.senderID || ''),
@@ -2379,6 +2406,19 @@ async function onBot({ models }) {
             });
           } catch (e) {
             return _json(res, { ok: false, members: [], error: String(e.message || e).slice(0, 200) });
+          }
+        }
+
+        // ── Randomizer status / refill ───────────────────────────────────────────
+        if (pathname === '/bot/randomizer-status' && method === 'GET') {
+          return _json(res, { ok: true, ...randomizer.getStatus() });
+        }
+        if (pathname === '/bot/randomizer-refill' && method === 'POST') {
+          try {
+            const st = await randomizer.refillNow();
+            return _json(res, { ok: true, ...st });
+          } catch (e) {
+            return _json(res, { ok: false, error: String(e.message || e).slice(0, 200) });
           }
         }
 

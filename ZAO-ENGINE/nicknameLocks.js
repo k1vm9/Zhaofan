@@ -51,8 +51,8 @@ let _apiRef       = null;
 let _enforceTimer = null;
 let _enforcing    = false;
 
-const ENFORCE_INTERVAL = 60_000;   // check every 60 s
-const CALL_DELAY_MS    = 900;      // 900 ms between API calls (safer than 800)
+const ENFORCE_INTERVAL = 300_000;  // check every 5 min (was 60s — too aggressive)
+const CALL_DELAY_MS    = 3_000;    // 3 s between API calls (was 900ms — much safer)
 
 async function _enforce() {
   if (!_apiRef || lockedNicknames.size === 0 || _enforcing) return;
@@ -94,8 +94,16 @@ async function _enforce() {
 function setApi(api) {
   _apiRef = api;
   if (!_enforceTimer) {
-    _enforceTimer = setInterval(_enforce, ENFORCE_INTERVAL);
-    if (_enforceTimer.unref) _enforceTimer.unref();
+    // Use a randomized first-fire delay (30-90s) so multiple group locks
+    // don't all fire at exactly the same wall-clock moment when the bot restarts.
+    const firstDelay = 30_000 + Math.floor(Math.random() * 60_000);
+    const t = setTimeout(() => {
+      _enforce();
+      _enforceTimer = setInterval(_enforce, ENFORCE_INTERVAL);
+      if (_enforceTimer.unref) _enforceTimer.unref();
+    }, firstDelay);
+    if (t.unref) t.unref();
+    _enforceTimer = t;
   }
 }
 
