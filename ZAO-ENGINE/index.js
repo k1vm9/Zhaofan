@@ -53,8 +53,10 @@ const keepAlive        = require("./keepAlive");
 const sessionGuard     = require("./sessionGuard");
 
 /**
- * Start all ZAO-ENGINE protection layers for a given API instance.
- * Call this once after a successful login.
+ * Start ZAO-ENGINE behavioral protection layers for a given API instance.
+ * NOTE: humanTyping, outgoingThrottle, and duplicateGuard are handled
+ * internally by sendPipeline (ZAO.js patches it before calling this).
+ * This wires the layers that sendPipeline does NOT cover.
  *
  * @param {object} api           - Live FCA api object
  * @param {string} stateFilePath - Absolute path to the active state file
@@ -62,29 +64,38 @@ const sessionGuard     = require("./sessionGuard");
 function start(api, stateFilePath) {
   if (!api) return;
 
-  // Layer 1: Duplicate guard (must come first — wraps sendMessage)
-  try { duplicateGuard.start(api); } catch (_) {}
-
-  // Layer 2: Outgoing throttle (queues sends with human gap)
-  try { outgoingThrottle.start(api); } catch (_) {}
-
-  // Layer 3: Human typing delay (wraps sendMessage with typing indicator)
-  try { humanTyping.start(api); } catch (_) {}
-
-  // Layer 4: Human read receipts (delayed mark-as-read)
+  // Layer 1: Human read receipts — delayed mark-as-read (800-3500ms)
+  // sendPipeline doesn't handle this; we wire it here.
   try { humanReadReceipt.start(api); } catch (_) {}
 
-  // Layer 5: Anti-detection jitter on reactions/unsend + UA rotation
+  // Layer 2: Anti-detection — jitter on reactions/unsend + UA rotation
   try { antiDetection.start(api); } catch (_) {}
 
-  // Layer 6: Stealth presence loop (periodic FB pings with mobile UA)
+  // Layer 3: Stealth presence loop — periodic FB endpoint rotation
   try { stealth.start(api); } catch (_) {}
 
-  // Layer 7: Keep-alive (HTTP pings, cookie save, dtsg refresh, notification visit)
+  // Layer 4: Keep-alive — HTTP pings, cookie save, dtsg refresh, notification visit
+  // (ZAO.js also starts this individually — start() is idempotent)
   try { keepAlive.startKeepAlive(); } catch (_) {}
 
-  // Layer 8: Session guard (AppState snapshots + integrity checks)
+  // Layer 5: Session guard — AppState snapshots + integrity checks
+  // (ZAO.js also starts this individually — idempotent)
   try { sessionGuard.start(api, stateFilePath); } catch (_) {}
+}
+
+/**
+ * Update all engine modules to reference a new api instance.
+ * Called when a new api object is created (e.g. hot-reload, manual tier switch
+ * without process restart — rare but possible).
+ *
+ * @param {object} api - New live FCA api object
+ */
+function updateApi(api) {
+  if (!api) return;
+  try { humanReadReceipt.stop(); humanReadReceipt.start(api); } catch (_) {}
+  try { antiDetection.start(api); } catch (_) {}
+  try { if (typeof stealth.updateApi === "function") stealth.updateApi(api); } catch (_) {}
+  try { sessionGuard.updateApi(api); } catch (_) {}
 }
 
 /**
@@ -103,10 +114,11 @@ function stop() {
 }
 
 module.exports = {
-  // High-level
+  // High-level orchestration
   start,
   stop,
-  // Individual modules
+  updateApi,
+  // Individual modules (for direct access)
   fca,
   stealth,
   humanTyping,

@@ -13,7 +13,10 @@ const path = require("path");
 const SNAPSHOT_INTERVAL  = 30 * 60_000;
 const INTEGRITY_INTERVAL = 20 * 60_000;
 const SNAPSHOT_KEEP      = 7;
-const REQUIRED_COOKIES   = ["c_user", "xs", "datr"];
+// Only c_user and xs are truly mandatory — datr is not always present
+// in all AppState formats and its absence is not a real session problem.
+const REQUIRED_COOKIES   = ["c_user", "xs"];
+const OPTIONAL_COOKIES   = ["datr"];
 
 function _log(level, msg) {
   try {
@@ -102,7 +105,7 @@ function _doIntegrityCheck() {
     if (!appState) { _lastIntOk = null; _lastIntMsg = "API not ready"; return; }
     const { ok, reason } = _validateCookies(appState);
     _lastIntOk  = ok;
-    _lastIntMsg = ok ? "c_user/xs/datr OK" : reason;
+    _lastIntMsg = ok ? "c_user/xs OK" : reason;
     if (ok) { _log("info", "Cookie integrity OK."); return; }
     _log("error", `Cookie integrity FAILED: ${reason}`);
     const snap = _snap();

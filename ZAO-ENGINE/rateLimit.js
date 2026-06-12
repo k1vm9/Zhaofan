@@ -2,7 +2,8 @@
 /**
  * ZAO-ENGINE — Rate Limiter
  * Source: David's rateLimit.js — simple sliding-window rate limiter.
- * 100% stable — never throws.
+ * 100% stable — never throws. Cleanup interval uses .unref() so it
+ * never keeps the process alive by itself.
  */
 
 const store = new Map();
@@ -24,7 +25,15 @@ function setWarned(key) {
 
 function reset(key) { store.delete(key); }
 
-setInterval(() => {
+function getCount(key, windowMs) {
+  try {
+    if (!store.has(key)) return 0;
+    const now = Date.now();
+    return store.get(key).e.filter(t => now - t < (windowMs || 60000)).length;
+  } catch (_) { return 0; }
+}
+
+const _cleanup = setInterval(() => {
   try {
     const n = Date.now();
     for (const [k, v] of store) {
@@ -33,5 +42,6 @@ setInterval(() => {
     }
   } catch (_) {}
 }, 5 * 60 * 1000);
+if (_cleanup?.unref) _cleanup.unref();
 
-module.exports = { check, setWarned, reset };
+module.exports = { check, setWarned, reset, getCount };

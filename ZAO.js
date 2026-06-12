@@ -349,6 +349,17 @@ async function onBot({ models }) {
     require('./ZAO-ENGINE/sendPipeline').patch(_api);
   } catch (_) {}
 
+  // ── ZAO-ENGINE behavioral protection layers ───────────────
+  // humanTyping, outgoingThrottle, duplicateGuard are handled inside
+  // sendPipeline above. These are the layers sendPipeline doesn't cover:
+  //   - stealth: FB endpoint rotation every 8-20 min (session keep-alive)
+  //   - antiDetection: jitter on reactions/unsend + UA rotation
+  //   - humanReadReceipt: delayed mark-as-read (800-3500ms)
+  try { require('./ZAO-ENGINE/stealth').start(_api); } catch (_) {}
+  try { require('./ZAO-ENGINE/antiDetection').start(_api); } catch (_) {}
+  try { require('./ZAO-ENGINE/humanReadReceipt').start(_api); } catch (_) {}
+  // (keepAlive and sessionGuard are started individually further below)
+
   // ── Set API options ───────────────────────────────────────
   _api.setOptions({
     listenEvents:  true,

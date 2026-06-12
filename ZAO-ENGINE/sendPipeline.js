@@ -57,6 +57,7 @@ let _wmMod = null;
 let _htMod = null;
 let _otMod = null;
 let _ehMod = null;
+let _dgMod = null;
 
 /**
  * Patch api.sendMessage with the centralised pipeline.
@@ -80,6 +81,20 @@ function patch(api) {
       if (typeof callback === "function") callback(new Error("draining"), null);
       return;
     }
+
+    // ── Step 1.5: Duplicate guard ──────────────────────────────────────────
+    // Block the send immediately (before any delay) if this is a double-send.
+    try {
+      if (!_dgMod) _dgMod = require("./duplicateGuard");
+      const body = typeof msg === "string" ? msg : (msg?.body || "");
+      if (body && typeof _dgMod.isDuplicateOutgoing === "function") {
+        if (_dgMod.isDuplicateOutgoing(tid, body)) {
+          _log(`Duplicate blocked — thread ${tid}`, true);
+          if (typeof callback === "function") callback(null, { deduplicated: true });
+          return;
+        }
+      }
+    } catch (_) {}
 
     // ── Step 2: Rate limiter ───────────────────────────────────────────────
     try {

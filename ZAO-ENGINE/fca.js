@@ -174,12 +174,18 @@ function loginAsync(credentials, options = {}) {
   });
 }
 
+function cookiesToString(cookies) {
+  if (!Array.isArray(cookies)) return "";
+  return cookies.map(c => `${c.key || c.name}=${c.value}`).filter(s => s.includes("=")).join("; ");
+}
+
 module.exports = {
   login: _loginFCA,
   loginAsync,
   parseCookieInput,
   dedup,
   hasMandatory,
+  cookiesToString,
   getUA,
   rotateUA,
   calcTypingDelay,
