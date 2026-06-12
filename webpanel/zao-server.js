@@ -3692,7 +3692,7 @@ var _slashItems=[
 ];
 
 function _showSlashMenu(query){
-  var q=(query||'').toLowerCase().replace(/^\\/\//,'');
+  var q=(query||'').toLowerCase().replace(/^[/]/,'');
   var items=q?_slashItems.filter(function(i){return i.label.includes(q)||i.desc.includes(q);}):_slashItems;
   var container=_q('slashMenuItems');
   if(!items.length){_q('slashMenu').style.display='none';return;}
