@@ -22,11 +22,8 @@ const UA_POOL = [
 
 // Rotate through varied endpoints so the pattern doesn't look robotic
 const ENDPOINTS = [
-  { url: "https://mbasic.facebook.com/",              referer: null },
   { url: "https://www.facebook.com/",                 referer: null },
-  { url: "https://mbasic.facebook.com/home.php",      referer: "https://mbasic.facebook.com/" },
-  { url: "https://m.facebook.com/",                   referer: null },
-  { url: "https://www.facebook.com/messages/",        referer: "https://www.facebook.com/" },
+  { url: "https://www.facebook.com/messages/",        referer: "https://www.facebook.com/", "https://www.facebook.com/home.php" },
   { url: "https://www.facebook.com/notifications",    referer: "https://www.facebook.com/" },
 ];
 
