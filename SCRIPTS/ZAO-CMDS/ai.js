@@ -13,19 +13,25 @@ function _getOpenRouterKey() {
   } catch (_) { return ""; }
 }
 
-// ── Free OpenRouter models, ranked best-first.
-// The bot tries them in order and moves to the next one whenever it hits
-// a hard failure (rate-limit, no credits, server error, empty reply, etc.).
-// Add / reorder freely — all entries with the ":free" suffix have $0 cost.
-// Last verified working: May 2026
-const OPENROUTER_MODELS = [
-  "x-ai/grok-4.3",              // best quality, fast, strong Arabic
-  "openai/gpt-4o-mini-transcribe",                     // excellent reasoning, multilingual
-  "deepseek/deepseek-v3.2",        // strong Arabic quality                // Meta's latest, multilingual
-  "openai/gpt-oss-120b:free",           // solid reasoning model
-  "google/gemma-4-26b-a4b-it:free",                           // excellent Arabic/dialect support
-  "baidu/cobuddy:free" // reliable European fallback
-];
+// ── External models: loaded from ZAO-SETTINGS.json (openrouterModelsExternal) ──
+// Edit via ZAO-SETTINGS.json or the panel settings tab. Tried best-first;
+// moves to next on rate-limit, no credits, server error, or empty reply.
+function _getExternalModels() {
+  try {
+    const s = JSON.parse(fs.readFileSync(
+      path.join(__dirname, '..', '..', 'ZAO-SETTINGS.json'), 'utf8'
+    ));
+    if (Array.isArray(s.openrouterModelsExternal) && s.openrouterModelsExternal.length)
+      return s.openrouterModelsExternal;
+  } catch (_) {}
+  return [
+    'x-ai/grok-4.3',
+    'openai/gpt-4o-mini',
+    'meta-llama/llama-3.3-70b-instruct:free',
+    'google/gemma-2-9b-it:free',
+    'mistralai/mistral-7b-instruct:free',
+  ];
+}
 
 // Tracks which model index is currently working best (per process lifetime).
 // When a model succeeds we remember it so we skip the failing ones next call.
@@ -629,17 +635,18 @@ async function askAI(history, senderID) {
   };
 
   // Start from the last known-good model index so fast-path skips dead ones.
-  const startIdx = _bestModelIdx;
+  const models = _getExternalModels();
+  const startIdx = _bestModelIdx % Math.max(1, models.length);
   // Build a rotation: [startIdx, startIdx+1, ..., len-1, 0, ..., startIdx-1]
   const order = [];
-  for (let i = 0; i < OPENROUTER_MODELS.length; i++) {
-    order.push((startIdx + i) % OPENROUTER_MODELS.length);
+  for (let i = 0; i < models.length; i++) {
+    order.push((startIdx + i) % models.length);
   }
 
   let lastErr = null;
 
   for (const idx of order) {
-    const model = OPENROUTER_MODELS[idx];
+    const model = models[idx];
     try {
       const res = await axios.post(
         "https://openrouter.ai/api/v1/chat/completions",

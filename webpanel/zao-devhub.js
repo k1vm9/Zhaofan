@@ -23,11 +23,17 @@ function saveZaoSettings(patch) {
 // Models remain in devhub-openrouter.json so they can be changed from the panel.
 function loadOpenRouterCfg() {
   const zao = loadZaoSettings();
-  let models = ["openai/gpt-4o-mini","meta-llama/llama-3.1-8b-instruct:free","google/gemma-2-9b-it:free"];
-  try {
-    const c = JSON.parse(fs.readFileSync(OR_CFG_FILE, "utf8"));
-    if (Array.isArray(c.models) && c.models.length) models = c.models.slice(0,3);
-  } catch(_) {}
+  let models = ["openai/gpt-4o-mini","meta-llama/llama-3.3-70b-instruct:free","google/gemma-2-9b-it:free"];
+  // Primary source: openrouterModelsInternal in ZAO-SETTINGS.json
+  if (Array.isArray(zao.openrouterModelsInternal) && zao.openrouterModelsInternal.length) {
+    models = zao.openrouterModelsInternal.slice(0, 3);
+  } else {
+    // Fallback: devhub-openrouter.json (legacy per-panel config)
+    try {
+      const c = JSON.parse(fs.readFileSync(OR_CFG_FILE, "utf8"));
+      if (Array.isArray(c.models) && c.models.length) models = c.models.slice(0, 3);
+    } catch(_) {}
+  }
   return { apiKey: zao.openrouterKeyInternal || "", models };
 }
 

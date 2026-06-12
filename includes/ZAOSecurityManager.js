@@ -82,14 +82,8 @@ class ZAOSecurityManager {
       if (isSleepHour) multiplier *= 2.5;
 
       // If sending many messages, increase delay — thresholds scale with account age
-      let highThreshold = 10;
-      let midThreshold  = 5;
-      try {
-        const age = require("./accountAgeScale");
-        const era = age.getEra();
-        highThreshold = era.maxMsgsPerMinWindow;
-        midThreshold  = Math.max(1, Math.floor(era.maxMsgsPerMinWindow / 2));
-      } catch (_) {}
+      const highThreshold = 10;
+      const midThreshold  = 5;
       if (this.messagesSentPerMinute > highThreshold) multiplier *= 2;
       else if (this.messagesSentPerMinute > midThreshold) multiplier *= 1.5;
 

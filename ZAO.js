@@ -1829,6 +1829,17 @@ async function onBot({ models }) {
             if (entry && entry.status === true) activeLocks.push({ threadID: tid, name: entry.name || null });
           }
 
+          const _cbInfo = (() => {
+            try {
+              const as = global._antiSuspension;
+              if (!as) return { tripped: false, remainingMs: 0 };
+              return {
+                tripped:     !!as.isCircuitBreakerTripped(),
+                remainingMs: as.getCircuitBreakerRemainingMs() || 0,
+              };
+            } catch (_) { return { tripped: false, remainingMs: 0 }; }
+          })();
+
           return _json(res, {
             activeTier:     global['activeAccountTier'] || 1,
             sendFailCount:  healthMonitorStatus.sendFailCount,
@@ -1836,6 +1847,11 @@ async function onBot({ models }) {
             lastCookieScan: healthMonitorStatus.lastCookieScan,
             activeMotors,
             activeLocks,
+            dtsg: {
+              lastAt: global._dtsgLastAt || null,
+              nextAt: global._dtsgNextAt || null,
+            },
+            circuitBreaker: _cbInfo,
             ts: new Date().toISOString()
           });
         }
@@ -2583,7 +2599,7 @@ async function onBot({ models }) {
   logger.log([{ message: '[ PROTECT ]: ', color: ['red', 'cyan'] }, { message: 'MQTT-Silence     ✓  إعادة تشغيل المستمع إذا صمت > 10 دقائق', color: 'white' }]);
   logger.log([{ message: '[ PROTECT ]: ', color: ['red', 'cyan'] }, { message: 'MQTT-HealthCheck ✓  فحص ذكي مع backoff تصاعدي (من GoatBot)', color: 'white' }]);
   logger.log([{ message: '[ PROTECT ]: ', color: ['red', 'cyan'] }, { message: 'Human-Typing     ✓  محاكاة الطباعة البشرية قبل كل رد', color: 'white' }]);
-  logger.log([{ message: '[ PROTECT ]: ', color: ['red', 'cyan'] }, { message: 'Keep-Alive       ✓  Ping مباشر لفيسبوك كل 8-18 دقيقة + تجديد fb_dtsg كل 48 ساعة', color: 'white' }]);
+  logger.log([{ message: '[ PROTECT ]: ', color: ['red', 'cyan'] }, { message: 'Keep-Alive       ✓  Ping مباشر لفيسبوك كل 8-18 دقيقة + تجديد fb_dtsg كل 6 ساعات', color: 'white' }]);
   logger.log([{ message: '[ PROTECT ]: ', color: ['red', 'cyan'] }, { message: 'Memory-Guard     ✓  clean restart if heap > 512 MB', color: 'white' }]);
   logger.log([{ message: '[ PROTECT ]: ', color: ['red', 'cyan'] }, { message: 'Graceful-Exit    ✓  two-stage drain — stop dispatch → flush motors/locks → save cookies', color: 'white' }]);
   // ─── New process-death prevention layers ──────────────────

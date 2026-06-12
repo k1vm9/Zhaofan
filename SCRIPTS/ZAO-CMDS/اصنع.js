@@ -99,14 +99,15 @@ function _readBotContext() {
   return parts.join('\n');
 }
 
-// ── OpenRouter models — tried in order, next on failure ─────────────────────
-const _ASNAA_MODELS = [
-  'openai/gpt-4o-mini',
-  'meta-llama/llama-3.3-70b-instruct:free',
-  'meta-llama/llama-3.1-8b-instruct:free',
-  'google/gemma-2-9b-it:free',
-  'mistralai/mistral-7b-instruct:free',
-];
+// ── Internal models: loaded from ZAO-SETTINGS.json (openrouterModelsInternal) ──
+function _getInternalModels() {
+  try {
+    const s = _loadSettings();
+    if (Array.isArray(s.openrouterModelsInternal) && s.openrouterModelsInternal.length)
+      return s.openrouterModelsInternal;
+  } catch (_) {}
+  return ['openai/gpt-4o-mini', 'meta-llama/llama-3.3-70b-instruct:free', 'google/gemma-2-9b-it:free'];
+}
 
 async function _callAI(prompt, botContext) {
   const key = _loadSettings().openrouterKeyInternal || '';
@@ -132,7 +133,7 @@ Bot Architecture context is provided below.`;
   ];
 
   let lastErr = null;
-  for (const model of _ASNAA_MODELS) {
+  for (const model of _getInternalModels()) {
     try {
       const controller = new AbortController();
       const timer = setTimeout(() => controller.abort(), 55000);

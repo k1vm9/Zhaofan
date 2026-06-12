@@ -545,11 +545,16 @@ function _loadExternalKey() {
   } catch (_) { return ""; }
 }
 
-const _ZAOFAN_MODELS = [
-  "openai/gpt-4o-mini",
-  "meta-llama/llama-3.1-8b-instruct:free",
-  "google/gemma-2-9b-it:free"
-];
+function _getExternalModels() {
+  try {
+    const s = JSON.parse(require('fs').readFileSync(
+      require('path').join(__dirname, '..', '..', 'ZAO-SETTINGS.json'), 'utf8'
+    ));
+    if (Array.isArray(s.openrouterModelsExternal) && s.openrouterModelsExternal.length)
+      return s.openrouterModelsExternal;
+  } catch (_) {}
+  return ['openai/gpt-4o-mini', 'meta-llama/llama-3.3-70b-instruct:free', 'google/gemma-2-9b-it:free'];
+}
 
 async function askAI(history, senderID) {
   const apiKey = _loadExternalKey();
@@ -571,7 +576,7 @@ async function askAI(history, senderID) {
   };
 
   let lastErr = "لا يوجد موديل متاح";
-  for (const model of _ZAOFAN_MODELS) {
+  for (const model of _getExternalModels()) {
     try {
       const res = await axios.post(
         "https://openrouter.ai/api/v1/chat/completions",

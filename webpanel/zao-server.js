@@ -1454,6 +1454,24 @@ body{
       </div>
     </div>
 
+    <!-- dtsg token refresh -->
+    <div style="background:var(--card2,rgba(255,255,255,.04));border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;border:1px solid var(--border)">
+      <div style="font-size:.75rem;color:var(--text3);letter-spacing:.4px">تجديد fb_dtsg</div>
+      <div id="sh-dtsg-next" style="font-size:1.4rem;font-weight:700;color:var(--orange,#f97316)">—</div>
+      <div id="sh-dtsg-next-lbl" style="font-size:.78rem;color:var(--text3)">الوقت المتبقي للتجديد</div>
+      <div id="sh-dtsg-last" style="font-size:.75rem;color:var(--text3);margin-top:4px">—</div>
+    </div>
+
+    <!-- Circuit Breaker -->
+    <div style="background:var(--card2,rgba(255,255,255,.04));border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;border:1px solid var(--border)">
+      <div style="font-size:.75rem;color:var(--text3);letter-spacing:.4px">Circuit Breaker</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:4px">
+        <span id="sh-cb-indicator" style="width:14px;height:14px;border-radius:50%;background:var(--text3);display:inline-block;flex-shrink:0"></span>
+        <span id="sh-cb-status" style="font-size:1rem;font-weight:700;color:var(--text2)">—</span>
+      </div>
+      <div id="sh-cb-detail" style="font-size:.75rem;color:var(--text3)">—</div>
+    </div>
+
   </div>
 </div>
 <script>
@@ -1522,6 +1540,48 @@ body{
       const lmEl = document.getElementById('sh-login-method');
       if(lmEl) lmEl.textContent = loginMeth !== '—' ? '🔑 '+loginMeth : '—';
 
+      // ── dtsg token + circuit breaker from /api/health ────────────────────
+      try{
+        const h=await fetch('/api/health').then(r=>r.json()).catch(()=>({}));
+        const bot=h.bot||{};
+        const dtsg=bot.dtsg||{};
+        const cb=bot.circuitBreaker||{};
+        const nextEl=document.getElementById('sh-dtsg-next');
+        const nextLbl=document.getElementById('sh-dtsg-next-lbl');
+        const lastEl=document.getElementById('sh-dtsg-last');
+        if(nextEl){
+          if(dtsg.nextAt){
+            const remMs=Math.max(0,Number(dtsg.nextAt)-Date.now());
+            const remH=Math.floor(remMs/3600000);
+            const remM=Math.floor((remMs%3600000)/60000);
+            nextEl.textContent=remH>0?remH+'س '+remM+'د':remM+'د';
+            if(nextLbl)nextLbl.textContent='التجديد القادم';
+          }else{if(nextEl)nextEl.textContent='جارٍ التشغيل...';}
+        }
+        if(lastEl){
+          if(dtsg.lastAt){
+            const ago=Math.round((Date.now()-Number(dtsg.lastAt))/60000);
+            lastEl.textContent='آخر تجديد: منذ '+ago+' دقيقة';
+          }else{lastEl.textContent='لم يُجدَّد بعد في هذه الجلسة';}
+        }
+        const cbInd=document.getElementById('sh-cb-indicator');
+        const cbSt=document.getElementById('sh-cb-status');
+        const cbDt=document.getElementById('sh-cb-detail');
+        if(cbInd&&cbSt){
+          if(cb.tripped){
+            cbInd.style.background='var(--red,#ef4444)';
+            cbSt.style.color='var(--red,#ef4444)';
+            cbSt.textContent='⛔ مُفعَّل';
+            const remM=cb.remainingMs?Math.ceil(cb.remainingMs/60000):0;
+            if(cbDt)cbDt.textContent=remM>0?'تعافٍ: '+remM+' دقيقة':'جارٍ التعافي...';
+          }else{
+            cbInd.style.background='var(--green,#22c55e)';
+            cbSt.style.color='var(--green,#22c55e)';
+            cbSt.textContent='✅ طبيعي';
+            if(cbDt)cbDt.textContent='لا قيود نشطة';
+          }
+        }
+      }catch(_){}
       const ts = document.getElementById('sh-ts');
       if(ts) ts.textContent = 'آخر تحديث: '+new Date().toLocaleTimeString('ar-EG');
     } catch(_){}

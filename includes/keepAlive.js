@@ -455,16 +455,6 @@ function schedulePing() {
 function _scheduleNotificationVisit() {
   if (notiTimer) clearTimeout(notiTimer);
 
-  // Gate on account age — FRESH accounts (615-prefix) skip notification
-  // visits entirely since automated GraphQL hits are high-risk for new accounts.
-  try {
-    const age = require("./accountAgeScale");
-    if (!age.getEra().notificationVisit) {
-      log("info", "Notification visit skipped (age-scaled: FRESH account).");
-      return;
-    }
-  } catch (_) {}
-
   const cfg = _loadSettings();
   // ON by default now — opt-out with keepAlive.enableNotificationVisit:false
   if (cfg.enableNotificationVisit === false) return;
@@ -504,7 +494,9 @@ function _scheduleDtsg() {
   const jitter = Math.floor((Math.random() - 0.5) * 0.4 * baseMs);
   const quiet = cfg.circuitQuietMode && (() => { try { return global._antiSuspension && global._antiSuspension.isCircuitBreakerTripped(); } catch (_) { return false; } })();
   const delay = quiet ? Math.max(60 * 60 * 1000, baseMs) : Math.max(60 * 60 * 1000, baseMs + jitter);
+  global._dtsgNextAt = Date.now() + delay;
   dtsgTimer = setTimeout(async () => {
+    global._dtsgLastAt = Date.now();
     await doRefreshDtsg();
     _scheduleDtsg();
   }, delay);

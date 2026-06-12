@@ -35,18 +35,6 @@ const BASE_PHASES = [
 
 /** Build phase list, prepending an age-scaled Phase 0 for fresh/mid accounts. */
 function _buildPhases() {
-  try {
-    const age = require("./accountAgeScale");
-    const era = age.getEra();
-    if (era.warmupExtraMin > 0) {
-      const extraPhase = {
-        durationMs: era.warmupExtraMin * 60 * 1000,
-        maxPerMin:  Math.min(era.maxMsgsPerMin, 4),
-        name:       `Phase 0 (age-scaled: ${era.label})`
-      };
-      return [extraPhase, ...BASE_PHASES];
-    }
-  } catch (_) {}
   return BASE_PHASES;
 }
 
@@ -170,11 +158,6 @@ function notifyTierSwitch(api, tier) {
   _log(`Tier ${tier || "?"} activated — warm-up started. Total duration: ${totalWarmupMin} min.`);
   _log(`  ${PHASES.map(p => `${p.name}: ≤${p.maxPerMin}/min for ${p.durationMs / 60000}min`).join(" → ")}`);
 
-  try {
-    const age = require("./accountAgeScale");
-    const info = age.getAgeInfo();
-    _log(`  Account age: ${info.era} (${info.label}) — activity multiplier: ${info.multiplier}`);
-  } catch (_) {}
 
   if (api) _patch(api);
 }
