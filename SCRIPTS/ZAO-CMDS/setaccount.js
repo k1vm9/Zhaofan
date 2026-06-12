@@ -20,7 +20,7 @@ module.exports = {
 
   run: async function ({ api, event, args }) {
     const { senderID, messageID, threadID } = event;
-    const adminIDs = (global.config.ADMINBOT || []).map(String);
+    const adminIDs = (global.config?.ADMINBOT || []).map(String);
     if (!adminIDs.includes(String(senderID))) return;
 
     const action = (args[0] || "").toLowerCase();

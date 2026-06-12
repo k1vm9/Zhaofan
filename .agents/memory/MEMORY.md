@@ -12,3 +12,4 @@
 - [ZAO-ENGINE architecture](zao-engine-arch.md) — replaces /includes security layer; old includes/ archived as _includes/; all imports in ZAO.js/Main.js/SCRIPTS/webpanel now point to ./ZAO-ENGINE/.
 - [Stealth silent-fail bug](stealth-silent-fail.md) — stealth.js ENDPOINTS array had a bare string literal (no key) in an object, causing SyntaxError at parse time; swallowed by try/catch so presence loop silently never ran.
 - [nkxfca runtime patching](nkxfca-runtime-patching.md) — nkxfcaPatcher.js patches nkxfca via require cache before login; patchGetThreadHistory wraps the factory export so e.entity=null returns [] instead of unhandledRejection spam.
+- [Command loader requires run not onStart](cmd-loader-run-key.md) — ZAO.js loader checks !cmd['run'] (not onStart/onStart); commands using onStart silently fail to load every boot; fix is rename onStart→run. handleEvent still supported alongside run.

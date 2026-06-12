@@ -739,7 +739,7 @@ function toggleSidebar(){var s=document.getElementById('mainSidebar');if(s&&s.cl
       <div class="sb-logo"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" width="20" height="20"><path d="M1 12s4.5-9 11-9 11 9 11 9-4.5 9-11 9S1 12 1 12z" stroke="rgba(255,255,255,.88)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="4" stroke="rgba(255,255,255,.88)" stroke-width="1.5"/><circle cx="12" cy="12" r="1.8" fill="rgba(255,255,255,.88)"/></svg></div>
       <div>
         <div class="sb-title">ZAO Panel</div>
-        <div class="sb-ver">ZAO Bot v1.7 · Admin</div>
+        <div class="sb-ver">ZAO Bot v1.8 · Admin</div>
       </div>
     </div>
     <button class="sb-close" onclick="closeSidebar()">
@@ -844,7 +844,7 @@ const _ZAO_LANG_DICT={
   'الأصدقاء':'Friends','الاجتماعي':'Social','مركز التطوير':'DevHub','ملفات GitHub':'GitHub Files',
   'لوحة التحكم':'Dashboard','البوت متصل ✓':'Bot Online ✓','البوت غير متصل':'Bot Offline',
   'متصل ومستعد':'Online & Ready','التنقل':'Navigation','تسجيل الخروج':'Logout',
-  'ZAO Bot v1.7 · Admin':'ZAO Bot v1.7 · Admin','ZAO Panel':'ZAO Panel',
+  'ZAO Bot v1.8 · Admin':'ZAO Bot v1.8 · Admin','ZAO Panel':'ZAO Panel',
   // ── Status bar ─────────────────────────────────────────────────
   'إعادة التشغيل':'Restart','إيقاف البوت':'Stop Bot',
   'قفل الأوامر':'Lock Cmds','فتح الأوامر':'Unlock Cmds',
@@ -1367,7 +1367,7 @@ body{
   </div>
   <div class="zaofan-text">
     <div class="zaofan-title">ZAO Bot — نظام التحكم المتكامل
-      <span class="zaofan-tag">v1.7</span>
+      <span class="zaofan-tag">v1.8</span>
     </div>
     <div class="zaofan-sub">مرحباً في لوحة تحكم ZAO — نظام بوت فيسبوك الذكي مع دعم إنستقرام ونظام متعدد الطبقات<br>
     ${new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>
@@ -5329,7 +5329,7 @@ async function clearNotifLog(){
   // ─── CRASHES TAB ─────────────────────────────────────────────────────────────
   app.get('/crashes', auth, (req,res) => {
     let crashes = { signatures: [] };
-    try { crashes = JSON.parse(fs.readFileSync(path.join(ROOT, 'includes', 'crashFingerprints.json'), 'utf8')); } catch(_) {}
+    try { crashes = JSON.parse(fs.readFileSync(path.join(ROOT, 'ZAO-ENGINE', 'crashFingerprints.json'), 'utf8')); } catch(_) {}
     const sigs = Array.isArray(crashes.signatures) ? crashes.signatures : [];
     const fmtDate = ts => ts ? new Date(ts).toLocaleString('ar-EG') : '—';
     const rows = sigs.map(s => `

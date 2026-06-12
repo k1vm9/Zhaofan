@@ -93,7 +93,7 @@ module.exports = {
     shortDescription: "Display system status in hacker terminal style"
   },
 
-  onStart: async function ({ message, api, event }) {
+  run: async function ({ message, api, event }) {
     try {
       const start = Date.now();
 

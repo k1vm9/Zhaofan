@@ -50,7 +50,7 @@ module.exports = {
   },
 
   // ── Command handler ──────────────────────────────────────────────────────
-  onStart: async function ({ api, event, args, Threads, message }) {
+  run: async function ({ api, event, args, Threads, message }) {
     const { threadID, senderID } = event;
     const isAdmin = _isGroupAdmin(event);
 

@@ -287,6 +287,7 @@ function stopKeepAlive() {
     if (t) { try { clearTimeout(t); } catch (_) {} try { clearInterval(t); } catch (_) {} }
   });
   pingTimer = dtsgTimer = saveTimer = notiTimer = primingTimer = null;
+  _nextPingAt = _nextNotiAt = _nextSaveAt = null;
 }
 
 function getTimers() {

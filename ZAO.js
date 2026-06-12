@@ -2077,7 +2077,7 @@ async function onBot({ models }) {
               const avg = Math.round((minMs + maxMs) / 2);
               NL.setLockTime(tid, { time: avg, randomTime: true, randomRange: { min: minMs, max: maxMs } });
               if (!global._nmNextApply) global._nmNextApply = new Map();
-              global._nmNextApply.set(tid, Date.now() + minMs + Math.round(Math.random() * (maxMs - minMs)));
+              global._nmNextApply.set(tid, Date.now() + minMs + Math.round((global._randomizer ? global._randomizer.random() : Math.random()) * (maxMs - minMs)));
               return _json(res, { ok: true, action: 'random-time-set', randomMin: minMs, randomMax: maxMs });
             }
             return _json(res, { error: 'Unknown action' }, 400);

@@ -279,6 +279,7 @@ function stopHealthCheck() {
   if (_healthyResetTimer) clearTimeout(_healthyResetTimer);
   healthTimer = null;
   _healthyResetTimer = null;
+  _nextCheckAt = null;
 }
 
 function getStatus() {
