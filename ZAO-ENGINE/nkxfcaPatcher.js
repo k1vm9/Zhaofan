@@ -204,6 +204,48 @@ function disableFcaInternalServices(api) {
 }
 
 /**
+ * Patches nkxfca's getThreadHistory factory to guard e.entity before
+ * accessing e.entity.id — Facebook sometimes returns mention ranges with
+ * entity: null (e.g. hashtags, page mentions), which causes a TypeError
+ * that escapes as an unhandledRejection every time getThreadHistory is called.
+ * Must be called before login so nkxfca's client binds the patched factory.
+ */
+function patchGetThreadHistory() {
+  try {
+    const modPath = require.resolve('@neoaz07/nkxfca/src/apis/getThreadHistory');
+    require(modPath); // populate cache
+    const cached = require.cache[modPath];
+    if (!cached || cached._zaoPatchedGTH) return;
+
+    const origFactory = cached.exports;
+    if (typeof origFactory !== 'function') return;
+
+    cached.exports = function patchedGetThreadHistoryFactory(defaultFuncs, api, ctx) {
+      const origFn = origFactory(defaultFuncs, api, ctx);
+      return async function getThreadHistory(threadID, amount, timestamp) {
+        try {
+          return await origFn(threadID, amount, timestamp);
+        } catch (err) {
+          const msg = String(err && err.message ? err.message : err);
+          // Catch the e.entity null crash: "Cannot read properties of null (reading 'id')"
+          // Return empty array so callers don't get an unhandled rejection storm.
+          if (msg.includes("entity") ||
+              (msg.toLowerCase().includes("cannot read") && msg.includes("null"))) {
+            console.log('[PATCH] getThreadHistory: entity=null range caught — returning []');
+            return [];
+          }
+          throw err;
+        }
+      };
+    };
+    cached._zaoPatchedGTH = true;
+    console.log('[PATCH] patchGetThreadHistory: getThreadHistory factory wrapped successfully');
+  } catch (e) {
+    console.log('[PATCH] patchGetThreadHistory: patch failed — ' + e.message);
+  }
+}
+
+/**
  * Raises the FCA's globalAntiSuspension caps to production-appropriate
  * values after login.
  */
@@ -223,6 +265,7 @@ module.exports = {
   preventLoginHelperHandlers,
   patchLoginHelper,
   patchFcaDatabase,
+  patchGetThreadHistory,
   disableFcaInternalServices,
   patchAntiSuspensionLimits,
 };

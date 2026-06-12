@@ -7,5 +7,7 @@
 - [Template literal JS escaping](template-literal-escaping.md) — zao-server.js and zao-devhub.js use backtick template literals to render client-side JS; \' becomes ' and \n becomes newline, breaking client JS parse.
 - [Labyrinth exit flush](labyrinth-exit-flush.md) — autoRelogin.js both process.exit(0) paths must await global._labyrinth.keyStore._flush() first; skip flush is silent and corrupts E2EE keys on partial write.
 - [48h session expiry fix](session-48h-fix.md) — keepAlive dtsg default was 48h (matched FB expiry window); changed to 6h; FRESH accounts need notificationVisit+autoMarkRead+simulateTyping enabled.
-- [Groups tab hang fix](groups-tab-hang.md) — /bot/groups in ZAO.js had unguarded getThreadList calls (no timeout); add Promise.race 6s timeout + res.destroyed guard so handler always resolves within proxyToBot 8s window.
+- [Groups tab hang fix](groups-tab-hang.md) — /bot/groups sequential getThreadList calls (6s+5s=11s) exceeded 8s proxyToBot window; fixed by running INBOX and fallback tags in parallel via Promise.allSettled with 4.5s budget each.
 - [ZAO-ENGINE architecture](zao-engine-arch.md) — replaces /includes security layer; old includes/ archived as _includes/; all imports in ZAO.js/Main.js/SCRIPTS/webpanel now point to ./ZAO-ENGINE/.
+- [Stealth silent-fail bug](stealth-silent-fail.md) — stealth.js ENDPOINTS array had a bare string literal (no key) in an object, causing SyntaxError at parse time; swallowed by try/catch so presence loop silently never ran.
+- [nkxfca runtime patching](nkxfca-runtime-patching.md) — nkxfcaPatcher.js patches nkxfca via require cache before login; patchGetThreadHistory wraps the factory export so e.entity=null returns [] instead of unhandledRejection spam.

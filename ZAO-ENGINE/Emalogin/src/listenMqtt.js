@@ -225,6 +225,7 @@ function listenMqtt(defaultFuncs, api, ctx, globalCallback) {
                                 parseDelta(defaultFuncs, api, ctx, _gc, { "delta": delta });
                         }
                 } else if (topic === "/thread_typing" || topic === "/orca_typing_notifications") {
+                        if (!jsonMessage.sender_fbid) return;
                         const typ = {
                                 type: "typ",
                                 isTyping: !!jsonMessage.state,
@@ -481,7 +482,8 @@ function parseDelta(defaultFuncs, api, ctx, globalCallback, v) {
 
                                                                 const mobj = {};
                                                                 for (const n in fetchData.message.ranges) {
-                                                                        mobj[fetchData.message.ranges[n].entity.id] = (fetchData.message.text || "").substr(fetchData.message.ranges[n].offset, fetchData.message.ranges[n].length);
+                                                                        const _r = fetchData.message.ranges[n];
+                                                                        if (_r.entity) mobj[_r.entity.id] = (fetchData.message.text || "").substr(_r.offset, _r.length);
                                                                 }
 
                                                                 callbackToReturn.messageReply = {

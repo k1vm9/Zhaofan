@@ -39,10 +39,13 @@ nkxPatcher.patchFcaDatabase();
 // Wrap loginHelper BEFORE it is captured by client.js — catches silent async
 // errors that would otherwise leave loginAsync hanging for 3 minutes.
 nkxPatcher.patchLoginHelper();
+// Patch getThreadHistory BEFORE login so nkxfca's client binds the guarded
+// version — prevents e.entity=null TypeError → unhandledRejection spam every 30s.
+nkxPatcher.patchGetThreadHistory();
 
 const login = require('./ZAO-ENGINE/Emalogin');
 const modernizeNkxApi = require('./ZAO-ENGINE/nkxfcaModernizer');
-const listPackage = JSON.parse(readFileSync('./package.json'))['dependencies'];
+const listPackage = (() => { try { return JSON.parse(readFileSync('./package.json'))['dependencies'] || {}; } catch (_) { return {}; } })();
 const listbuiltinModules = require('module')['builtinModules'];
 
 console.log(chalk.bold.hex('#1390f0')('──ZAOFAN-SETTINGS─●'));
@@ -1219,18 +1222,26 @@ async function onBot({ models }) {
 
           // Helper: Promise.race with a hard timeout so getThreadList never blocks
           // the panel proxy (proxyToBot has an 8s window; keep well under that).
-          const _tl = (tags, ms = 6000) => Promise.race([
-            _api.getThreadList(100, null, tags),
-            new Promise((_, rej) => setTimeout(() => rej(new Error('getThreadList timeout')), ms))
-          ]);
+          // Timer is cleared via .finally() so it never leaks into the event loop.
+          const _tl = (tags, ms = 4500) => {
+            let _timer;
+            return Promise.race([
+              _api.getThreadList(100, null, tags),
+              new Promise((_, rej) => { _timer = setTimeout(() => rej(new Error('getThreadList timeout')), ms); if (_timer.unref) _timer.unref(); })
+            ]).finally(() => clearTimeout(_timer));
+          };
 
-          // Priority 1: bot online → call Facebook API directly (live, like .التحكم command)
+          // Priority 1: bot online → fetch INBOX and fallback tags IN PARALLEL.
+          // Running sequentially used to exceed the 8s proxyToBot window (6s + 5s = 11s worst-case).
+          // Parallel cap: both finish in max 4.5s — well within the proxy deadline.
           if (_api && !res.destroyed && !res.writableEnded) {
             try {
-              let result = _mapGroups(await _tl(['INBOX']));
-              if (!result.length) {
-                try { result = _mapGroups(await _tl([], 5000)); } catch (_) {}
-              }
+              const [r1, r2] = await Promise.allSettled([
+                _tl(['INBOX'], 4500),
+                _tl([], 4500)
+              ]);
+              let result = r1.status === 'fulfilled' ? _mapGroups(r1.value) : [];
+              if (!result.length && r2.status === 'fulfilled') result = _mapGroups(r2.value);
               if (result.length > 0) _writeGroupCache(result);
               if (!res.destroyed && !res.writableEnded) return _json(res, result);
             } catch (e) {
