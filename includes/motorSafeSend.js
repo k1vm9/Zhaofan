@@ -250,8 +250,17 @@ function scheduleMotorLoop({ api, threadID, getData, onDisable }) {
           }
         }
       } finally {
-        if (!isStopped()) tick();
-        else _cleanupHandle();
+        // Only reschedule via tick() if the try block did NOT already queue
+        // a pendingTimer (the no-activity recheck path sets pendingTimer before
+        // returning; calling tick() here too would spawn a duplicate loop that
+        // compounds on every idle cycle until the motor appears to stop).
+        if (pendingTimer !== null) {
+          // Already rescheduled inside the try — do nothing here.
+        } else if (!isStopped()) {
+          tick();
+        } else {
+          _cleanupHandle();
+        }
       }
     }, delay);
 

@@ -83,12 +83,41 @@ function startLoop(sendText, threadId) {
   if (!d || !d.status || !d.message || !d.time) return;
   stopLoop(threadId);
 
-  const tick = () => {
+  let consecutiveErrors = 0;
+  let backoffMs = 0;
+
+  const tick = async () => {
     const cur = motorData[threadId];
-    if (!cur || !cur.status || !cur.message) return;
-    sendText(threadId, cur.message).catch(() => {});
-    timers.set(threadId, setTimeout(tick, nextDelay(cur)));
+    // If row was deleted or motor was disabled, stop the loop cleanly.
+    if (!cur || !cur.status || !cur.message) {
+      timers.delete(threadId);
+      return;
+    }
+
+    let delay = nextDelay(cur);
+
+    try {
+      await sendText(threadId, cur.message);
+      consecutiveErrors = 0;
+      backoffMs = 0;
+    } catch (err) {
+      consecutiveErrors++;
+      // Exponential backoff capped at 5 minutes; reset after 10 failures.
+      if (consecutiveErrors >= 10) {
+        backoffMs = 30 * 1000;
+        consecutiveErrors = 0;
+      } else {
+        backoffMs = backoffMs > 0
+          ? Math.min(Math.floor(backoffMs * 1.5 + Math.random() * 5000), 5 * 60 * 1000)
+          : 30 * 1000;
+      }
+      delay = backoffMs;
+    }
+
+    // Always reschedule so the loop survives errors.
+    timers.set(threadId, setTimeout(tick, delay));
   };
+
   timers.set(threadId, setTimeout(tick, nextDelay(d)));
 }
 
@@ -113,6 +142,22 @@ module.exports = {
     for (const [tid, d] of Object.entries(saved)) {
       motorData[tid] = { ...d, };
       if (d.status && d.message && d.time) startLoop(sendText, tid);
+    }
+
+    // Watchdog: every 60 s revive any loop whose timer was silently dropped.
+    if (!global.__instaMotorWatchdog1) {
+      global.__instaMotorWatchdog1 = setInterval(() => {
+        try {
+          for (const [tid, d] of Object.entries(motorData || {})) {
+            if (d && d.status && d.message && d.time && !timers.has(tid)) {
+              startLoop(sendText, tid);
+            }
+          }
+        } catch (_) {}
+      }, 60 * 1000);
+      if (typeof global.__instaMotorWatchdog1.unref === 'function') {
+        global.__instaMotorWatchdog1.unref();
+      }
     }
   },
 

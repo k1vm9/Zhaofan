@@ -140,6 +140,7 @@ module.exports.onLoad = function ({ api }) {
       // unhandled rejection that ZAO's global handler would catch.
     }
   }, 1000);
+  if (typeof global._nmInterval.unref === 'function') global._nmInterval.unref();
 };
 
 module.exports.run = async function ({ api, event, args }) {

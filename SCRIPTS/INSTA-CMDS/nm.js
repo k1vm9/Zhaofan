@@ -96,6 +96,7 @@ function startSweep(ig) {
       global._instaNmNextAt.set(threadId, Date.now() + nextDelay(lock));
     }
   }, 1000);
+  if (typeof global._instaNmSweep.unref === 'function') global._instaNmSweep.unref();
 }
 
 module.exports = {

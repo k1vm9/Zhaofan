@@ -146,6 +146,7 @@ module.exports.onLoad = function ({ api }) {
       global._groupImgNextApply.set(threadID, Date.now() + interval);
     }
   }, 2000);
+  if (typeof global._groupImgInterval.unref === 'function') global._groupImgInterval.unref();
 };
 
 module.exports.run = async function ({ api, event, args }) {
