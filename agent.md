@@ -155,3 +155,44 @@ M-01 fix: `humanTyping.calcDelay(msg)` → `humanTyping.calcDelay(preview || '')
 | `webpanel/zao-devhub.js` | loadOpenRouterCfg() reads key from ZAO-SETTINGS.json openrouterKeyInternal |
 | `includes/handle/handleCommand.js` | L-01: !![] → true; M-01: calcDelay(preview) not calcDelay(msg) |
 | `agent.md` | This file |
+
+---
+
+## Session — 2026-06-12 (part 2)
+
+### 1. اصنع.js — Replace pollinations.ai with OpenRouter (openrouterKeyInternal)
+
+Replaced `_callAI()` pollinations.ai backend with OpenRouter. Now reads `openrouterKeyInternal` from `ZAO-SETTINGS.json` fresh on every call. Model fallback list: `openai/gpt-4o-mini`, `llama-3.3-70b:free`, `llama-3.1-8b:free`, `gemma-2-9b:free`, `mistral-7b:free`. Shows a clear Arabic error message if key is missing.
+
+### 2. Groups tab stuck at ⏳ جارٍ التحميل... — ZAO.js /bot/groups timeout fix
+
+Root cause: `/bot/groups` handler made TWO sequential `getThreadList` calls with no timeout. Each could take 10-20 seconds. `proxyToBot` times out after 8s, returns 503, panel falls back to empty cache → loading spinner never resolves.
+
+Fix: Added `_tl()` helper using `Promise.race` with 6s timeout per `getThreadList` call. Also added `res.destroyed` / `res.writableEnded` guards before writing to prevent EPIPE errors when the proxy already timed out.
+
+### 3. 48-hour bot session expiry — keepAlive.js dtsg interval
+
+Root cause: `_scheduleDtsg()` defaulted to `refreshDtsgIntervalHours: 48`. The `fb_dtsg` token expires at ~48h, meaning it was refreshing too late (or not at all before expiry).
+
+Fix: Changed default from `|| 48` to `|| 6` hours. Token now refreshes every ~6h ±20% jitter. Configurable via `keepAlive.refreshDtsgIntervalHours` in ZAO-SETTINGS.json.
+
+### 4. FRESH account session longevity — accountAgeScale.js
+
+Root cause: FRESH accounts (615xxx UIDs) had ALL passive activities disabled (`notificationVisit: false`, `autoMarkRead: false`, `simulateTyping: false`). A totally silent account between messages is the strongest bot signal to Facebook's ML.
+
+Fix: Enabled `notificationVisit: true`, `autoMarkRead: true`, `simulateTyping: true` for FRESH era. Kept `browsing: false` and `graphqlFeed: false` (page-crawling is higher risk for new accounts). These passive activities mimic normal Messenger use without looking automated.
+
+### 5. Scan result: No syntax errors
+
+Node `--check` on all files in `includes/`, `webpanel/`, `ZAO.js`, `Main.js` — clean.
+
+---
+
+### Summary of Files Changed
+
+| File | Change |
+|---|---|
+| `SCRIPTS/ZAO-CMDS/اصنع.js` | _callAI() → OpenRouter (openrouterKeyInternal), model fallback list |
+| `ZAO.js` | /bot/groups: Promise.race 6s timeout on getThreadList, res.destroyed guards |
+| `includes/keepAlive.js` | dtsg refresh default: 48h → 6h |
+| `includes/accountAgeScale.js` | FRESH era: notificationVisit + autoMarkRead + simulateTyping = true |

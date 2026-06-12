@@ -498,7 +498,8 @@ function _scheduleSave() {
 function _scheduleDtsg() {
   if (dtsgTimer) clearTimeout(dtsgTimer);
   const cfg = _loadSettings();
-  const baseHr = Math.max(2, Number(cfg.refreshDtsgIntervalHours) || 48);
+  // Default 6 h (was 48 h — too close to FB session expiry; token becomes stale at ~48 h causing disconnection)
+  const baseHr = Math.max(2, Number(cfg.refreshDtsgIntervalHours) || 6);
   const baseMs = baseHr * 60 * 60 * 1000;
   const jitter = Math.floor((Math.random() - 0.5) * 0.4 * baseMs);
   const quiet = cfg.circuitQuietMode && (() => { try { return global._antiSuspension && global._antiSuspension.isCircuitBreakerTripped(); } catch (_) { return false; } })();

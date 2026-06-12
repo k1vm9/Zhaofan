@@ -99,7 +99,19 @@ function _readBotContext() {
   return parts.join('\n');
 }
 
+// ── OpenRouter models — tried in order, next on failure ─────────────────────
+const _ASNAA_MODELS = [
+  'openai/gpt-4o-mini',
+  'meta-llama/llama-3.3-70b-instruct:free',
+  'meta-llama/llama-3.1-8b-instruct:free',
+  'google/gemma-2-9b-it:free',
+  'mistralai/mistral-7b-instruct:free',
+];
+
 async function _callAI(prompt, botContext) {
+  const key = _loadSettings().openrouterKeyInternal || '';
+  if (!key) return '⚠️ مفتاح OpenRouter الداخلي غير مضبوط — أضف openrouterKeyInternal في ZAO-SETTINGS.json أو عبر DevHub → الإعدادات';
+
   const systemPrompt = `You are an expert Node.js bot developer specializing in Facebook Messenger bots.
 You have full knowledge of the ZAO Bot codebase — a Node.js/Express bot using nkxfca (unofficial Facebook Chat API).
 
@@ -114,32 +126,39 @@ When asked to create/generate something:
 Bot Architecture context is provided below.`;
 
   const userContent = `${prompt}\n\n=== BOT CONTEXT ===\n${botContext.slice(0, 8000)}`;
+  const messages = [
+    { role: 'system', content: systemPrompt },
+    { role: 'user',   content: userContent },
+  ];
 
-  try {
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 60000);
-
-    const r = await fetch('https://text.pollinations.ai/openai', {
-      method:  'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body:    JSON.stringify({
-        model:    'openai-large',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user',   content: userContent },
-        ],
-        temperature: 0.7,
-        max_tokens:  3000,
-      }),
-      signal: controller.signal,
-    });
-    clearTimeout(timeout);
-    const data = await r.json();
-    return data?.choices?.[0]?.message?.content || data?.content || String(data);
-  } catch (e) {
-    if (e.name === 'AbortError') return 'انتهت المهلة — حاول مرة أخرى';
-    return 'خطأ في الاتصال بالذكاء الاصطناعي: ' + e.message;
+  let lastErr = null;
+  for (const model of _ASNAA_MODELS) {
+    try {
+      const controller = new AbortController();
+      const timer = setTimeout(() => controller.abort(), 55000);
+      const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method:  'POST',
+        headers: {
+          'Content-Type':    'application/json',
+          'Authorization':   `Bearer ${key}`,
+          'HTTP-Referer':    'https://zaobot.replit.app',
+          'X-OpenRouter-Title': 'ZAO Bot',
+        },
+        body:   JSON.stringify({ model, messages, temperature: 0.7, max_tokens: 3000 }),
+        signal: controller.signal,
+      });
+      clearTimeout(timer);
+      if (!r.ok) { lastErr = new Error(`HTTP ${r.status}`); continue; }
+      const data = await r.json();
+      const text = data?.choices?.[0]?.message?.content || '';
+      if (!text.trim()) { lastErr = new Error('empty reply'); continue; }
+      return text;
+    } catch (e) {
+      lastErr = e;
+    }
   }
+  if (lastErr?.name === 'AbortError') return 'انتهت المهلة — حاول مرة أخرى';
+  return 'خطأ في الاتصال بالذكاء الاصطناعي: ' + (lastErr?.message || 'unknown');
 }
 
 // ── Pending: waiting for group ID ───────────────────────────────────────────

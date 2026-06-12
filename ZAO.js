@@ -1206,19 +1206,28 @@ async function onBot({ models }) {
 
           // ── LIVE-FIRST approach: always fetch from Facebook account, cache is fallback only ──
 
+          // Helper: Promise.race with a hard timeout so getThreadList never blocks
+          // the panel proxy (proxyToBot has an 8s window; keep well under that).
+          const _tl = (tags, ms = 6000) => Promise.race([
+            _api.getThreadList(100, null, tags),
+            new Promise((_, rej) => setTimeout(() => rej(new Error('getThreadList timeout')), ms))
+          ]);
+
           // Priority 1: bot online → call Facebook API directly (live, like .التحكم command)
-          if (_api) {
+          if (_api && !res.destroyed && !res.writableEnded) {
             try {
-              let result = _mapGroups(await _api.getThreadList(100, null, ['INBOX']));
+              let result = _mapGroups(await _tl(['INBOX']));
               if (!result.length) {
-                try { result = _mapGroups(await _api.getThreadList(100, null, [])); } catch (_) {}
+                try { result = _mapGroups(await _tl([], 5000)); } catch (_) {}
               }
               if (result.length > 0) _writeGroupCache(result);
-              return _json(res, result);
+              if (!res.destroyed && !res.writableEnded) return _json(res, result);
             } catch (e) {
-              // API call failed — fall through to cache fallbacks below
+              // API call failed or timed out — fall through to cache fallbacks below
             }
           }
+
+          if (res.destroyed || res.writableEnded) return;
 
           // Priority 2: bot offline or API failed → try in-memory data
           const memGroups = _fromMemory();

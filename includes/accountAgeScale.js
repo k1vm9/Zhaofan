@@ -28,11 +28,15 @@ const ERAS = [
     warmupExtraMin:       60,
     maxMsgsPerMin:        2,
     maxMsgsPerMinWindow:  3,
-    notificationVisit:    false,
+    // Enabled to prevent account looking completely silent between messages —
+    // a totally dark account (no reads, no typing, no notifications) is the
+    // clearest bot signal to Facebook's ML. These activities are low-risk and
+    // mimic what any real Messenger user does passively.
+    notificationVisit:    true,
     maxRequestsPerMinute: 10,
-    autoMarkRead:         false,
-    simulateTyping:       false,
-    browsing:             false,
+    autoMarkRead:         true,
+    simulateTyping:       true,
+    browsing:             false,  // page-crawling is higher risk for new accounts
     graphqlFeed:          false
   },
   {
