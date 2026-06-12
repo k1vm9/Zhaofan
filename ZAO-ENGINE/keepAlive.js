@@ -236,8 +236,7 @@ function scheduleSave() {
 
 function scheduleDtsg() {
   if (dtsgTimer) clearTimeout(dtsgTimer);
-  const hours  = 6 + Math.random() * 2;
-  const delay  = Math.round(hours * 60 * 60 * 1000);
+  const delay  = rand(360, 480);   // 6–8 h in minutes → rand converts to ms
   global._dtsgNextAt = Date.now() + delay;
   dtsgTimer = setTimeout(async () => {
     try { await doRefreshDtsg(); } catch (_) {}
@@ -264,7 +263,7 @@ function startKeepAlive() {
 
   log("Session keep-alive started.");
 
-  const primingMs = (10 + Math.floor(Math.random() * 21)) * 1000;
+  const primingMs = rand(10 / 60, 30 / 60);  // 10–30 s expressed as minutes → ms
   primingTimer = setTimeout(() => { doPing().catch(() => {}); }, primingMs);
   if (primingTimer?.unref) primingTimer.unref();
 

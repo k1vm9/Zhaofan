@@ -63,6 +63,8 @@ function getConfig() {
 }
 
 function randomBetween(min, max) {
+  const r = global._randomizer;
+  if (r && typeof r.getIntervalSync === "function") return r.getIntervalSync(min, max);
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 

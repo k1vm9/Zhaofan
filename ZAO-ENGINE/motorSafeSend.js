@@ -3,6 +3,14 @@
 let globalActiveSends = 0;
 const sendQueue = [];
 
+// Use AI-seeded randomizer when wired; falls back to Math.random() automatically.
+// global._randomizer is set by ZAO.js before any command loads.
+function _r(lo, hi) {
+  const r = global._randomizer;
+  if (r && typeof r.getIntervalSync === "function") return r.getIntervalSync(lo, hi);
+  return Math.floor(Math.random() * (hi - lo + 1)) + lo;
+}
+
 function sleep(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
@@ -10,7 +18,8 @@ function sleep(ms) {
 function pickJitter(baseMs) {
   const jitterPct = 0.30;
   const delta = baseMs * jitterPct;
-  return Math.max(1000, Math.floor(baseMs + (Math.random() * 2 - 1) * delta));
+  const sign  = _r(0, 1) === 0 ? -1 : 1;
+  return Math.max(1000, Math.floor(baseMs + sign * _r(0, delta)));
 }
 
 function getNightMultiplier() {
@@ -143,7 +152,7 @@ function scheduleMotorLoop({ api, threadID, getData, onDisable }) {
                data.randomRange.max >= data.randomRange.min) {
       const lo = Math.max(MOTOR_MIN_MS, data.randomRange.min);
       const hi = Math.max(lo, data.randomRange.max);
-      delay = lo + Math.floor(Math.random() * (hi - lo + 1));
+      delay = _r(lo, hi);
       delay = Math.floor(delay * nightMult);
     } else {
       const base = Math.max(MOTOR_MIN_MS, Number(data.time) || 0);
@@ -201,7 +210,7 @@ function scheduleMotorLoop({ api, threadID, getData, onDisable }) {
             }
             const msgLen   = String(data.message || '').length;
             const typingMs = Math.max(1200, Math.min(4000,
-              900 + Math.floor(msgLen * 70) + Math.floor(Math.random() * 1500)
+              900 + Math.floor(msgLen * 70) + _r(0, 1500)
             ));
             await new Promise(r => setTimeout(r, typingMs));
           } catch (_) {}
@@ -246,7 +255,7 @@ function scheduleMotorLoop({ api, threadID, getData, onDisable }) {
             consecutiveErrors = 0;
           } else {
             const next = backoffMs > 0 ? Math.min(backoffMs * 1.5, 3 * 60 * 1000) : 30 * 1000;
-            backoffMs = Math.floor(next + Math.random() * 5000);
+            backoffMs = Math.floor(next + _r(0, 5000));
           }
         }
       } finally {

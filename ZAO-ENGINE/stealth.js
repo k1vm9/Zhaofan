@@ -37,7 +37,11 @@ let _lastPingTs = 0;
 const getUA    = () => UA_POOL[_uaIdx];
 const rotateUA = () => { _uaIdx = (_uaIdx + 1) % UA_POOL.length; return UA_POOL[_uaIdx]; };
 const pickEp   = () => { _epIdx = (_epIdx + 1) % ENDPOINTS.length; return ENDPOINTS[_epIdx]; };
-const rand     = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
+const rand     = (a, b) => {
+  const r = global._randomizer;
+  if (r && typeof r.getIntervalSync === "function") return r.getIntervalSync(a, b);
+  return Math.floor(Math.random() * (b - a + 1)) + a;
+};
 const sleep    = ms => new Promise(r => { const t = setTimeout(r, ms); if (t?.unref) t.unref(); });
 
 function isSleepHour() {

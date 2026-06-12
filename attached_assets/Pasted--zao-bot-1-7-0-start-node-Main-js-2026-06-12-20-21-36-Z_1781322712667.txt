@@ -1,0 +1,903 @@
+
+> zao-bot@1.7.0 start
+> node Main.js
+
+[2026-06-12 20:21:36] [ZAO] ══════════════════════════════════════
+[2026-06-12 20:21:36] [ZAO]    ZAO Bot — Unified Launcher          
+[2026-06-12 20:21:36] [ZAO]    by SAIN — Single-bot mode           
+[2026-06-12 20:21:36] [ZAO] ══════════════════════════════════════
+[2026-06-12 20:21:36] [ZAO] Platform: Replit | Port: 5000 | URL: https://0c1c264a-dcc6-48f5-8e57-241c6e4e2b2d-00-bhm5kzny9uo8.spock.replit.dev
+[ZAO-INSTA] Sub-panel mounted ✓
+[2026-06-12 20:21:38] [PROTECT] لا يوجد snapshot صالح لـ ZAO-STATEV.json — no snapshots
+[2026-06-12 20:21:38] [WATCHDOG] تم تشغيل ZAO.js — PID 265 — إعادة تشغيل رقم 0
+[2026-06-12 20:21:38] [INSTA] ZAO-INSTA started — PID 266
+[ZAO PANEL] ✅ لوحة التحكم تعمل على المنفذ 5000
+[2026-06-12 20:21:39] [INSTA:BOOT] ══════════════════════════════════════
+[2026-06-12 20:21:39] [INSTA:BOOT]    ZAO-INSTA — Instagram Bot Module v2  
+[2026-06-12 20:21:39] [INSTA:BOOT]    by SAIN | fixes by DJAMEL            
+[2026-06-12 20:21:39] [INSTA:BOOT] ══════════════════════════════════════
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: ai
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: help
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: info
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: nm
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: ping
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: slot
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: uptime
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: احصائيات
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: تاريخ
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: ترجم
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: تقييم
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: ثنائي
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: حاسبة
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: حظ
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: حقيقة
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: شخصية
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: صدى
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: طقس
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: عشوائي
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: كرة8
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: محرك
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: محرك2
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: معرف
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: نرد
+[2026-06-12 20:21:39] [INSTA:CMD] Loaded: هاش
+[2026-06-12 20:21:39] [INSTA:CMD] 96 command(s) loaded
+[2026-06-12 20:21:39] [INSTA:API] Internal API on port 3002
+[PATCH] patchLoginHelper: loginHelper wrapped successfully
+[PATCH] patchGetThreadHistory: getThreadHistory factory wrapped successfully
+[2026-06-12 20:21:39] [INSTA:LOGIN] Saved session expired — trying credentials…
+──ZAOFAN-SETTINGS─●
+[ SAIN ]: ZAO Is working 
+[ SAIN ]: This Bot Is SAIN - ♤ 
+[ CONFIG ]: Missing API keys (set via env secrets or config): youtube-video.YOUTUBE_API, linkword.APIKEY, ytb-video.YOUTUBE_API, math.WOLFRAM, sauce.SAUCENAO_API, weather.OPEN_WEATHER, simsimi.APIKEY, sim.APIKEY, slap.APIKEY, manslap.APIKEY, play.YOUTUBE_API, play.SOUNDCLOUD_API, video.YOUTUBE_API, testcovid.APIKEY, simv2.APIKEY, simvoice.APIKEY, sing.YOUTUBE_API, sing.SOUNDCLOUD_API, slapv2.APIKEY, videov2.YOUTUBE_API, bannerbw.APIKEY, بنك.APIKEY 
+[ SAIN ]: Loaded config 
+
+──ZAO DATA─●
+[ SAIN ]: Connected to DB  
+
+──LOADING FACEBOOK─●
+[DIAG] onBot: started
+[ RANDOMIZER ]: ⚠️  openrouterKeyInternal is empty in ZAO-SETTINGS.json.
+The ZAO randomizer requires a working OpenRouter key to start.
+Get a free key at https://openrouter.ai/keys and set openrouterKeyInternal in ZAO-SETTINGS.json 
+[ RANDOMIZER ]: Continuing with Math.random() fallback — set openrouterKeyInternal for AI mode 
+[DIAG] onBot: starting login...
+[ Login ]: Persisted tier = 2 — starting login loop from Tier 2.
+[ Login ]: ── Trying Tier 2 (sessions/ZAO-STATEX.json) ──
+[ Login ]: Detected JSON array format.
+[ Login ]: Skipping pre-validation (FCA will validate) — proceeding with AppState...
+[ Login ]: Tier 2/sessions/ZAO-STATEX.json — cookies in /home/runner/workspace/sessions/ZAO-STATEX.json could not be pre-validated, trying anyway...
+[PATCH] patchedLoginHelper: ENTERED
+[PATCH] _resetFcaRateLimiter: done (MAX_CONCURRENT→10, activeRequests→0, windows cleared)
+nkxfca
+Developed and maintained by NeoKEX
+GitHub: https://github.com/NeoKEX
+npm: https://www.npmjs.com/package/@neoaz07/nkxfca
+Based on nkxfca (@neoaz07/nkxfca) — credits: NeoKEX Team, ws3-fca, @dongdev/fca-unofficial
+[20:21:41] nkxfca VERSION @neoaz07/nkxfca v1.0.10
+[20:21:41] nkxfca STARTUP Initializing...
+[20:21:41] nkxfca LOG Logging in...
+[20:21:41] nkxfca LOG Using desktop persona with browser: Microsoft Edge
+[20:21:41] nkxfca LOG Cookies set for facebook.com and messenger.com domains
+[20:21:41] nkxfca UPDATE You are using the latest version.
+[20:21:42] nkxfca LOG Detected Facebook region: PRN
+[ Login ]: Background cookie check PASSED ✓
+[20:21:42] nkxfca LOG Overwrote existing appstate backup for user 61590815307610
+[20:21:42] nkxfca LOG Overwrote existing cookie backup for user 61590815307610
+[20:21:42] nkxfca LOG AppState backup stored successfully
+[20:21:42] nkxfca LOG MQTT PostSafe guard installed for anti-automation detection
+[20:21:42] nkxfca LOG Database methods initialized
+[20:21:42] nkxfca LOG TokenRefresh Session health checks every 20min, keepalive every 5min, cookie refresh every 12h
+[20:21:42] nkxfca LOG TokenRefresh Auto-refresh scheduled in 120min
+[20:21:42] nkxfca LOG AppStateBackup Auto-backup started (interval: 300000ms)
+[20:21:42] nkxfca LOG AutoBackup Automatic session backup started
+[PATCH] patchedLoginHelper: callback fired — SUCCESS (took 1s)
+[ Login ]: Tier 2/sessions/ZAO-STATEX.json — AppState login successful ✓  (uid=61590815307610)
+[ CookiePatch ]: Anti-suspension false-positive filter applied ✓ 
+[ CookiePatch ]: Cookie patcher active — tier=2 method=appstate ✓ 
+[ Login ]: Active account — Tier 2 via sessions/ZAO-STATEX.json ✓
+[ Login ]: Found AppState 
+[ NKX ]: Circuit breaker controls attached. 
+[ NKX ]: Warmup hook unavailable: globalAntiSuspension.enableWarmup is not a function 
+[ E2EE ]: Keys loaded — 0 peer(s) restored. 
+[ NKX ]: E2EE key pair ready. Bot public key: MCowBQYDK2VuAyEAYNXR… 
+[ NKX ]: E2EE enabled: auto-encrypt outgoing ✓ auto-decrypt incoming ✓ 
+[ NKX ]: NKX modernizer enabled. 
+[20:21:42] nkxfca LOG AutoReLogin Auto re-login disabled and credentials cleared
+[20:21:42] nkxfca LOG TokenRefresh Auto-refresh disabled
+[20:21:42] nkxfca LOG TokenRefresh Session health checks disabled
+[20:21:42] nkxfca LOG TokenRefresh Presence keepalive disabled
+[20:21:42] nkxfca LOG TokenRefresh Cookie refresh disabled
+[ APIS ]: Extended API modules wired ✓ (pin, gcrule, friend, follow, comment, story, notes) 
+[ SEND-PIPELINE ]: Pipeline patched on api instance (nkxModernized=true) 
+[DIAG] onBot: login succeeded, loading DB controller...
+[ SQLite ]: DB connected ✓ 
+[ CMD-LOAD ]: Failed to load "badwords.js": mirai - Not found key language: Error in cmd format 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+──LOADING LOADER─●
+──ZAO DATA─●Loaded 95 Command Aand 2 Events 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+──LOADING LISTENER─●
+[ LISTENER ]: 61590815307610 - [ ZAO BOT ]  
+[ HEALTH ]: Account Health Monitor started. 
+[ HEALTH ]:   Cookie scan every 30 min 
+[ HEALTH ]:   Send-fail threshold: 3 errors in 5 min → tier switch 
+[20:21:43] nkxfca LOG MQTT Auto-cycle scheduled: 2510826ms
+[20:21:43] nkxfca LOG MQTT getSeqID call
+[20:21:43] nkxfca LOG MQTT Getting sequence ID...
+[ MQTT-HEALTH ]: بدأ — فحص كل 2–5 دقيقة (عشوائي)، صمت > 10 دقيقة → تأكيد مزدوج → إعادة تشغيل 
+[ MQTT-HEALTH ]: الفحص القادم بعد 2.6 دقيقة 
+[ KEEP-ALIVE ]: Session keep-alive started. 
+[ KEEP-ALIVE ]: Next ping in 19 min. 
+[ SESSION-GUARD ]: Startup AppState valid. 
+[ SESSION-GUARD ]: Snapshot saved (1). 
+[ SESSION-GUARD ]: Started — snapshot every 30 min, integrity check every 20 min. 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+──PROTECTION SYSTEMS─●
+[ PROTECT ]: Stealth-Engine   ✓  burst protection + night-mode + UA rotation + thread jitter 
+[ PROTECT ]: Auto-Ping        ✓  random 8-18 min 
+[ PROTECT ]: Cookie Save      ✓  every 10 min → ZAO-STATE.json & alt.json 
+[ PROTECT ]: Auto-Relogin     ✓  3 attempts / 3-min cooldown (JSON/Token/String/Netscape → Email/Password fallback) 
+[ PROTECT ]: Health-Monitor   ✓  cookie scan every 5 min + send-fail watchdog → auto tier-switch (Tier 1→2→3) 
+[ PROTECT ]: Session-Check    ✓  proactive live-cookie validation every 35 min 
+[ PROTECT ]: MQTT-Silence     ✓  إعادة تشغيل المستمع إذا صمت > 10 دقائق 
+[ PROTECT ]: MQTT-HealthCheck ✓  فحص ذكي مع backoff تصاعدي (من GoatBot) 
+[ PROTECT ]: Human-Typing     ✓  محاكاة الطباعة البشرية قبل كل رد 
+[ PROTECT ]: Keep-Alive       ✓  Ping مباشر لفيسبوك كل 8-18 دقيقة + تجديد fb_dtsg كل 6 ساعات 
+[ PROTECT ]: Memory-Guard     ✓  clean restart if heap > 512 MB 
+[ PROTECT ]: Graceful-Exit    ✓  two-stage drain — stop dispatch → flush motors/locks → save cookies 
+[ LABYRINTH ]: Initialising Labyrinth v4 — Signal Protocol + PIN passive mode… 
+[ PANEL ]: Internal API ready on 127.0.0.1:3001 
+[20:21:43] nkxfca LOG Database synchronized successfully
+[ LABYRINTH ]: Keys loaded — 10 OPK(s) available. 
+[ LABYRINTH-SESSION ]: Sessions loaded — 0 signal, 0 PIN session(s). 
+[ LABYRINTH ]: ⚠ No PIN set — keys stored unencrypted. Set labyrinth.pin in ZAO-SETTINGS.json. 
+[ MQTT-E2EE-PATCH ]: parseDelta patched — E2EE intercept active. (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/mqttDeltaValue.js) 
+[ MQTT-E2EE-PATCH ]: MQTT E2EE patch v4 installed. 
+[ LABYRINTH ]: api.sendMessage wrapped for auto-encrypt. 
+[ LABYRINTH ]: All sessions dropped for thread __diagnose__. 
+[ LABYRINTH ]: Signal handshake completed for thread __diagnose__. 
+[ LABYRINTH ]: PIN session set for thread __diagnose__. 
+[ LABYRINTH ]: Global PIN set. 
+[ LABYRINTH ]: Global PIN cleared. 
+[ LABYRINTH ]: Auto-encrypt ON for thread __diagnose__. 
+[ LABYRINTH ]: Auto-encrypt OFF for thread __diagnose__. 
+[ LABYRINTH ]: All sessions dropped for thread __diagnose__. 
+[ LABYRINTH ]: Self-diagnose: 12/12 tests passed — all systems OK. 
+[ LABYRINTH ]: Labyrinth v4 ready — Signal (X3DH + Double Ratchet) + PIN passive mode. | IK: MCowBQYDK2VuAyEA… | OPKs: 9 | Global PIN: ✗ 
+[ E2EE ]: Labyrinth E2EE initialized ✓ (X3DH / Double Ratchet) 
+[ PROTECT ]: Loop-Lag-Guard   ✓  perf_hooks p95 > 500ms for 30s → stack snapshot + clean recycle 
+[ PROTECT ]: Disk-Guard       ✓  rotate large logs + prune backups; emergency cleanup at 90% disk 
+[ PROTECT ]: Network-Probe    ✓  DNS+TCP edge-mqtt.facebook.com check before tier-switch (no wasted relogins) 
+[ PROTECT ]: Command-Sandbox  ✓  30s wall-clock timeout on every command.run / handleReply / handleEvent 
+[ PROTECT ]: Error-Budget     ✓  >5 errors / 10 min on the same command → auto-disable 1h + admin notify 
+[ PROTECT ]: Cookie-Snapshot  ✓  last 5 validated snapshots in backups/ — watchdog restores instead of re-logging in 
+[ PROTECT ]: Stealth-V2       ✓  10 layers: UA rotation, warmup, sleep-mode, page-browse, presence cycling (opt-in) 
+[ PROTECT ]: Listen-Error     ✓  instant listener restart + login_blocked/account_inactive/auth_error detection 
+[ PROTECT ]: Error-Notify     ✓  Telegram / Discord webhook on session-kill or listen errors (opt-in) 
+[ PROTECT ]: GraphQL-Visit    ✓  CometNotificationsDropdownQuery every 30-120 min — looks like a real client 
+[ PROTECT ]: Auto-Uptime      ✓  external-URL ping for free hosts (opt-in via autoUptime.enable) 
+[ PROTECT ]: Sync-Groups      ✓  warm threadInfo cache from INBOX after login (idea from holo) 
+[ PROTECT ]: Refresh-Cache    ✓  live update on log:thread-admins / name / image / icon / subscribe / unsubscribe (from seiko) 
+[ PROTECT ]: Session-Guard    ✓  AppState snapshot every 30 min + cookie integrity check every 20 min + pre-relogin hook 
+[ PROTECT ]: Auto-Lock        ✓  raid guard — auto-lock after 15 non-admin cmds in 30s 
+[ PROTECT ]: Settings-Watch   ✓  hot-reload ZAO-SETTINGS.json 
+[ PROTECT ]: Crash-Restore    ✓  alt.json → ZAO-STATE.json on crash 
+[ PROTECT ]: Cache-Cleanup    ✓  prune userName/threadInfo/threadData maps every 2 h (max 5 000 entries) 
+[ PROTECT ]: Cookie-Refresh   ✓  forced credential re-login every 1440 min 
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ SETTINGS ]: Watching ZAO-SETTINGS.json (via parent dir, survives atomic rename) ✓ 
+
+●─𝗭𝗔𝗢 𝗙𝗔𝗡─●
+[ 𝗦𝗔𝗜𝗠 ]:  𝗬𝗢𝗨𝗡𝗚 𝗠𝗥  
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+[ STEALTH ]: Ping → www.facebook.com/notifications ✓ 
+[2026-06-12 20:21:44] [INSTA:LOGIN] ❌ Instagram locked the account — complete challenge at instagram.com first
+[2026-06-12 20:21:44] [INSTA:BOOT] Login attempt 1/5 failed
+[2026-06-12 20:21:44] [INSTA:BOOT] Retry attempt 2/5 in 30s…
+[20:21:46] nkxfca LOG MQTT Getting sequence ID...
+[20:21:50] nkxfca LOG MQTT Getting sequence ID...
+[20:21:50] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:21:50] nkxfca WARN MQTT Will reconnect in 7994ms
+[ SYNC-GROUPS ]: Warming thread cache (trying INBOX, all-threads, PENDING, OTHER)… 
+[20:21:52] nkxfca ERROR getThreadList Error: getThreadList: Invalid response from server
+    at Object.getThreadList (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadList.js:205:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[20:21:52] nkxfca ERROR getThreadList Error: getThreadList: Invalid response from server
+    at Object.getThreadList (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadList.js:205:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[20:21:52] nkxfca ERROR getThreadList Error: getThreadList: Invalid response from server
+    at Object.getThreadList (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadList.js:205:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[20:21:58] nkxfca LOG MQTT getSeqID call
+[20:21:58] nkxfca LOG MQTT Getting sequence ID...
+[ KEEP-ALIVE ]: Ping home ✓ 
+[ KEEP-ALIVE ]: Cookies saved → sessions/ZAO-STATEX.json (post-ping) ✓ 
+[2026-06-12 20:22:14] [INSTA:LOGIN] Saved session expired — trying credentials…
+[2026-06-12 20:22:20] [INSTA:LOGIN] ❌ Instagram locked the account — complete challenge at instagram.com first
+[2026-06-12 20:22:20] [INSTA:BOOT] Login attempt 2/5 failed
+[2026-06-12 20:22:20] [INSTA:BOOT] Retry attempt 3/5 in 60s…
+[ SYNC-GROUPS ]: Done — scanned 0 threads, 0 new groups added. 
+[UNHANDLED-REJECTION] [2026-06-12T20:22:40.710Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+  at Object.setNickname (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/nickname.js:80:24)
+  at _enforce (/home/runner/workspace/ZAO-ENGINE/nicknameLocks.js:79:27)
+  at Timeout._onTimeout (/home/runner/workspace/ZAO-ENGINE/nicknameLocks.js:101:7)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:22:40.710Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+  at Object.setNickname (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/nickname.js:80:24)
+  at _enforce (/home/runner/workspace/ZAO-ENGINE/nicknameLocks.js:79:27)
+  at Timeout._onTimeout (/home/runner/workspace/ZAO-ENGINE/nicknameLocks.js:101:7) 
+[20:22:42] nkxfca ERROR getThreadList Error: getThreadList: Invalid response from server
+    at Object.getThreadList (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/getThreadList.js:205:15)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+[20:22:44] nkxfca LOG MQTT Getting sequence ID...
+[20:22:47] nkxfca LOG MQTT Getting sequence ID...
+[20:22:47] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:22:47] nkxfca WARN MQTT Will reconnect in 11579ms
+[20:22:59] nkxfca LOG MQTT getSeqID call
+[20:22:59] nkxfca LOG MQTT Getting sequence ID...
+[20:23:01] nkxfca LOG MQTT Getting sequence ID...
+[20:23:04] nkxfca LOG MQTT Getting sequence ID...
+[20:23:05] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:23:05] nkxfca WARN MQTT Will reconnect in 15319ms
+[2026-06-12 20:23:20] [INSTA:LOGIN] Saved session expired — trying credentials…
+[20:23:20] nkxfca LOG MQTT getSeqID call
+[20:23:20] nkxfca LOG MQTT Getting sequence ID...
+[20:23:22] nkxfca LOG MQTT Getting sequence ID...
+[2026-06-12 20:23:25] [INSTA:LOGIN] ❌ Instagram locked the account — complete challenge at instagram.com first
+[2026-06-12 20:23:25] [INSTA:BOOT] Login attempt 3/5 failed
+[2026-06-12 20:23:25] [INSTA:BOOT] Retry attempt 4/5 in 120s…
+[20:23:46] nkxfca LOG MQTT Getting sequence ID...
+[20:23:47] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:23:47] nkxfca WARN MQTT Will reconnect in 15452ms
+[20:24:02] nkxfca LOG MQTT getSeqID call
+[20:24:02] nkxfca LOG MQTT Getting sequence ID...
+[20:24:04] nkxfca LOG MQTT Getting sequence ID...
+[20:24:08] nkxfca LOG MQTT Getting sequence ID...
+[20:24:08] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:24:08] nkxfca WARN MQTT Will reconnect in 15307ms
+[ MQTT-HEALTH ]: الفحص القادم بعد 4.1 دقيقة 
+[20:24:24] nkxfca LOG MQTT getSeqID call
+[20:24:24] nkxfca LOG MQTT Getting sequence ID...
+[20:24:26] nkxfca LOG MQTT Getting sequence ID...
+[ HEALTH ]: Cookie scan: session alive ✓ 
+[20:24:30] nkxfca LOG MQTT Getting sequence ID...
+[20:24:30] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:24:30] nkxfca WARN MQTT Will reconnect in 15011ms
+[20:24:45] nkxfca LOG MQTT getSeqID call
+[20:24:45] nkxfca LOG MQTT Getting sequence ID...
+[20:24:47] nkxfca LOG MQTT Getting sequence ID...
+[20:24:50] nkxfca LOG MQTT Getting sequence ID...
+[20:25:03] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:25:03] nkxfca WARN MQTT Will reconnect in 15323ms
+[20:25:18] nkxfca LOG MQTT getSeqID call
+[20:25:18] nkxfca LOG MQTT Getting sequence ID...
+[20:25:20] nkxfca LOG MQTT Getting sequence ID...
+[20:25:24] nkxfca LOG MQTT Getting sequence ID...
+[20:25:25] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:25:25] nkxfca WARN MQTT Will reconnect in 15093ms
+[2026-06-12 20:25:25] [INSTA:LOGIN] Saved session expired — trying credentials…
+[2026-06-12 20:25:30] [INSTA:LOGIN] ❌ Instagram locked the account — complete challenge at instagram.com first
+[2026-06-12 20:25:30] [INSTA:BOOT] Login attempt 4/5 failed
+[2026-06-12 20:25:30] [INSTA:BOOT] Retry attempt 5/5 in 240s…
+[20:25:40] nkxfca LOG MQTT getSeqID call
+[20:25:40] nkxfca LOG MQTT Getting sequence ID...
+[20:25:42] nkxfca LOG MQTT Getting sequence ID...
+[20:25:45] nkxfca LOG MQTT Getting sequence ID...
+[20:25:46] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:25:46] nkxfca WARN MQTT Will reconnect in 15212ms
+[20:26:01] nkxfca LOG MQTT getSeqID call
+[20:26:01] nkxfca LOG MQTT Getting sequence ID...
+[20:26:03] nkxfca LOG MQTT Getting sequence ID...
+[20:26:07] nkxfca LOG MQTT Getting sequence ID...
+[20:26:19] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:26:19] nkxfca WARN MQTT Will reconnect in 15495ms
+[20:26:35] nkxfca LOG MQTT getSeqID call
+[20:26:35] nkxfca LOG MQTT Getting sequence ID...
+[20:26:37] nkxfca LOG MQTT Getting sequence ID...
+[20:26:40] nkxfca LOG MQTT Getting sequence ID...
+[20:26:40] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:26:40] nkxfca WARN MQTT Will reconnect in 15380ms
+[20:26:42] nkxfca LOG Overwrote existing appstate backup for user 61590815307610
+[20:26:42] nkxfca LOG Overwrote existing cookie backup for user 61590815307610
+[20:26:42] nkxfca LOG AppState backup stored successfully
+[20:26:42] nkxfca LOG AppStateBackup Auto-backup completed for user 61590815307610
+[20:26:56] nkxfca LOG MQTT getSeqID call
+[20:26:56] nkxfca LOG MQTT Getting sequence ID...
+[20:26:58] nkxfca LOG MQTT Getting sequence ID...
+[20:27:01] nkxfca LOG MQTT Getting sequence ID...
+[20:27:02] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:27:02] nkxfca WARN MQTT Will reconnect in 15354ms
+[20:27:17] nkxfca LOG MQTT getSeqID call
+[20:27:17] nkxfca LOG MQTT Getting sequence ID...
+[20:27:19] nkxfca LOG MQTT Getting sequence ID...
+[20:27:23] nkxfca LOG MQTT Getting sequence ID...
+[20:27:35] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:27:35] nkxfca WARN MQTT Will reconnect in 15514ms
+[UNHANDLED-REJECTION] [2026-06-12T20:27:40.710Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+  at Object.setNickname (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/nickname.js:80:24)
+  at Timeout._enforce [as _onTimeout] (/home/runner/workspace/ZAO-ENGINE/nicknameLocks.js:79:27)
+  at listOnTimeout (node:internal/timers:581:17)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:27:40.710Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+  at Object.setNickname (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/nickname.js:80:24)
+  at Timeout._enforce [as _onTimeout] (/home/runner/workspace/ZAO-ENGINE/nicknameLocks.js:79:27)
+  at listOnTimeout (node:internal/timers:581:17) 
+[20:27:51] nkxfca LOG MQTT getSeqID call
+[20:27:51] nkxfca LOG MQTT Getting sequence ID...
+[20:27:53] nkxfca LOG MQTT Getting sequence ID...
+[20:27:57] nkxfca LOG MQTT Getting sequence ID...
+[20:27:57] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:27:57] nkxfca WARN MQTT Will reconnect in 15457ms
+[20:28:12] nkxfca LOG MQTT getSeqID call
+[20:28:12] nkxfca LOG MQTT Getting sequence ID...
+[20:28:14] nkxfca LOG MQTT Getting sequence ID...
+[20:28:18] nkxfca LOG MQTT Getting sequence ID...
+[20:28:18] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:28:18] nkxfca WARN MQTT Will reconnect in 15400ms
+[ MQTT-HEALTH ]: الفحص القادم بعد 2.2 دقيقة 
+[20:28:34] nkxfca LOG MQTT getSeqID call
+[20:28:34] nkxfca LOG MQTT Getting sequence ID...
+[20:28:36] nkxfca LOG MQTT Getting sequence ID...
+[20:28:39] nkxfca LOG MQTT Getting sequence ID...
+[20:28:52] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:28:52] nkxfca WARN MQTT Will reconnect in 15239ms
+[20:29:07] nkxfca LOG MQTT getSeqID call
+[20:29:07] nkxfca LOG MQTT Getting sequence ID...
+[20:29:09] nkxfca LOG MQTT Getting sequence ID...
+[20:29:12] nkxfca LOG MQTT Getting sequence ID...
+[20:29:13] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:29:13] nkxfca WARN MQTT Will reconnect in 15351ms
+[20:29:28] nkxfca LOG MQTT getSeqID call
+[20:29:28] nkxfca LOG MQTT Getting sequence ID...
+[2026-06-12 20:29:30] [INSTA:LOGIN] Saved session expired — trying credentials…
+[20:29:30] nkxfca LOG MQTT Getting sequence ID...
+[20:29:34] nkxfca LOG MQTT Getting sequence ID...
+[20:29:34] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:29:34] nkxfca WARN MQTT Will reconnect in 15103ms
+[2026-06-12 20:29:35] [INSTA:LOGIN] ❌ Instagram locked the account — complete challenge at instagram.com first
+[2026-06-12 20:29:35] [INSTA:BOOT] Login attempt 5/5 failed
+[2026-06-12 20:29:35] [INSTA:BOOT] ❌ All 5 login attempts failed — bot will stay in standby
+[2026-06-12 20:29:35] [INSTA:BOOT]    Upload valid cookies via panel → ZAO-INSTA → الإعدادات → تغيير الكوكيز
+[2026-06-12 20:29:35] [INSTA:BOOT]    Or use POST /insta/reload-cookies to apply cookies without restart
+[20:29:49] nkxfca LOG MQTT getSeqID call
+[20:29:49] nkxfca LOG MQTT Getting sequence ID...
+[20:29:52] nkxfca LOG MQTT Getting sequence ID...
+[20:29:55] nkxfca LOG MQTT Getting sequence ID...
+[20:30:08] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:30:08] nkxfca WARN MQTT Will reconnect in 15462ms
+[20:30:23] nkxfca LOG MQTT getSeqID call
+[20:30:23] nkxfca LOG MQTT Getting sequence ID...
+[20:30:26] nkxfca LOG MQTT Getting sequence ID...
+[20:30:29] nkxfca LOG MQTT Getting sequence ID...
+[20:30:29] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:30:29] nkxfca WARN MQTT Will reconnect in 15245ms
+[ MQTT-HEALTH ]: الفحص القادم بعد 3.8 دقيقة 
+[20:30:45] nkxfca LOG MQTT getSeqID call
+[20:30:45] nkxfca LOG MQTT Getting sequence ID...
+[20:30:47] nkxfca LOG MQTT Getting sequence ID...
+[20:30:50] nkxfca LOG MQTT Getting sequence ID...
+[20:30:50] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:30:50] nkxfca WARN MQTT Will reconnect in 15498ms
+[20:31:06] nkxfca LOG MQTT getSeqID call
+[20:31:06] nkxfca LOG MQTT Getting sequence ID...
+[20:31:08] nkxfca LOG MQTT Getting sequence ID...
+[20:31:11] nkxfca LOG MQTT Getting sequence ID...
+[20:31:24] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:31:24] nkxfca WARN MQTT Will reconnect in 15563ms
+[20:31:40] nkxfca LOG MQTT getSeqID call
+[20:31:40] nkxfca LOG MQTT Getting sequence ID...
+[20:31:42] nkxfca LOG MQTT Getting sequence ID...
+[20:31:43] nkxfca LOG Overwrote existing appstate backup for user 61590815307610
+[20:31:43] nkxfca LOG Overwrote existing cookie backup for user 61590815307610
+[20:31:43] nkxfca LOG AppState backup stored successfully
+[20:31:43] nkxfca LOG AppStateBackup Auto-backup completed for user 61590815307610
+[ KEEP-ALIVE ]: Cookies saved → sessions/ZAO-STATEX.json (scheduled-10min) ✓ 
+[20:31:45] nkxfca LOG MQTT Getting sequence ID...
+[20:31:45] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:31:45] nkxfca WARN MQTT Will reconnect in 15062ms
+[20:32:00] nkxfca LOG MQTT getSeqID call
+[20:32:00] nkxfca LOG MQTT Getting sequence ID...
+[20:32:02] nkxfca LOG MQTT Getting sequence ID...
+[20:32:06] nkxfca LOG MQTT Getting sequence ID...
+[20:32:06] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:32:06] nkxfca WARN MQTT Will reconnect in 15028ms
+[20:32:21] nkxfca LOG MQTT getSeqID call
+[20:32:21] nkxfca LOG MQTT Getting sequence ID...
+[20:32:24] nkxfca LOG MQTT Getting sequence ID...
+[20:32:28] nkxfca LOG MQTT Getting sequence ID...
+[UNHANDLED-REJECTION] [2026-06-12T20:32:40.710Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+  at Object.setNickname (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/nickname.js:80:24)
+  at Timeout._enforce [as _onTimeout] (/home/runner/workspace/ZAO-ENGINE/nicknameLocks.js:79:27)
+  at listOnTimeout (node:internal/timers:581:17)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:32:40.710Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+  at Object.setNickname (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/nickname.js:80:24)
+  at Timeout._enforce [as _onTimeout] (/home/runner/workspace/ZAO-ENGINE/nicknameLocks.js:79:27)
+  at listOnTimeout (node:internal/timers:581:17) 
+[20:32:40] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:32:40] nkxfca WARN MQTT Will reconnect in 15077ms
+[20:32:55] nkxfca LOG MQTT getSeqID call
+[20:32:55] nkxfca LOG MQTT Getting sequence ID...
+[20:32:58] nkxfca LOG MQTT Getting sequence ID...
+[20:33:01] nkxfca LOG MQTT Getting sequence ID...
+[20:33:01] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:33:01] nkxfca WARN MQTT Will reconnect in 15245ms
+[20:33:17] nkxfca LOG MQTT getSeqID call
+[20:33:17] nkxfca LOG MQTT Getting sequence ID...
+[20:33:18] nkxfca LOG MQTT Getting sequence ID...
+[20:33:22] nkxfca LOG MQTT Getting sequence ID...
+[20:33:23] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:33:23] nkxfca WARN MQTT Will reconnect in 15419ms
+[20:33:38] nkxfca LOG MQTT getSeqID call
+[20:33:38] nkxfca LOG MQTT Getting sequence ID...
+[20:33:40] nkxfca LOG MQTT Getting sequence ID...
+[20:33:44] nkxfca LOG MQTT Getting sequence ID...
+[20:33:56] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:33:56] nkxfca WARN MQTT Will reconnect in 15481ms
+[20:34:12] nkxfca LOG MQTT getSeqID call
+[20:34:12] nkxfca LOG MQTT Getting sequence ID...
+[20:34:14] nkxfca LOG MQTT Getting sequence ID...
+[20:34:17] nkxfca LOG MQTT Getting sequence ID...
+[20:34:18] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:34:18] nkxfca WARN MQTT Will reconnect in 15424ms
+[ MQTT-HEALTH ]: صمت MQTT منذ 13 دقيقة — التأكيد المزدوج بعد 60 ثانية... 
+[20:34:33] nkxfca LOG MQTT getSeqID call
+[20:34:33] nkxfca LOG MQTT Getting sequence ID...
+[20:34:35] nkxfca LOG MQTT Getting sequence ID...
+[20:34:39] nkxfca LOG MQTT Getting sequence ID...
+[20:34:39] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:34:39] nkxfca WARN MQTT Will reconnect in 15543ms
+[20:34:54] nkxfca LOG MQTT getSeqID call
+[20:34:54] nkxfca LOG MQTT Getting sequence ID...
+[20:34:57] nkxfca LOG MQTT Getting sequence ID...
+[ AUTO-PING ]: Pinged keep-alive server (next in 13 min) 
+[20:35:00] nkxfca LOG MQTT Getting sequence ID...
+[20:35:12] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:35:12] nkxfca WARN MQTT Will reconnect in 15187ms
+[ MQTT-HEALTH ]: لا نشاط MQTT منذ 14 دقيقة — إعادة تشغيل المستمع (1/5)... 
+[20:35:26] nkxfca LOG MQTT Stop requested
+[20:35:26] nkxfca LOG MQTT Auto-cycle cleared
+[20:35:26] nkxfca LOG MQTT Reconnect timer cleared
+[20:35:26] nkxfca LOG MQTT Token refresh stopped
+[20:35:26] nkxfca LOG MQTT Session monitoring stopped
+[20:35:26] nkxfca LOG MQTT Stopped successfully
+[UNHANDLED-REJECTION] [2026-06-12T20:35:26.150Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:35:26.150Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[UNHANDLED-REJECTION] [2026-06-12T20:35:26.609Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:35:26.609Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[ MQTT-HEALTH ]: تنفيذ _restartListener لاسترداد MQTT... 
+[20:35:28] nkxfca LOG MQTT Stop requested
+[20:35:28] nkxfca LOG MQTT Token refresh stopped
+[20:35:28] nkxfca LOG MQTT Session monitoring stopped
+[20:35:28] nkxfca LOG MQTT Stopped successfully
+[ MQTT-HEALTH ]: الفحص القادم بعد 2.5 دقيقة 
+[20:35:29] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 1/3 
+[UNHANDLED-REJECTION] [2026-06-12T20:35:29.786Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:35:29.786Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[20:35:31] nkxfca LOG MQTT Auto-cycle scheduled: 1426871ms
+[20:35:31] nkxfca LOG MQTT getSeqID call
+[20:35:31] nkxfca LOG MQTT Getting sequence ID...
+[ LISTEN ]: listener restarted (gen 2) — reason: mqtt-health-1-of-5 
+[20:35:36] nkxfca LOG MQTT Getting sequence ID...
+[20:35:55] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 2/3 
+[20:35:55] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 3/3 
+[ HEALTH ]: Triggering tier switch — 3 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[ RELOGIN ]: forceTierSwitch → Tier 3 (sessions/ZAO-STATEV.json) | reason: 3 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[ Login ]: AppState file is empty (/home/runner/workspace/sessions/ZAO-STATEV.json).
+[ Login ]: AppState file is empty (/home/runner/workspace/sessions/altv.json).
+[ RELOGIN ]: forceTierSwitch: Tier 3 failed — trying next tier... 
+[ RELOGIN ]: forceTierSwitch: spacing tier attempts — waiting 13s before Tier 4. 
+[UNHANDLED-REJECTION] [2026-06-12T20:35:55.578Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:35:55.578Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[UNHANDLED-REJECTION] [2026-06-12T20:35:55.739Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:35:55.739Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[ RELOGIN ]: forceTierSwitch → Tier 4 (sessions/ZAO-STATE4.json) | reason: 3 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[ Login ]: Detected JSON array format.
+[ Login ]: AppState JSON is not a valid array or is empty.
+[ Login ]: Detected JSON array format.
+[ Login ]: AppState JSON is not a valid array or is empty.
+[ RELOGIN ]: forceTierSwitch: Tier 4 failed — trying next tier... 
+[ RELOGIN ]: forceTierSwitch: spacing tier attempts — waiting 12s before Tier 5. 
+[20:36:16] nkxfca LOG MQTT Getting sequence ID...
+[ RELOGIN ]: forceTierSwitch → Tier 5 (sessions/ZAO-STATE5.json) | reason: 3 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[ Login ]: Detected JSON array format.
+[ Login ]: AppState JSON is not a valid array or is empty.
+[ Login ]: Detected JSON array format.
+[ Login ]: AppState JSON is not a valid array or is empty.
+[ RELOGIN ]: forceTierSwitch: Tier 5 failed — trying next tier... 
+[ RELOGIN ]: forceTierSwitch: all tiers after Tier 2 have been tried — none succeeded. 
+[20:36:35] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 1/3 
+[20:36:35] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 2/3 
+[20:36:35] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:36:35] nkxfca WARN MQTT Will reconnect in 7895ms
+[UNHANDLED-REJECTION] [2026-06-12T20:36:35.485Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:36:35.485Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[UNHANDLED-REJECTION] [2026-06-12T20:36:35.531Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:36:35.531Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[ NKX ]: Health mqtt=false queue=63 active=2 
+[20:36:43] nkxfca LOG Overwrote existing appstate backup for user 61590815307610
+[20:36:43] nkxfca LOG MQTT getSeqID call
+[20:36:43] nkxfca LOG MQTT Getting sequence ID...
+[20:36:43] nkxfca LOG Overwrote existing cookie backup for user 61590815307610
+[20:36:43] nkxfca LOG AppState backup stored successfully
+[20:36:43] nkxfca LOG AppStateBackup Auto-backup completed for user 61590815307610
+[20:36:57] nkxfca LOG MQTT Getting sequence ID...
+[20:37:13] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 3/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 3 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[20:37:13] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 4/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 4 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[UNHANDLED-REJECTION] [2026-06-12T20:37:14.002Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:37:14.002Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[UNHANDLED-REJECTION] [2026-06-12T20:37:14.124Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:37:14.124Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[20:37:17] nkxfca LOG MQTT Getting sequence ID...
+[20:37:35] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:37:35] nkxfca WARN MQTT Will reconnect in 11846ms
+[UNHANDLED-REJECTION] [2026-06-12T20:37:40.709Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+  at Object.setNickname (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/nickname.js:80:24)
+  at Timeout._enforce [as _onTimeout] (/home/runner/workspace/ZAO-ENGINE/nicknameLocks.js:79:27)
+  at listOnTimeout (node:internal/timers:581:17)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:37:40.709Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+  at Object.setNickname (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/nickname.js:80:24)
+  at Timeout._enforce [as _onTimeout] (/home/runner/workspace/ZAO-ENGINE/nicknameLocks.js:79:27)
+  at listOnTimeout (node:internal/timers:581:17) 
+[20:37:47] nkxfca LOG MQTT getSeqID call
+[20:37:47] nkxfca LOG MQTT Getting sequence ID...
+[20:37:56] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 5/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 5 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[UNHANDLED-REJECTION] [2026-06-12T20:37:56.586Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:37:56.586Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[20:37:57] nkxfca LOG MQTT Getting sequence ID...
+[ MQTT-HEALTH ]: MQTT recovered — counters reset. 
+[ MQTT-HEALTH ]: الفحص القادم بعد 4.9 دقيقة 
+[20:38:14] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 6/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 6 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[UNHANDLED-REJECTION] [2026-06-12T20:38:14.403Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:38:14.403Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[20:38:14] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 7/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 7 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[UNHANDLED-REJECTION] [2026-06-12T20:38:14.831Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:38:14.831Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[20:38:17] nkxfca LOG MQTT Getting sequence ID...
+[20:38:56] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:38:56] nkxfca WARN MQTT Will reconnect in 15393ms
+[20:38:56] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 8/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 8 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[UNHANDLED-REJECTION] [2026-06-12T20:38:56.908Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:38:56.908Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[20:39:12] nkxfca LOG MQTT getSeqID call
+[20:39:12] nkxfca LOG MQTT Getting sequence ID...
+[20:39:14] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 9/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 9 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[UNHANDLED-REJECTION] [2026-06-12T20:39:14.676Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:39:14.676Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[20:39:15] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 10/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 10 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[UNHANDLED-REJECTION] [2026-06-12T20:39:15.135Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:39:15.135Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[20:39:17] nkxfca LOG MQTT Getting sequence ID...
+[20:39:36] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 11/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 11 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[UNHANDLED-REJECTION] [2026-06-12T20:39:36.332Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:39:36.332Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[20:39:56] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 12/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 12 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[UNHANDLED-REJECTION] [2026-06-12T20:39:57.142Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:39:57.142Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[20:39:57] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 13/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 13 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[UNHANDLED-REJECTION] [2026-06-12T20:39:57.658Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:39:57.658Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[20:40:00] nkxfca LOG MQTT Getting sequence ID...
+[20:40:14] nkxfca ERROR MQTT getSeqID error: [object Object]
+[20:40:14] nkxfca WARN MQTT Will reconnect in 15526ms
+[20:40:15] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 14/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 14 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[20:40:15] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 15/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 15 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[UNHANDLED-REJECTION] [2026-06-12T20:40:15.376Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:40:15.376Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[UNHANDLED-REJECTION] [2026-06-12T20:40:15.487Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:40:15.487Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[20:40:30] nkxfca LOG MQTT getSeqID call
+[20:40:30] nkxfca LOG MQTT Getting sequence ID...
+[20:40:36] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 16/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 16 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[UNHANDLED-REJECTION] [2026-06-12T20:40:36.494Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:40:36.494Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[ STEALTH ]: Ping → www.facebook.com/home.php ✓ 
+[20:40:57] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 17/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 17 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[UNHANDLED-REJECTION] [2026-06-12T20:40:57.144Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:40:57.144Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[20:40:57] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 18/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 18 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[UNHANDLED-REJECTION] [2026-06-12T20:40:57.468Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:40:57.468Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[20:40:58] nkxfca LOG MQTT Getting sequence ID...
+[20:40:59] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ HEALTH ]: Send error (generic) — Cannot read properties of undefined (reading 'reduce') | window failures: 19/3 
+[ HEALTH ]: Switch cooldown active — suppressing duplicate switch. Reason: 19 send failures in 5 min — last: Cannot read properties of undefined (reading 'reduce') 
+[UNHANDLED-REJECTION] [2026-06-12T20:40:59.439Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35)
+[ UNHANDLED-REJECTION ]: [2026-06-12T20:40:59.439Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+  at Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/home/runner/workspace/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+  at Object.simulateTyping (/home/runner/workspace/ZAO-ENGINE/humanTyping.js:23:24)
+  at run (/home/runner/workspace/ZAO-ENGINE/nkxfcaModernizer.js:259:35) 
+[2026-06-12 20:40:59] [LAUNCHER] استُقبل SIGTERM — إيقاف تشغيل ZAO...
+[2026-06-12 20:40:59] [INSTA:SHUTDOWN] SIGTERM — saving session and exiting
+[ SHUTDOWN ]: SIGTERM received — Stage 1: draining dispatcher and motors. 
+[ SHUTDOWN ]: Stage 2: flushing locks/motors/state then saving cookies. 
+[ SHUTDOWN ]: Cookies saved successfully. 
+[ SHUTDOWN ]: All state saved. Goodbye. 

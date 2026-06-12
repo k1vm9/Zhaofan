@@ -33,6 +33,8 @@ function _parseRandomRange(rangeStr) {
 }
 
 function _randInRange(range) {
+  const r = global._randomizer;
+  if (r && typeof r.getIntervalSync === "function") return r.getIntervalSync(range.min, range.max);
   return Math.round(range.min + Math.random() * (range.max - range.min));
 }
 
