@@ -1,0 +1,63 @@
+  function gracefulShutdown(signal) {
+    logger.log([
+      { message: '[ SHUTDOWN ]: ', color: ['red', 'cyan'] },
+      { message: `${signal} received — saving cookies before exit.`, color: 'white' }
+      { message: `${signal} received — saving state before exit.`, color: 'white' }
+    ]);
+    // Save cookies
+    try {
+      const appState     = _api.getAppState();
+      const appStatePath = join(process.cwd(), global['config']['APPSTATEPATH'] || 'ZAO-STATE.json');
+-1
++1
+      writeFileSync(join(process.cwd(), 'alt.json'), JSON.stringify(appState, null, 2), 'utf-8');
+      logger.log([
+        { message: '[ SHUTDOWN ]: ', color: ['red', 'cyan'] },
+        { message: 'Cookies saved successfully. Goodbye.', color: 'white' }
+        { message: 'Cookies saved successfully.', color: 'white' }
+      ]);
+    } catch (e) {
+      logger.log([
+-0
++35
+        { message: `Could not save cookies: ${e.message}`, color: 'white' }
+      ]);
+    }
+    // Save motor1 state
+    try { _saveMotorState(); } catch (_) {}
+    // Save motor2 state
+    try {
+      const _m2File = require('path').join(process.cwd(), 'data', 'motor2-state.json');
+      require('fs-extra').ensureDirSync(require('path').dirname(_m2File));
+      const _m2Out = {};
+      for (const [_tid, _d] of Object.entries(global['motorData2'] || {})) {
+        _m2Out[_tid] = { status: _d.status, message: _d.message, time: _d.time };
+      }
+      require('fs').writeFileSync(_m2File, JSON.stringify(_m2Out, null, 2), 'utf8');
+    } catch (_) {}
+    // Save nm locks
+    try {
+      const _nmFile = require('path').join(process.cwd(), 'data', 'nm-locks.json');
+      require('fs-extra').ensureDirSync(require('path').dirname(_nmFile));
+      const _nmOut = {};
+      if (global.nameLocks) {
+        for (const [k, v] of global.nameLocks.entries()) _nmOut[k] = v;
+      }
+      require('fs').writeFileSync(_nmFile, JSON.stringify(_nmOut, null, 2), 'utf8');
+    } catch (_) {}
+    // Save nicknames state
+    try {
+      const _nickFile = require('path').join(process.cwd(), 'data', 'nicknames-state.json');
+      require('fs-extra').ensureDirSync(require('path').dirname(_nickFile));
+      const _nickOut = {};
+      for (const [k, v] of Object.entries(global.nickPersist || {})) _nickOut[k] = v;
+      require('fs').writeFileSync(_nickFile, JSON.stringify(_nickOut, null, 2), 'utf8');
+    } catch (_) {}
+    // Save reply/reaction callbacks
+    try { require('./includes/login/statePersist').save(); } catch (_) {}
+    logger.log([
+      { message: '[ SHUTDOWN ]: ', color: ['red', 'cyan'] },
+      { message: 'All state saved. Goodbye.', color: 'white' }
+    ]);
+    process.exit(0);
+  }

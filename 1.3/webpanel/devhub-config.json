@@ -1,0 +1,64 @@
+{
+  "githubTokenEnc": "",
+  "baseRepo": "ZAO-Bot",
+  "baseOwner": "",
+  "chatHistory": [
+    {
+      "role": "user",
+      "content": "hi"
+    },
+    {
+      "role": "assistant",
+      "content": "مرحباً! كيف يمكنني مساعدتك اليوم؟"
+    },
+    {
+      "role": "user",
+      "content": "اشرح كيف يعمل ZAO Bot"
+    },
+    {
+      "role": "assistant",
+      "content": "[المحلل]: ❌ فشل: فشل الاتصال بالذكاء الاصطناعي.\nالسبب: fallback HTTP 502"
+    },
+    {
+      "role": "assistant",
+      "content": "[المطور]: ❌ فشل: فشل الاتصال بالذكاء الاصطناعي.\nالسبب: fallback HTTP 502"
+    },
+    {
+      "role": "assistant",
+      "content": "[المراجع]: ❌ فشل: فشل الاتصال بالذكاء الاصطناعي.\nالسبب: fallback HTTP 502"
+    },
+    {
+      "role": "user",
+      "content": "اشرح كيف يعمل ZAO Bot"
+    },
+    {
+      "role": "assistant",
+      "content": "[المحلل]: ❌ فشل: HTTP 502 transient error (openai-fast)"
+    },
+    {
+      "role": "assistant",
+      "content": "[المطور]: ❌ فشل: فشل الاتصال بالذكاء الاصطناعي.\nالسبب: انتهت مهلة GET fallback"
+    },
+    {
+      "role": "assistant",
+      "content": "[المراجع]: ❌ فشل: 429 rate limit (mistral)"
+    },
+    {
+      "role": "user",
+      "content": "اشرح كيف يعمل ZAO Bot"
+    },
+    {
+      "role": "assistant",
+      "content": "[المحلل]: ❌ فشل: فشل الاتصال بالذكاء الاصطناعي.\nالسبب: انتهت مهلة GET fallback"
+    },
+    {
+      "role": "assistant",
+      "content": "[المطور]: ❌ فشل: 429 rate limit (openai-fast)"
+    },
+    {
+      "role": "assistant",
+      "content": "[المراجع]: ❌ فشل: فشل الاتصال بالذكاء الاصطناعي.\nالسبب: انتهت مهلة GET fallback"
+    }
+  ],
+  "claudeHistory": []
+}

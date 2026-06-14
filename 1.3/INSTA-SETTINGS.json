@@ -1,0 +1,20 @@
+{
+  "username": "sa1xn._",
+  "password": "Yassin_2026",
+  "prefix": "!",
+  "adminIds": [],
+  "typing": true,
+  "typingDelayMs": 1200,
+  "replyInGroups": true,
+  "replyInDMs": true,
+  "autoRestart": true,
+  "rateLimit": {
+    "maxPerMinPerThread": 20,
+    "globalMaxPerMin": 60
+  },
+  "warmupMin": 10,
+  "sessionFile": "INSTA-STATE.json",
+  "pollIntervalMs": 4000,
+  "enabled": false,
+  "openrouterKey": ""
+}

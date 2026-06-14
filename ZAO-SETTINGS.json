@@ -199,7 +199,7 @@
     "readReceiptDelay": 1500,
     "_note": "Custom stealth engine. nightMode slows responses 1am-6am. burstProtection throttles rapid incoming messages."
   },
-  "version": "1.2.14",
+  "version": "1.9.0",
   "help": {
     "autoUnsend": "",
     "delayUnsend": 60

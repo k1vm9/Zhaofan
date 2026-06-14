@@ -1,0 +1,465 @@
+[ERR] [13:16:52] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+3:16:52 PM[ERR] at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+3:16:52 PM[ERR] at new Promise (<anonymous>)
+3:16:52 PM[ERR] at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+3:16:52 PM[ERR] at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+3:16:52 PM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+3:16:52 PM[ RELOGIN ]: Cooldown active. Next attempt in 166s.
+3:16:53 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:16:53.827Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:16:53 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:16:53 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:16:53 PMat new Promise (<anonymous>)
+3:16:54 PM[ERR] [13:16:54] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+3:16:55 PM[ERR] [13:16:55] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+3:16:55 PM[ERR] at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+3:16:55 PM[ERR] at new Promise (<anonymous>)
+3:16:55 PM[ERR] at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+3:16:55 PM[ERR] at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+3:16:55 PM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+3:16:55 PM[ RELOGIN ]: Cooldown active. Next attempt in 163s.
+3:16:55 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:16:55.148Z] Unhandled promise rejection (non-fatal): Account blocked - Facebook detected automated behavior
+3:16:55 PMat /app/node_modules/@neoaz07/nkxfca/src/utils/clients.js:148:19
+3:16:55 PMat process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+3:16:55 PMat async sendContent (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:125:21)
+3:16:55 PM[13:16:55] nkxfca LOG AutoReLogin Starting automatic re-login (attempt 4/5)...
+3:16:55 PM[13:16:55] nkxfca LOG AutoReLogin Pausing API requests during re-login...
+3:16:56 PMnkxfca
+3:16:56 PMDeveloped and maintained by NeoKEX
+3:16:56 PMGitHub: https://github.com/NeoKEX
+3:16:56 PMnpm: https://www.npmjs.com/package/@neoaz07/nkxfca
+3:16:56 PMBased on nkxfca (@neoaz07/nkxfca) — credits: NeoKEX Team, ws3-fca, @dongdev/fca-unofficial
+3:16:56 PM[13:16:56] nkxfca VERSION @neoaz07/nkxfca v1.0.9
+3:16:56 PM[13:16:56] nkxfca STARTUP Initializing...
+3:16:56 PM[13:16:56] nkxfca LOG Logging in...
+3:16:56 PM[13:16:56] nkxfca LOG Using cached desktop persona
+3:16:56 PM[13:16:56] nkxfca LOG Cookies set for facebook.com and messenger.com domains
+3:16:56 PM[13:16:56] nkxfca UPDATE New version available: v1.0.10. Update with: npm i @neoaz07/nkxfca@latest
+3:16:56 PM[ERR] [13:16:56] nkxfca ERROR loginHelper Not logged in.
+3:16:56 PM[ERR] [13:16:56] nkxfca ERROR AutoReLogin Re-login failed: Not logged in. Session has expired.
+3:16:56 PM[13:16:56] nkxfca LOG AutoReLogin Retrying re-login in 16000ms...
+3:16:59 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:16:59.828Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:16:59 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:16:59 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:16:59 PMat new Promise (<anonymous>)
+3:17:01 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:01.735Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+3:17:01 PMat Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/app/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+3:17:01 PMat Object.simulateTyping (/app/includes/humanTyping.js:54:11)
+3:17:01 PMat run (/app/includes/nkxfcaModernizer.js:208:35)
+3:17:04 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:04.632Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+3:17:04 PMat Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/app/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+3:17:04 PMat Object.simulateTyping (/app/includes/humanTyping.js:54:11)
+3:17:04 PMat run (/app/includes/nkxfcaModernizer.js:208:35)
+3:17:05 PM[ERR] [13:17:05] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+3:17:05 PM[ERR] [13:17:05] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+3:17:05 PM[ERR] at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+3:17:05 PM[ERR] at new Promise (<anonymous>)
+3:17:05 PM[ERR] at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+3:17:05 PM[ERR] at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+3:17:05 PM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+3:17:05 PM[ RELOGIN ]: Cooldown active. Next attempt in 152s.
+3:17:05 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:05.676Z] Unhandled promise rejection (non-fatal): Account blocked - Facebook detected automated behavior
+3:17:05 PMat /app/node_modules/@neoaz07/nkxfca/src/utils/clients.js:148:19
+3:17:05 PMat process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+3:17:05 PMat async sendContent (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:125:21)
+3:17:05 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:05.828Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:17:05 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:17:05 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:17:05 PMat new Promise (<anonymous>)
+3:17:06 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:06.906Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+3:17:06 PMat Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/app/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+3:17:06 PMat Object.simulateTyping (/app/includes/humanTyping.js:54:11)
+3:17:06 PMat run (/app/includes/nkxfcaModernizer.js:208:35)
+3:17:07 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:07.522Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+3:17:07 PMat Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/app/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+3:17:07 PMat Object.simulateTyping (/app/includes/humanTyping.js:65:13)
+3:17:07 PMat async run (/app/includes/nkxfcaModernizer.js:208:22)
+3:17:09 PM[ERR] [13:17:09] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+3:17:09 PM[ERR] [13:17:09] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+3:17:09 PM[ERR] at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+3:17:09 PM[ERR] at new Promise (<anonymous>)
+3:17:09 PM[ERR] at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+3:17:09 PM[ERR] at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+3:17:09 PM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+3:17:09 PM[ RELOGIN ]: Cooldown active. Next attempt in 148s.
+3:17:09 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:09.767Z] Unhandled promise rejection (non-fatal): Account blocked - Facebook detected automated behavior
+3:17:09 PMat /app/node_modules/@neoaz07/nkxfca/src/utils/clients.js:148:19
+3:17:09 PMat process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+3:17:09 PMat async sendContent (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:125:21)
+3:17:11 PM[ERR] [13:17:11] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+3:17:11 PM[ERR] [13:17:11] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+3:17:11 PM[ERR] at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+3:17:11 PM[ERR] at new Promise (<anonymous>)
+3:17:11 PM[ERR] at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+3:17:11 PM[ERR] at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+3:17:11 PM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+3:17:11 PM[ RELOGIN ]: Cooldown active. Next attempt in 147s.
+3:17:11 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:11.306Z] Unhandled promise rejection (non-fatal): Account blocked - Facebook detected automated behavior
+3:17:11 PMat /app/node_modules/@neoaz07/nkxfca/src/utils/clients.js:148:19
+3:17:11 PMat process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+3:17:11 PMat async sendContent (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:125:21)
+3:17:11 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:11.828Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:17:11 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:17:11 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:17:11 PMat new Promise (<anonymous>)
+3:17:12 PM[13:17:12] nkxfca LOG AutoReLogin Starting automatic re-login (attempt 5/5)...
+3:17:12 PM[13:17:12] nkxfca LOG AutoReLogin Pausing API requests during re-login...
+3:17:13 PMnkxfca
+3:17:13 PMDeveloped and maintained by NeoKEX
+3:17:13 PMGitHub: https://github.com/NeoKEX
+3:17:13 PMnpm: https://www.npmjs.com/package/@neoaz07/nkxfca
+3:17:13 PMBased on nkxfca (@neoaz07/nkxfca) — credits: NeoKEX Team, ws3-fca, @dongdev/fca-unofficial
+3:17:13 PM[13:17:13] nkxfca VERSION @neoaz07/nkxfca v1.0.9
+3:17:13 PM[13:17:13] nkxfca STARTUP Initializing...
+3:17:13 PM[13:17:13] nkxfca LOG Logging in...
+3:17:13 PM[13:17:13] nkxfca LOG Using cached desktop persona
+3:17:13 PM[13:17:13] nkxfca LOG Cookies set for facebook.com and messenger.com domains
+3:17:13 PM[13:17:13] nkxfca UPDATE New version available: v1.0.10. Update with: npm i @neoaz07/nkxfca@latest
+3:17:14 PM[ERR] [13:17:14] nkxfca ERROR loginHelper Not logged in.
+3:17:14 PM[ERR] [13:17:14] nkxfca ERROR AutoReLogin Re-login failed: Not logged in. Session has expired.
+3:17:14 PM[13:17:14] nkxfca LOG AutoReLogin Resolving 0 pending requests (success: false)
+3:17:14 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:14.953Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+3:17:14 PMat Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/app/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+3:17:14 PMat Object.simulateTyping (/app/includes/humanTyping.js:54:11)
+3:17:14 PMat run (/app/includes/nkxfcaModernizer.js:208:35)
+3:17:17 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:17.831Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:17:17 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:17:17 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:17:17 PMat new Promise (<anonymous>)
+3:17:18 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:18.886Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+3:17:18 PMat Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/app/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+3:17:18 PMat Object.simulateTyping (/app/includes/humanTyping.js:54:11)
+3:17:18 PMat run (/app/includes/nkxfcaModernizer.js:208:35)
+3:17:18 PM[CMD REPLY] [محرك] → 㷭 𝗦𝗔𝗜𝗡 𝚾 𝖱𝚵𝚸𝖫𝚼 㷭
+3:17:18 PM- 𝜣𝐒⃢𝐀-𝐈𝐍 𛀧 -
+3:17:18 PM﹫𝗦𝖺𝗂𝗇 𝐗 𝗛𝖾𝗋𝗂𝗼𝗇
+3:17:18 PM﹟𝗤 ៹࣪. َ ᳸☁᳭' 𑩜 ⃢יּ ❄﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭'﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭' 𑩜 ⃢יּ ❄﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭'﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭' 𑩜 ⃢יּ ❄﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭'﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪.
+3:17:20 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:20.485Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+3:17:20 PMat Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/app/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+3:17:20 PMat Object.simulateTyping (/app/includes/humanTyping.js:54:11)
+3:17:20 PMat run (/app/includes/nkxfcaModernizer.js:208:35)
+3:17:21 PM[ERR] [13:17:21] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+3:17:21 PM[ERR] [13:17:21] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+3:17:21 PM[ERR] at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+3:17:21 PM[ERR] at new Promise (<anonymous>)
+3:17:21 PM[ERR] at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+3:17:21 PM[ERR] at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+3:17:21 PM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+3:17:21 PM[ RELOGIN ]: Cooldown active. Next attempt in 137s.
+3:17:22 PM[ERR] [13:17:22] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+3:17:23 PM[ERR] [13:17:23] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+3:17:23 PM[ERR] at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+3:17:23 PM[ERR] at new Promise (<anonymous>)
+3:17:23 PM[ERR] at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+3:17:23 PM[ERR] at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+3:17:23 PM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+3:17:23 PM[ RELOGIN ]: Cooldown active. Next attempt in 135s.
+3:17:23 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:23.831Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:17:23 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:17:23 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:17:23 PMat new Promise (<anonymous>)
+3:17:24 PM[ERR] [13:17:24] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+3:17:24 PM[ERR] [13:17:24] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+3:17:24 PM[ERR] at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+3:17:24 PM[ERR] at new Promise (<anonymous>)
+3:17:24 PM[ERR] at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+3:17:24 PM[ERR] at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+3:17:24 PM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+3:17:24 PM[ RELOGIN ]: Cooldown active. Next attempt in 134s.
+3:17:29 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:29.831Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:17:29 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:17:29 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:17:29 PMat new Promise (<anonymous>)
+3:17:30 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:30.618Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+3:17:30 PMat Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/app/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+3:17:30 PMat Object.simulateTyping (/app/includes/humanTyping.js:54:11)
+3:17:30 PMat run (/app/includes/nkxfcaModernizer.js:208:35)
+3:17:32 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:32.355Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+3:17:32 PMat Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/app/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+3:17:32 PMat Object.simulateTyping (/app/includes/humanTyping.js:65:13)
+3:17:32 PMat async run (/app/includes/nkxfcaModernizer.js:208:22)
+3:17:34 PM[ERR] [13:17:34] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+3:17:34 PM[ERR] [13:17:34] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+3:17:34 PM[ERR] at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+3:17:34 PM[ERR] at new Promise (<anonymous>)
+3:17:34 PM[ERR] at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+3:17:34 PM[ERR] at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+3:17:34 PM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+3:17:34 PM[ RELOGIN ]: Cooldown active. Next attempt in 123s.
+3:17:35 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:35.189Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+3:17:35 PMat Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/app/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+3:17:35 PMat Object.simulateTyping (/app/includes/humanTyping.js:54:11)
+3:17:35 PMat run (/app/includes/nkxfcaModernizer.js:208:35)
+3:17:35 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:35.832Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:17:35 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:17:35 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:17:35 PMat new Promise (<anonymous>)
+3:17:39 PM[ERR] [13:17:39] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+3:17:39 PM[ERR] [13:17:39] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+3:17:39 PM[ERR] at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+3:17:39 PM[ERR] at new Promise (<anonymous>)
+3:17:39 PM[ERR] at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+3:17:39 PM[ERR] at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+3:17:39 PM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+3:17:39 PM[ RELOGIN ]: Cooldown active. Next attempt in 119s.
+3:17:39 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:39.477Z] Unhandled promise rejection (non-fatal): Account blocked - Facebook detected automated behavior
+3:17:39 PMat /app/node_modules/@neoaz07/nkxfca/src/utils/clients.js:148:19
+3:17:39 PMat process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+3:17:39 PMat async sendContent (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:125:21)
+3:17:41 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:41.835Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:17:41 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:17:41 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:17:41 PMat new Promise (<anonymous>)
+3:17:47 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:47.840Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:17:47 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:17:47 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:17:47 PMat new Promise (<anonymous>)
+3:17:53 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:53.843Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:17:53 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:17:53 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:17:53 PMat new Promise (<anonymous>)
+3:17:59 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:17:59.847Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:17:59 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:17:59 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:17:59 PMat new Promise (<anonymous>)
+3:18:05 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:18:05.848Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:18:05 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:18:05 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:18:05 PMat new Promise (<anonymous>)
+3:18:06 PM[ AUTO-PING ]: Pinged keep-alive server (next in 14 min)
+3:18:11 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:18:11.848Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:18:11 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:18:11 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:18:11 PMat new Promise (<anonymous>)
+3:18:17 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:18:17.849Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:18:17 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:18:17 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:18:17 PMat new Promise (<anonymous>)
+3:18:18 PM[CMD REPLY] [محرك] → 㷭 𝗦𝗔𝗜𝗡 𝚾 𝖱𝚵𝚸𝖫𝚼 㷭
+3:18:18 PM- 𝜣𝐒⃢𝐀-𝐈𝐍 𛀧 -
+3:18:18 PM﹫𝗦𝖺𝗂𝗇 𝐗 𝗛𝖾𝗋𝗂𝗼𝗇
+3:18:18 PM﹟𝗤 ៹࣪. َ ᳸☁᳭' 𑩜 ⃢יּ ❄﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭'﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭' 𑩜 ⃢יּ ❄﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭'﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭' 𑩜 ⃢יּ ❄﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭'﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪.
+3:18:23 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:18:23.853Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:18:23 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:18:23 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:18:23 PMat new Promise (<anonymous>)
+3:18:29 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:18:29.855Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:18:29 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:18:29 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:18:29 PMat new Promise (<anonymous>)
+3:18:30 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:18:30.534Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+3:18:30 PMat Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/app/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+3:18:30 PMat Object.simulateTyping (/app/includes/humanTyping.js:54:11)
+3:18:30 PMat run (/app/includes/nkxfcaModernizer.js:208:35)
+3:18:35 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:18:35.855Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:18:35 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:18:35 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:18:35 PMat new Promise (<anonymous>)
+3:18:36 PM[ERR] [13:18:36] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+3:18:37 PM[ERR] [13:18:37] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+3:18:37 PM[ERR] at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+3:18:37 PM[ERR] at new Promise (<anonymous>)
+3:18:37 PM[ERR] at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+3:18:37 PM[ERR] at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+3:18:37 PM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+3:18:37 PM[ RELOGIN ]: Cooldown active. Next attempt in 61s.
+3:18:37 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:18:37.047Z] Unhandled promise rejection (non-fatal): Account blocked - Facebook detected automated behavior
+3:18:37 PMat /app/node_modules/@neoaz07/nkxfca/src/utils/clients.js:148:19
+3:18:37 PMat process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+3:18:37 PMat async sendContent (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:125:21)
+3:18:41 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:18:41.856Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:18:41 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:18:41 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:18:41 PMat new Promise (<anonymous>)
+3:18:43 PM[ MQTT-HEALTH ]: الفحص القادم بعد 4.6 دقيقة
+3:18:47 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:18:47.857Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:18:47 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:18:47 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:18:47 PMat new Promise (<anonymous>)
+3:18:53 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:18:53.863Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:18:53 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:18:53 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:18:53 PMat new Promise (<anonymous>)
+3:18:59 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:18:59.866Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:18:59 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:18:59 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:18:59 PMat new Promise (<anonymous>)
+3:19:05 PM[ NKX ]: Health mqtt=false queue=0 active=0
+3:19:05 PM[13:19:05] nkxfca LOG Overwrote existing appstate backup for user 61574499338923
+3:19:05 PM[13:19:05] nkxfca LOG Overwrote existing cookie backup for user 61574499338923
+3:19:05 PM[13:19:05] nkxfca LOG AppState backup stored successfully
+3:19:05 PM[ ALT-SAVE ]: [إلزامي] تم حفظ 16 كوكيز في alt.json (كل ساعتين).
+3:19:05 PM[ CACHE ]: Pruned 2700 stale entries from data maps (userName/threadInfo/threadData).
+3:19:05 PM[ERR] [13:19:05] nkxfca WARN AutoReLogin Session health check failed, attempting token refresh first...
+3:19:05 PM[ HEALTH ]: Cookie scan: session alive ✓
+3:19:05 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:19:05.866Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:19:05 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:19:05 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:19:05 PMat new Promise (<anonymous>)
+3:19:06 PM[ERR] [13:19:06] nkxfca ERROR TokenRefresh Refresh failed (attempt 1/4): Not logged in. Session has expired.
+3:19:06 PM[13:19:06] nkxfca LOG TokenRefresh Retrying in 2000ms...
+3:19:08 PM[ERR] [13:19:08] nkxfca ERROR TokenRefresh Refresh failed (attempt 2/4): Not logged in. Session has expired.
+3:19:08 PM[13:19:08] nkxfca LOG TokenRefresh Retrying in 5000ms...
+3:19:11 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:19:11.867Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:19:11 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:19:11 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:19:11 PMat new Promise (<anonymous>)
+3:19:14 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:19:14.137Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+3:19:14 PMat Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/app/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+3:19:14 PMat Object.simulateTyping (/app/includes/humanTyping.js:54:11)
+3:19:14 PMat run (/app/includes/nkxfcaModernizer.js:208:35)
+3:19:14 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:19:14.156Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+3:19:14 PMat Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/app/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+3:19:14 PMat Object.simulateTyping (/app/includes/humanTyping.js:54:11)
+3:19:14 PMat run (/app/includes/nkxfcaModernizer.js:208:35)
+3:19:14 PM[ERR] [13:19:14] nkxfca ERROR TokenRefresh Refresh failed (attempt 3/4): Not logged in. Session has expired.
+3:19:14 PM[13:19:14] nkxfca LOG TokenRefresh Retrying in 10000ms...
+3:19:17 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:19:17.868Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:19:17 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:19:17 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:19:17 PMat new Promise (<anonymous>)
+3:19:18 PM[CMD REPLY] [محرك] → 㷭 𝗦𝗔𝗜𝗡 𝚾 𝖱𝚵𝚸𝖫𝚼 㷭
+3:19:18 PM- 𝜣𝐒⃢𝐀-𝐈𝐍 𛀧 -
+3:19:18 PM﹫𝗦𝖺𝗂𝗇 𝐗 𝗛𝖾𝗋𝗂𝗼𝗇
+3:19:18 PM﹟𝗤 ៹࣪. َ ᳸☁᳭' 𑩜 ⃢יּ ❄﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭'﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭' 𑩜 ⃢יּ ❄﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭'﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭' 𑩜 ⃢יּ ❄﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭'﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪.
+3:19:19 PM[ERR] [13:19:19] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+3:19:19 PM[ERR] [13:19:19] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+3:19:19 PM[ERR] [13:19:19] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+3:19:19 PM[ERR] at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+3:19:19 PM[ERR] at new Promise (<anonymous>)
+3:19:19 PM[ERR] at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+3:19:19 PM[ERR] at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+3:19:19 PM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+3:19:19 PM[ RELOGIN ]: Cooldown active. Next attempt in 18s.
+3:19:19 PM[ERR] [13:19:19] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+3:19:19 PM[ERR] at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+3:19:19 PM[ERR] at new Promise (<anonymous>)
+3:19:19 PM[ERR] at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+3:19:19 PM[ERR] at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+3:19:19 PM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+3:19:19 PM[ RELOGIN ]: Cooldown active. Next attempt in 18s.
+3:19:23 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:19:23.871Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:19:23 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:19:23 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:19:23 PMat new Promise (<anonymous>)
+3:19:24 PM[ERR] [13:19:24] nkxfca ERROR TokenRefresh Refresh failed (attempt 4/4): Not logged in. Session has expired.
+3:19:24 PM[ERR] [13:19:24] nkxfca WARN AutoReLogin Token refresh unsuccessful, triggering automatic re-login
+3:19:24 PM[ERR] [13:19:24] nkxfca ERROR AutoReLogin Maximum re-login attempts (5) exceeded
+3:19:29 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:19:29.875Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:19:29 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:19:29 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:19:29 PMat new Promise (<anonymous>)
+3:19:30 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:19:30.178Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+3:19:30 PMat Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/app/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+3:19:30 PMat Object.simulateTyping (/app/includes/humanTyping.js:54:11)
+3:19:30 PMat run (/app/includes/nkxfcaModernizer.js:208:35)
+3:19:35 PM[ERR] [13:19:35] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+3:19:35 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:19:35.874Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:19:35 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:19:35 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:19:35 PMat new Promise (<anonymous>)
+3:19:36 PM[ERR] [13:19:36] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+3:19:36 PM[ERR] at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+3:19:36 PM[ERR] at new Promise (<anonymous>)
+3:19:36 PM[ERR] at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+3:19:36 PM[ERR] at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+3:19:36 PM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+3:19:36 PM[ RELOGIN ]: Cooldown active. Next attempt in 2s.
+3:19:36 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:19:36.080Z] Unhandled promise rejection (non-fatal): Account blocked - Facebook detected automated behavior
+3:19:36 PMat /app/node_modules/@neoaz07/nkxfca/src/utils/clients.js:148:19
+3:19:36 PMat process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+3:19:36 PMat async sendContent (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:125:21)
+3:19:41 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:19:41.879Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:19:41 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:19:41 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:19:41 PMat new Promise (<anonymous>)
+3:19:47 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:19:47.884Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:19:47 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:19:47 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:19:47 PMat new Promise (<anonymous>)
+3:19:53 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:19:53.889Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:19:53 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:19:53 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:19:53 PMat new Promise (<anonymous>)
+3:19:59 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:19:59.891Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:19:59 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:19:59 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:19:59 PMat new Promise (<anonymous>)
+3:20:05 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:20:05.892Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:20:05 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:20:05 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:20:05 PMat new Promise (<anonymous>)
+3:20:11 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:20:11.898Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:20:11 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:20:11 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:20:11 PMat new Promise (<anonymous>)
+3:20:17 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:20:17.904Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:20:17 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:20:17 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:20:17 PMat new Promise (<anonymous>)
+3:20:18 PM[CMD REPLY] [محرك] → 㷭 𝗦𝗔𝗜𝗡 𝚾 𝖱𝚵𝚸𝖫𝚼 㷭
+3:20:18 PM- 𝜣𝐒⃢𝐀-𝐈𝐍 𛀧 -
+3:20:18 PM﹫𝗦𝖺𝗂𝗇 𝐗 𝗛𝖾𝗋𝗂𝗼𝗇
+3:20:18 PM﹟𝗤 ៹࣪. َ ᳸☁᳭' 𑩜 ⃢יּ ❄﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭'﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭' 𑩜 ⃢יּ ❄﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭'﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭' 𑩜 ⃢יּ ❄﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪. َ ᳸☁᳭'﹟𝗦 ៹࣪. َ ᳸🗞᳭'﹟𝗤 ៹࣪.
+3:20:23 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:20:23.907Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:20:23 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:20:23 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:20:23 PMat new Promise (<anonymous>)
+3:20:29 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:20:29.910Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:20:29 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:20:29 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:20:29 PMat new Promise (<anonymous>)
+3:20:30 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:20:30.791Z] Unhandled promise rejection (non-fatal): You can only use sendTypingIndicator after you start listening.
+3:20:30 PMat Object.sendTypingIndicatorV2 [as sendTypingIndicator] (/app/node_modules/@neoaz07/nkxfca/src/apis/sendTypingIndicator.js:48:25)
+3:20:30 PMat Object.simulateTyping (/app/includes/humanTyping.js:54:11)
+3:20:30 PMat run (/app/includes/nkxfcaModernizer.js:208:35)
+3:20:35 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:20:35.910Z] Unhandled promise rejection (non-fatal): Not connected to MQTT
+3:20:35 PMat Object.gcname (/app/node_modules/@neoaz07/nkxfca/src/apis/gcname.js:73:24)
+3:20:35 PMat /app/SCRIPTS/ZAO-CMDS/nm.js:31:9
+3:20:35 PMat new Promise (<anonymous>)
+3:20:36 PM[ERR] [13:20:36] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+3:20:36 PM[ERR] [13:20:36] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+3:20:36 PM[ERR] at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+3:20:36 PM[ERR] at new Promise (<anonymous>)
+3:20:36 PM[ERR] at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+3:20:36 PM[ERR] at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+3:20:36 PM[ERR] at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+3:20:36 PM[ RELOGIN ]: Re-login attempt 3/4 — Tier 1 (ZAO-STATE.json) | reason=Account blocked - Facebook detected automated behavior
+3:20:36 PM[ Login ]: Detected JSON array format.
+3:20:36 PM[ Login ]: Validating cookie against Facebook...
+3:20:36 PM[ UNHANDLED-REJECTION ]: [2026-04-16T13:20:36.844Z] Unhandled promise rejection (non-fatal): Account blocked - Facebook detected automated behavior
+3:20:36 PMat /app/node_modules/@neoaz07/nkxfca/src/utils/clients.js:148:19
+3:20:36 PMat process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+3:20:36 PMat async sendContent (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:125:21)
+3:20:38 PM[ERR] [ Login ]: Cookie validation UNCERTAIN (network issue) — passing to FCA for final check...
+3:20:38 PMnkxfca
+3:20:38 PMDeveloped and maintained by NeoKEX
+3:20:38 PMGitHub: https://github.com/NeoKEX
+3:20:38 PMnpm: https://www.npmjs.com/package/@neoaz07/nkxfca
+3:20:38 PMBased on nkxfca (@neoaz07/nkxfca) — credits: NeoKEX Team, ws3-fca, @dongdev/fca-unofficial
+3:20:38 PM[13:20:38] nkxfca VERSION @neoaz07/nkxfca v1.0.9
+3:20:38 PM[13:20:38] nkxfca STARTUP Initializing...
+3:20:38 PM[13:20:38] nkxfca LOG Logging in...
+3:20:38 PM[13:20:38] nkxfca LOG Using cached desktop persona
+3:20:38 PM[13:20:38] nkxfca LOG Cookies set for facebook.com and messenger.com domains
+3:20:38 PM[13:20:38] nkxfca UPDATE New version available: v1.0.10. Update with: npm i @neoaz07/nkxfca@latest
+3:20:38 PM[ERR] [13:20:38] nkxfca ERROR loginHelper Not logged in.
+3:20:38 PM[ Login ]: Detected JSON array format.
+3:20:38 PM[ Login ]: Validating cookie against Facebook...
+3:20:39 PM[ERR] [ Login ]: Cookie validation UNCERTAIN (network issue) — passing to FCA for final check...
+3:20:39 PMnkxfca
+3:20:39 PMDeveloped and maintained by NeoKEX
+3:20:39 PMGitHub: https://github.com/NeoKEX
+3:20:39 PMnpm: https://www.npmjs.com/package/@neoaz07/nkxfca
+3:20:39 PMBased on nkxfca (@neoaz07/nkxfca) — credits: NeoKEX Team, ws3-fca, @dongdev/fca-unofficial
+3:20:39 PM[13:20:39] nkxfca VERSION @neoaz07/nkxfca v1.0.9
+3:20:39 PM[13:20:39] nkxfca STARTUP Initializing...
+3:20:39 PM[13:20:39] nkxfca LOG Logging in...
+3:20:39 PM[13:20:39] nkxfca LOG Using cached desktop persona
+3:20:39 PM[13:20:39] nkxfca LOG Cookies set for facebook.com and messenger.com domains
+3:20:39 PM[13:20:39] nkxfca UPDATE New version available: v1.0.10. Update with: npm i @neoaz07/nkxfca@latest
+3:20:40 PM[ERR] [13:20:40] nkxfca ERROR loginHelper Not logged in.
+3:20:40 PMnkxfca
+3:20:40 PMDeveloped and maintained by NeoKEX
+3:20:40 PMGitHub: https://github.com/NeoKEX
+3:20:40 PMnpm: https://www.npmjs.com/package/@neoaz07/nkxfca
+3:20:40 PMBased on nkxfca (@neoaz07/nkxfca) — credits: NeoKEX Team, ws3-fca, @dongdev/fca-unofficial

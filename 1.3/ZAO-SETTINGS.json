@@ -1,0 +1,371 @@
+{
+  "language": "en",
+  "keyActive": "",
+  "DeveloperMode": false,
+  "autoCreateDB": true,
+  "allowInbox": true,
+  "autoClean": true,
+  "adminOnly": false,
+  "keyAdminOnly": "ZAO_X",
+  "humanTyping": {
+    "enable": true,
+    "minDelay": 800,
+    "maxDelay": 4200,
+    "charsPerSecond": 12,
+    "jitterPercent": 30,
+    "nightModeMultiplier": 2.2,
+    "thinkingPauseChance": 0.18,
+    "thinkingPauseMs": 1800,
+    "_note": "محاكاة الطباعة البشرية. nightModeMultiplier يضرب التأخير ليلاً. thinkingPauseChance احتمال توقف مؤقت بين 0-1."
+  },
+  "mqttHealthCheck": {
+    "enable": true,
+    "silentTimeoutMinutes": 10,
+    "checkIntervalMinMinutes": 2,
+    "checkIntervalMaxMinutes": 5,
+    "maxRestarts": 5,
+    "backoffMultiplier": 1.5,
+    "maxBackoffMinutes": 15,
+    "notifyAdmins": true,
+    "_note": "يفحص MQTT كل 2-5 دقائق (عشوائي). يعيد تشغيله إذا صمت أكثر من silentTimeoutMinutes. يستخدم backoff تصاعدي."
+  },
+  "notiWhenListenMqttError": {
+    "minIntervalMinutes": 10,
+    "telegram": {
+      "enable": false,
+      "botToken": "",
+      "chatId": ""
+    },
+    "discordHook": {
+      "enable": false,
+      "webhookUrl": ""
+    },
+    "_note": "Pushes session-expired / listener errors to Telegram and/or Discord webhook. Throttled. Channels stay disabled until enable=true and credentials are filled."
+  },
+  "autoUptime": {
+    "enable": false,
+    "url": "",
+    "intervalSeconds": 180,
+    "_note": "Optional external-URL ping for free hosts (Render/Glitch/Replit deploys). Leave url blank to auto-detect from REPLIT_DEV_DOMAIN / REPL_SLUG. Off by default — Main.js already pings localhost every 10 s."
+  },
+  "autoLock": {
+    "enable": true,
+    "maxCommands": 15,
+    "windowSeconds": 30,
+    "unlockAfterMinutes": 10,
+    "notifyAdmins": true,
+    "_note": "Anti-raid guard. If non-admin command attempts exceed maxCommands within windowSeconds, the bot auto-locks (admins always bypass). Set unlockAfterMinutes=0 to require manual unlock via panel POST /bot/lock {value:false}."
+  },
+  "reactUnsend": {
+    "enable": true,
+    "onlyAdmin": true,
+    "emojis": [
+      "😡",
+      "😠"
+    ],
+    "_note": "React to any bot message with these emojis to unsend it. onlyAdmin=true means only ADMINBOT IDs can trigger it."
+  },
+  "whiteListMode": {
+    "enable": false,
+    "whiteListIds": [],
+    "_note": "If enabled, only users whose IDs are in whiteListIds can use the bot."
+  },
+  "whiteListModeThread": {
+    "enable": false,
+    "whiteListThreadIds": [],
+    "_note": "If enabled, only threads whose IDs are in whiteListThreadIds can use the bot."
+  },
+  "intervalGetNewCookieMinutes": 1440,
+  "commandDisabled": [],
+  "data": {
+    "type": "sqlite",
+    "uriMongodb": ""
+  },
+  "eventDisabled": [],
+  "OTPKEY": "",
+  "BOTNAME": "✺ ⚆  -- ➢ ZAO✸  ⟽  ",
+  "PREFIX": ".",
+  "ADMINBOT": [
+    "100000434205615",
+    "100089220841183",
+    "100000422915498",
+    "61580909023665",
+    "61590039404066",
+    "61566669951133",
+    "61573327406251",
+    "61589720339515",
+    "61590039404066",
+    "61563569887283",
+    "61555647604248",
+    "61589656040033",
+    "61589274197063"
+  ],
+  "BOTID": "",
+  "OWNER": "⋕ 𝗖𝗿͡𝗲𝗮͜𝘁𝗼𝗿 ‹〄› 𝐒𝖆̶𝖎̶ ₰",
+  "OWNERID": "⋕ 𝗖𝗿͡𝗲𝗮͜𝘁𝗼𝗿 ‹〄› 𝐒𝖆̶𝖎̶ ₰",
+  "AGE": "19",
+  "GENDER": "MAN",
+  "FACEBOOK": "https://www.facebook.com/profile.php?id=100000434205615",
+  "autoAccept": "true",
+  "AutoOffBot": "disable",
+  "AutoOffBotStartSleep": "01:00",
+  "AutoOffBotSendMessage": "Bye everyone. i need to sleep i'll be right back at 5:00AM 🥰",
+  "AutoOffBotEndSleep": "05:00",
+  "AutoGreet": "enable",
+  "AutoGreetWithSticker": "enable",
+  "AutoGreetSendPerHour": "1",
+  "AutoPost": "enable",
+  "AutoPostText": "Whats up Guys (every 12 hours)",
+  "AutoPostPerHour": "12",
+  "AutoPostGreet": "enable",
+  "AutoPostGreetPostPerHour": "6",
+  "AutoPostChristmasCountdown": "disable",
+  "HolidayAutoGreet": "enable",
+  "ChristmasCountdown": "disable",
+  "AcceptFriendRequest": "enable",
+  "AutoPendingGroupChat": "disable",
+  "AutoBioStatus": "enable",
+  "AutoBioStatusSetPerHour": "1",
+  "BioStatus": "Prefix:[♕] \n made by: ⋕ 𝗖𝗿͡𝗲𝗮͜𝘁𝗼𝗿 ‹〄› 𝐒𝖆̶𝖎̶ ₰",
+  "AutoLeave": "disable",
+  "RandomRedditMemes": "disable",
+  "RandomRedditMemesSendPerHour": "1",
+  "creator": "⋕ 𝗖𝗿͡𝗲𝗮͜𝘁𝗼𝗿 ‹〄› 𝐒𝖆̶𝖎̶ ₰",
+  "Uptimelogs": true,
+  "DATABASE": {
+    "sqlite": {
+      "storage": "data.sqlite"
+    }
+  },
+  "APPSTATEPATH": "sessions/ZAO-STATE.json",
+  "EMAIL": "je0fdv@eyoo.org",
+  "PASSWORD": "Yassin_2026",
+  "FCAOption": {
+    "forceLogin": false,
+    "online": true,
+    "listenEvents": true,
+    "selfListen": false,
+    "autoMarkRead": false,
+    "autoMarkDelivery": false,
+    "autoReconnect": true,
+    "simulateTyping": true,
+    "randomUserAgent": false,
+    "persona": "desktop",
+    "maxConcurrentRequests": 1,
+    "maxRequestsPerMinute": 8,
+    "requestCooldownMs": 90000,
+    "errorCacheTtlMs": 300000,
+    "logging": false,
+    "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "_note": "[ANTI-DETECT] maxRequestsPerMinute reduced 20→8, maxConcurrentRequests 2→1, simulateTyping disabled (each typing indicator is an extra API call). autoMarkRead/autoMarkDelivery=false keeps read-receipts silent. These together cut ~60% of outgoing API traffic."
+  },
+  "nkxModern": {
+    "enabled": true,
+    "enableHealthBroadcast": true,
+    "healthBroadcastMinutes": 15,
+    "enableWarmup": true,
+    "warmupMinutes": 25,
+    "enableCircuitBreaker": true,
+    "enableE2EE": true,
+    "postSafeGuard": true,
+    "enableTypingWrap": true,
+    "maxSendConcurrency": 2,
+    "sendWindowMs": 60000,
+    "sendWindowLimit": 12,
+    "sqliteCacheFile": "cache/nkx-cache.json"
+  },
+  "e2ee": {
+    "enabled": true,
+    "autoEncryptDMs": true,
+    "autoDecryptIncoming": true,
+    "keyFile": "data/e2ee-keys.json",
+    "announcePublicKey": true,
+    "_note": "X25519 ECDH + HKDF + AES-256-GCM end-to-end encryption. Set nkxModern.enableE2EE=true to activate. autoEncryptDMs encrypts outgoing messages when a peer key is registered. autoDecryptIncoming transparently decrypts .NKX-E2EE| messages before commands see them. keyFile stores the bot key pair and all peer keys across restarts."
+  },
+  "stealthMode": {
+    "enabled": true,
+    "nightModeStart": 1,
+    "nightModeEnd": 6,
+    "nightModeSlowdown": true,
+    "burstProtection": true,
+    "burstThreshold": 5,
+    "burstCooldownMs": 8000,
+    "rotateUserAgentOnReconnect": true,
+    "diversePingEndpoints": true,
+    "randomizeReadReceipts": true,
+    "readReceiptDelay": 1500,
+    "_note": "Custom stealth engine. nightMode slows responses 1am-6am. burstProtection throttles rapid incoming messages."
+  },
+  "version": "1.2.14",
+  "help": {
+    "autoUnsend": "",
+    "delayUnsend": 60
+  },
+  "adminUpdate": {
+    "autoUnsend": true,
+    "sendNoti": true,
+    "timeToUnsend": 10
+  },
+  "log": {
+    "enable": true
+  },
+  "rankup": {
+    "autoUnsend": "",
+    "unsendMessageAfter": 5
+  },
+  "work": {
+    "cooldownTime": 1200000
+  },
+  "youtube-video": {
+    "YOUTUBE_API": ""
+  },
+  "linkword": {
+    "APIKEY": ""
+  },
+  "ytb-video": {
+    "YOUTUBE_API": ""
+  },
+  "math": {
+    "WOLFRAM": ""
+  },
+  "luật bot": {
+    "autoUnsend": true,
+    "delayUnsend": 30
+  },
+  "lbot": {
+    "autoUnsend": true,
+    "delayUnsend": 30
+  },
+  "work-beta": {
+    "cooldownTime": 1200000
+  },
+  "job-beta": {
+    "cooldownTime": 5000
+  },
+  "job": {
+    "cooldownTime": 5000
+  },
+  "sauce": {
+    "SAUCENAO_API": ""
+  },
+  "weather": {
+    "OPEN_WEATHER": ""
+  },
+  "simsimi": {
+    "APIKEY": ""
+  },
+  "sim": {
+    "APIKEY": ""
+  },
+  "slap": {
+    "APIKEY": ""
+  },
+  "daily": {
+    "cooldownTime": 43200000,
+    "rewardCoin": 19310000
+  },
+  "manslap": {
+    "APIKEY": ""
+  },
+  "play": {
+    "YOUTUBE_API": "",
+    "SOUNDCLOUD_API": ""
+  },
+  "video": {
+    "YOUTUBE_API": ""
+  },
+  "testcovid": {
+    "APIKEY": ""
+  },
+  "fish": {
+    "cooldownTime": 1000000
+  },
+  "simv2": {
+    "APIKEY": ""
+  },
+  "cave": {
+    "cooldownTime": 1000000
+  },
+  "simvoice": {
+    "APIKEY": ""
+  },
+  "sing": {
+    "YOUTUBE_API": "",
+    "SOUNDCLOUD_API": ""
+  },
+  "slapv2": {
+    "APIKEY": ""
+  },
+  "videov2": {
+    "YOUTUBE_API": ""
+  },
+  "help2": {
+    "autoUnsend": true,
+    "delayUnsend": 300
+  },
+  "god": {
+    "enable": true
+  },
+  "bannerbw": {
+    "APIKEY": ""
+  },
+  "ADD_FUNCTION": true,
+  "DEL_FUNCTION": true,
+  "helpall": {
+    "autoUnsend": true,
+    "delayUnsend": 500
+  },
+  "adminNoti": {
+    "autoUnsend": true,
+    "sendNoti": true,
+    "timeToUnsend": 10
+  },
+  "الاوامر": {
+    "autoUnsend": true,
+    "delayUnsend": 100
+  },
+  "كهف": {
+    "cooldown": 2000000000
+  },
+  "بنك": {
+    "APIKEY": ""
+  },
+  "keepAlive": {
+    "enabled": true,
+    "pingMinIntervalMin": 40,
+    "pingMaxIntervalMin": 80,
+    "saveCookiesIntervalHours": 2,
+    "refreshDtsgIntervalHours": 48,
+    "enableNotificationVisit": false,
+    "notiMinIntervalMin": 90,
+    "notiMaxIntervalMin": 200,
+    "_note": "[ANTI-DETECT] Increased ping interval to 40-80 min (was 10-25). Facebook detects bots that make uniform HTTP page requests every 10-25 min. Human users check every 1-3 hours. Notification visits also stretched to avoid GraphQL fingerprinting."
+  },
+  "labyrinth": {
+    "enabled": true,
+    "autoInitOnBoot": true,
+    "keyFile": "data/labyrinth-keys.json",
+    "bundleAnnounceOnBoot": false,
+    "pinSecret": "",
+    "_note": "إعدادات نظام التشفير E2EE (Signal/X3DH/Double Ratchet). enabled=true لتفعيله تلقائياً عند الإقلاع. keyFile يخزن المفاتيح. استخدم أمر .e2ee bundle لمشاركة مفتاحك العام، و.e2ee handshake لتبادل المفاتيح مع الطرف الآخر."
+  },
+  "motorSafeSend": {
+    "hardMinMs": 5000,
+    "_note": "Absolute minimum interval (ms) between motor messages per thread. Raise if you get spam flags, lower for faster motors. Default: 5000 (5s)."
+  },
+  "aiUsers": {
+    "file": "data/ai-users.json",
+    "_note": "قاعدة بيانات شخصيات المستخدمين — تعديلها مباشرة في data/ai-users.json بدون إعادة تشغيل البوت."
+  },
+  "globalNicknameAutoLock": {
+    "enable": false,
+    "nickname": "",
+    "scope": "bot",
+    "intervalMs": 30000,
+    "_note": "قفل اللقب التلقائي العالمي — يُطبّق اللقب المحدد على البوت (scope=bot) أو على الجميع (scope=all) في جميع الغروبات. intervalMs هو الفاصل الزمني بالميلي ثانية بين كل تطبيق."
+  },
+  "tierLimit": 5,
+  "_tierLimitNote": "عدد حسابات Facebook المدعومة (1-5). Tier 1: ZAO-STATE.json/alt.json | Tier 2: ZAO-STATEX.json/altx.json | Tier 3: ZAO-STATEV.json/altv.json | Tier 4: ZAO-STATE4.json/alt4.json | Tier 5: ZAO-STATE5.json/alt5.json. لإضافة حساب رابع: ارفع ملف cookies إلى ZAO-STATE4.json واضبط tierLimit=4.",
+  "devGroupID": "",
+  "_devGroupIDNote": "معرّف مجموعة التطوير — تُرسل إليها نتائج أمر .اصنع (AI code generation). ضع هنا threadID المجموعة أو اتركه فارغاً وسيطلبه الأمر منك عند الاستخدام الأول."
+}

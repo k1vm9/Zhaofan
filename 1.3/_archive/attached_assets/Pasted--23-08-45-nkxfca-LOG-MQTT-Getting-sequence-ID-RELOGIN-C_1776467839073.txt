@@ -1,0 +1,102 @@
+[23:08:45] nkxfca LOG MQTT Getting sequence ID...
+[ RELOGIN ]: Cooldown active. Next attempt in 144s. 
+[23:08:47] nkxfca LOG MQTT Getting sequence ID...
+[23:08:45] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:08:48] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:08:46] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:08:47] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+[23:08:51] nkxfca LOG MQTT Getting sequence ID...
+[23:08:51] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:08:51] nkxfca ERROR MQTT getSeqID error: Account blocked - Facebook detected automated behavior
+[23:08:51] nkxfca WARN MQTT Will reconnect in 15441ms
+[ MQTT-HEALTH ]: الفحص القادم بعد 4.9 دقيقة 
+[23:09:07] nkxfca LOG MQTT getSeqID call
+[23:09:07] nkxfca LOG MQTT Getting sequence ID...
+[23:09:07] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:09:09] nkxfca LOG MQTT Getting sequence ID...
+[23:09:09] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:09:12] nkxfca LOG MQTT Getting sequence ID...
+[23:09:13] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:09:13] nkxfca ERROR MQTT getSeqID error: Account blocked - Facebook detected automated behavior
+[23:09:13] nkxfca WARN MQTT Will reconnect in 15283ms
+[23:09:16] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:09:17] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ RELOGIN ]: Cooldown active. Next attempt in 115s. 
+[23:09:28] nkxfca LOG MQTT getSeqID call
+[23:09:28] nkxfca LOG MQTT Getting sequence ID...
+[23:09:28] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:09:30] nkxfca LOG MQTT Getting sequence ID...
+[23:09:31] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:09:34] nkxfca LOG MQTT Getting sequence ID...
+[23:09:35] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:09:35] nkxfca ERROR MQTT getSeqID error: Account blocked - Facebook detected automated behavior
+[23:09:35] nkxfca WARN MQTT Will reconnect in 15404ms
+[23:09:50] nkxfca LOG MQTT getSeqID call
+[23:09:50] nkxfca LOG MQTT Getting sequence ID...
+[23:09:50] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:09:52] nkxfca LOG MQTT Getting sequence ID...
+[23:09:53] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:09:56] nkxfca LOG MQTT Getting sequence ID...
+[23:09:57] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:09:57] nkxfca ERROR MQTT getSeqID error: Account blocked - Facebook detected automated behavior
+[23:09:57] nkxfca WARN MQTT Will reconnect in 15017ms
+[23:10:12] nkxfca LOG MQTT getSeqID call
+[23:10:12] nkxfca LOG MQTT Getting sequence ID...
+[23:10:12] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:10:14] nkxfca LOG MQTT Getting sequence ID...
+[23:10:14] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:10:17] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:10:17] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ RELOGIN ]: Cooldown active. Next attempt in 54s. 
+[23:10:18] nkxfca LOG MQTT Getting sequence ID...
+[23:10:18] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:10:18] nkxfca ERROR MQTT getSeqID error: Account blocked - Facebook detected automated behavior
+[23:10:18] nkxfca WARN MQTT Will reconnect in 15086ms
+[23:10:33] nkxfca LOG MQTT getSeqID call
+[23:10:33] nkxfca LOG MQTT Getting sequence ID...
+[23:10:33] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:10:35] nkxfca LOG MQTT Getting sequence ID...
+[23:10:35] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:10:39] nkxfca ERROR MQTT getSeqID error: Account blocked - Facebook detected automated behavior
+[23:10:39] nkxfca WARN MQTT Will reconnect in 15220ms
+[23:10:39] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:10:38] nkxfca LOG MQTT Getting sequence ID...
+[23:10:54] nkxfca LOG MQTT getSeqID call
+[23:10:54] nkxfca LOG MQTT Getting sequence ID...
+[23:10:54] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:10:56] nkxfca LOG MQTT Getting sequence ID...
+[23:10:57] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:11:00] nkxfca LOG MQTT Getting sequence ID...
+[23:11:00] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:11:00] nkxfca ERROR MQTT getSeqID error: Account blocked - Facebook detected automated behavior
+[23:11:00] nkxfca WARN MQTT Will reconnect in 15431ms
+[23:11:16] nkxfca LOG MQTT getSeqID call
+[23:11:16] nkxfca LOG MQTT Getting sequence ID...
+[23:11:16] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:11:18] nkxfca LOG MQTT Getting sequence ID...
+[23:11:18] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:11:19] nkxfca WARN Account Status Account blocked - Facebook detected automated behavior (Code: 1357001)
+[23:11:20] nkxfca ERROR sendMessageMqtt Error: MQTT client is not initialized
+    at /app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:104:21
+    at new Promise (<anonymous>)
+    at publishWithAck (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:102:12)
+    at Object.sendMessageMqtt (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessageMqtt.js:247:12)
+    at async Object.<anonymous> (/app/node_modules/@neoaz07/nkxfca/src/apis/sendMessage.js:335:29)
+[ RELOGIN ]: Re-login attempt 2/4 — Tier 1 (ZAO-STATE.json) | reason=Account blocked - Facebook detected automated behavior 
+[ Login ]: Detected JSON array format.
+[ Login ]: AppState is missing c_user or xs — may fail.
+[ Login ]: Validating cookie against Facebook...
+[ Login ]: Cookie validation PASSED — session confirmed alive ✓

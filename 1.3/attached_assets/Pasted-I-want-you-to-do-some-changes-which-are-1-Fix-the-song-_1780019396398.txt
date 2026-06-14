@@ -1,0 +1,32 @@
+I want you to do some changes which are: 
+
+1. Fix the song command because it sometimes breaks and says song not found and when i run it again it does find the song. 
+
+2. add a "Days" in the uptime counter in the panel. 
+
+3. change the commands message to this ⌗ ∝ 𝐙͋'𝖆⃪̷͟𝛔͓𝖋̶𝐚̸̷̶̝ƞ͟ິ'͓👁️‍🗨️  𖣴 𝕭ິ︩︪𝐨̸ȶ 🪭
+
+≼1≽ ⥽ ꐾ̷̷̸'ິ N ↴̶ — Catagory 1 ໋🪭
+≼2≽ ⥽ ꐾ̷̷̸'ິ N ↴̶ — Catagory 2 ໋☕
+≼3≽ ⥽ ꐾ̷̷̸'ິ N ↴̶ — Catagory 3 ໋⚖️
+≼4≽ ⥽ ꐾ̷̷̸'ິ N ↴̶ — Catagory 4 ໋🪙
+≼5≽ ⥽ ꐾ̷̷̸'ິ N ↴̶ — Catagory 5 ໋🕸
+≼6≽ ⥽ ꐾ̷̷̸'ິ N ↴̶ — Catagory 6 ໋🪶
+≼7≽ ⥽ ꐾ̷̷̸'ິ N ↴̶ — Catagory 7 ໋🧲
+≼8≽ ⥽ ꐾ̷̷̸'ິ N ↴̶ — Catagory 8 ໋☢️
+≼9≽ ⥽ ꐾ̷̷̸'ິ N ↴̶ — Catagory 9 ໋🪅
+≼10≽  ⥽ ꐾ̷̷̸'ິ N ↴̶ — Catagory 10 ໋🧬
+
+
+and all numbers should be in the following format
+𝟎𝟏𝟐𝟑𝟒𝟓𝟔𝟕𝟖𝟗
+
+4. There is a message that is sent when a normal user tries to use an admin command, change the message to "معندكش صلاحية استعمال الامر"example"، قود."
+5. The restart counter in railway literally started as 16, for somereason the uptime timer and restart counters are saved through DEPLOYMENTS, I want it to be reset every single deployment. 
+6. in the panel it says MQTT disconnected even if it is connected. 
+7. since all the friends commands don't work, I've uploaded another bot called IMRAN-BOTV4, it has a fully working friends system, copy it, change the messages looks to be better and more ZAO-like, port it to the zao friends command and panel. and about the panel. it has a lot of problems as well, which the list goes; 
+
+1. Delete unneeded tabs
+2. nearly ALL the ais in the devcenter always return error 429, check it and check the wiring system for the ai
+3. when i run the panel on a phone, lets say in the groups tab, i can see the group name and id, but the buttons send message and control are hidden, and when i try to swipe left or right to see them, it doesn't, fix this. 
+4. The entire جلب الجروبات and message requests in the panel don't work at all. even in the groups tab when i click control on a desktop, it doesnt actually show up. 

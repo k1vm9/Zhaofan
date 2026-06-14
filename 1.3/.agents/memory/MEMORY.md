@@ -1,0 +1,3 @@
+- [Dual-tier bot system](dual-tier-bot.md) — BOT_TIER + BOT_API_PORT env vars let Main.js run two ZAO.js instances; Emalogin locks to forced tier without fallback.
+- [INSTA MQTT hybrid](insta-mqtt.md) — instagram_mqtt withRealtime wraps IgApiClient; MQTT event triggers poll, 60s safety poll always runs, falls back to pollInterval on disconnect.
+- [DevHub OpenRouter](devhub-openrouter.md) — callAI uses OpenRouter (not pollinations); config in devhub-openrouter.json; key+models set via DevHub → الإعدادات.
