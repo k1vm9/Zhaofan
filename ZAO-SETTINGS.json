@@ -376,13 +376,14 @@
   "openrouterKeyExternal": "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",
   "_openrouterKeyExternalNote": "مفتاح OpenRouter لأوامر الذكاء الاصطناعي الخارجية (أمر زاو / زاوفان في المحادثات). يمكن أن يكون نفس مفتاح openrouterKeyInternal أو مختلفاً.",
   "openrouterModelsInternal": [
-    "nvidia/nemotron-3-ultra-550b-a55b:free"
+    "meta-llama/llama-3.1-8b-instruct:free",
+    "google/gemma-2-9b-it:free",
+    "mistralai/mistral-7b-instruct:free"
   ],
-  "_openrouterModelsInternalNote": "3 نماذج للمفتاح الداخلي (DevHub + اصنع). مُجرَّبة بالترتيب — يُجرَّب الأول ثم ينتقل للتالي عند الفشل.",
+  "_openrouterModelsInternalNote": "3 نماذج للمفتاح الداخلي (DevHub + المُعشِّش). مُجرَّبة بالترتيب — يُجرَّب الأول ثم ينتقل للتالي عند الفشل. يجب أن تكون نماذج حقيقية متاحة على OpenRouter.",
   "openrouterModelsExternal": [
-    "x-ai/grok-4.3",
     "openai/gpt-4o-mini",
-    "deepseek/deepseek-v3.2",
+    "deepseek/deepseek-r1:free",
     "meta-llama/llama-3.3-70b-instruct:free",
     "mistralai/mistral-7b-instruct:free"
   ],

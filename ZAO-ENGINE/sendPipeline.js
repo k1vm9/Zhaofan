@@ -106,7 +106,7 @@ function patch(api) {
     // ── Step 3: Warmup gate ────────────────────────────────────────────────
     try {
       if (!_wmMod) _wmMod = require("./SessionWarmupManager");
-      if (typeof _wmMod._checkWarmup === "function") await _wmMod._checkWarmup();
+      if (typeof _wmMod.checkWarmup === "function") await _wmMod.checkWarmup();
     } catch (_) {}
 
     // ── Step 4: Human typing simulation ───────────────────────────────────

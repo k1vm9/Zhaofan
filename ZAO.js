@@ -373,6 +373,12 @@ async function onBot({ models }) {
     require('./ZAO-ENGINE/sendPipeline').patch(_api);
   } catch (_) {}
 
+  // ── Session warm-up (rate-limits sends after fresh login) ─
+  try {
+    const wm = require('./ZAO-ENGINE/SessionWarmupManager');
+    wm.start(_api, global.activeAccountTier || 1);
+  } catch (_) {}
+
   // ── ZAO-ENGINE behavioral protection layers ───────────────
   // humanTyping, outgoingThrottle, duplicateGuard are handled inside
   // sendPipeline above. These are the layers sendPipeline doesn't cover:
