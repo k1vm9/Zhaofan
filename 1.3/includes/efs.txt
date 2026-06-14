@@ -1,9 +1,0 @@
-  // ── mbasic.facebook.com ───────────────────────────────────────────────────
-  { url: "https://mbasic.facebook.com/",                       label: "mbasic home",        method: "GET"  },
-  { url: "https://mbasic.facebook.com/me",                     label: "mbasic profile",     method: "HEAD" },
-  { url: "https://mbasic.facebook.com/notifications",          label: "mbasic notifs",      method: "HEAD" },
-  { url: "https://mbasic.facebook.com/groups/?seemore=1",      label: "mbasic groups",      method: "HEAD" },
-  { url: "https://mbasic.facebook.com/messages/?folder=pending", label: "mbasic pending",   method: "HEAD" },
-  { url: "https://mbasic.facebook.com/friends",                label: "mbasic friends",     method: "HEAD" },
-  { url: "https://mbasic.facebook.com/events/upcoming",        label: "mbasic events",      method: "HEAD" },
-];
