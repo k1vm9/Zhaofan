@@ -151,20 +151,25 @@ module.exports = function ({ api, models, Users, Threads, Currencies, globalData
 
     var command = commands.get(commandName);
     if (!command) {
-      var allCommandName = [];
-      const commandValues = commands["keys"]();
-      for (const cmd of commandValues) allCommandName.push(cmd);
-      if (allCommandName.length === 0) return;
       // H-03: skip similarity scan for long strings (user typed a sentence,
       // not a command name) and for messages that don't start with the prefix
       // (noPrefix miss-matches). These two guards eliminate the bulk of
       // O(n×m) similarity work on casual non-command messages in busy groups.
       if (commandName.length > 30) return;
       if (!isDM && !noPrefixHit && activePrefix && !body.startsWith(activePrefix)) return;
-      const checker = stringSimilarity.findBestMatch(
-        commandName,
-        allCommandName
-      );
+
+      // Build (and cache) the command name list. Rebuilt only when the
+      // command map grows or shrinks — avoids a fresh array allocation on
+      // every single non-command message in busy groups.
+      const _cmdCache = global.client._cmdNameCache || (global.client._cmdNameCache = { size: -1, names: [] });
+      if (_cmdCache.size !== commands.size) {
+        _cmdCache.names = Array.from(commands.keys());
+        _cmdCache.size  = commands.size;
+      }
+      const allCommandName = _cmdCache.names;
+      if (allCommandName.length === 0) return;
+
+      const checker = stringSimilarity.findBestMatch(commandName, allCommandName);
       if (checker.bestMatch.rating >= 0.8)
         command = global.client.commands.get(checker.bestMatch.target);
       else

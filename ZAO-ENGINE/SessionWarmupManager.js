@@ -2,22 +2,16 @@
 
 /**
  * ZAO-ENGINE — SessionWarmupManager v1.9
- * Ported from 1.3/includes/SessionWarmupManager.js
  *
  * Manages a warm-up phase whenever the bot switches to a fresh tier.
  * Prevents the "brand new session + full volume immediately" pattern that
  * Facebook's anomaly detection flags heavily.
  *
- * Warm-up phases (base):
+ * Warm-up phases:
  *   Phase 1 (0-5 min):   ≤  6 messages/min  — bot just logged in
  *   Phase 2 (5-15 min):  ≤ 15 messages/min  — session warming
  *   Phase 3 (15-30 min): ≤ 30 messages/min  — nearly full speed
  *   Phase 4 (30+ min):   No limit            — warm-up complete
- *
- * Account age scaling (via accountAgeScale.js):
- *   Fresh (2023+): extra Phase 0 — 60 min at ≤ 2/min
- *   Mid (2009-2022): Phase 0 — 20 min at ≤ 2/min
- *   Veteran (2004-2008): skips Phase 0
  *
  * Integration:
  *   sendPipeline.js step 3 calls checkWarmup() before every send.
@@ -27,27 +21,12 @@
 
 const LOG_PREFIX = "[ WARMUP ]: ";
 
-const BASE_PHASES = [
+const PHASES = [
   { durationMs:  5 * 60 * 1000, maxPerMin:  6, name: "Phase 1 (cold)" },
   { durationMs: 10 * 60 * 1000, maxPerMin: 15, name: "Phase 2 (warming)" },
   { durationMs: 15 * 60 * 1000, maxPerMin: 30, name: "Phase 3 (nearly full)" },
 ];
 
-function _buildPhases() {
-  try {
-    const age = require("./accountAgeScale");
-    const era = age.getEra();
-    if (era.warmupExtraMin > 0) {
-      return [
-        { durationMs: era.warmupExtraMin * 60 * 1000, maxPerMin: Math.min(era.maxMsgsPerMin, 4), name: `Phase 0 (age-scaled: ${era.label})` },
-        ...BASE_PHASES
-      ];
-    }
-  } catch (_) {}
-  return BASE_PHASES;
-}
-
-let PHASES          = BASE_PHASES;
 let _warmupStartTs  = null;
 let _sendTimestamps = [];
 let _heldCount      = 0;
@@ -104,22 +83,15 @@ async function checkWarmup() {
 
 /**
  * Call after every successful login or tier switch.
- * Resets the warm-up clock and rebuilds phases using the now-known UID.
+ * Resets the warm-up clock.
  */
 function notifyTierSwitch(api, tier) {
   _warmupStartTs  = Date.now();
   _sendTimestamps = [];
-  PHASES          = _buildPhases();
 
   const totalMin = Math.round(PHASES.reduce((s, p) => s + p.durationMs, 0) / 60000);
   _log(`Tier ${tier || "?"} activated — warm-up started (${totalMin} min total)`);
   _log(`  ${PHASES.map(p => `${p.name}: ≤${p.maxPerMin}/min for ${Math.round(p.durationMs / 60000)}min`).join(" → ")}`);
-
-  try {
-    const age  = require("./accountAgeScale");
-    const info = age.getAgeInfo();
-    _log(`  Account: ${info.era} (${info.label}) — multiplier: ${info.multiplier}`);
-  } catch (_) {}
 }
 
 function start(api, tier) {
