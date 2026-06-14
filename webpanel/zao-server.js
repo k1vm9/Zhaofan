@@ -1367,7 +1367,7 @@ body{
   </div>
   <div class="zaofan-text">
     <div class="zaofan-title">ZAO Bot — نظام التحكم المتكامل
-      <span class="zaofan-tag">v1.8</span>
+      <span class="zaofan-tag">v1.9</span>
     </div>
     <div class="zaofan-sub">مرحباً في لوحة تحكم ZAO — نظام بوت فيسبوك الذكي مع دعم إنستقرام ونظام متعدد الطبقات<br>
     ${new Date().toLocaleDateString('ar-EG',{weekday:'long',year:'numeric',month:'long',day:'numeric'})}</div>
@@ -1482,6 +1482,17 @@ body{
       <div id="sh-cb-detail" style="font-size:.75rem;color:var(--text3)">—</div>
     </div>
 
+    <!-- Keep-Alive Engine -->
+    <div style="background:var(--card2,rgba(255,255,255,.04));border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:8px;border:1px solid var(--border)">
+      <div style="font-size:.75rem;color:var(--text3);letter-spacing:.4px">محرك KeepAlive</div>
+      <div style="display:flex;align-items:center;gap:6px;margin-top:4px">
+        <span id="sh-ka-dot" style="width:10px;height:10px;border-radius:50%;background:var(--text3);display:inline-block;flex-shrink:0"></span>
+        <span id="sh-ka-mode" style="font-size:.88rem;font-weight:700;color:var(--text2)">—</span>
+      </div>
+      <div id="sh-ka-last" style="font-size:1rem;font-weight:700;color:var(--text3)">—</div>
+      <div id="sh-ka-next" style="font-size:.75rem;color:var(--text3)">—</div>
+    </div>
+
   </div>
 </div>
 <script>
@@ -1592,6 +1603,49 @@ body{
           }
         }
       }catch(_){}
+      // ── KeepAlive engine status ───────────────────────────────────────────
+      try{
+        const t=await fetch('/api/randomizer/timers').then(r=>r.json()).catch(()=>({}));
+        const ka=t.keepAlive||{};
+        const kaDot=document.getElementById('sh-ka-dot');
+        const kaMode=document.getElementById('sh-ka-mode');
+        const kaLast=document.getElementById('sh-ka-last');
+        const kaNext=document.getElementById('sh-ka-next');
+        if(kaDot&&kaMode){
+          if(ka.adaptiveActive){
+            kaDot.style.background='var(--cyan,#00d4ff)';
+            kaMode.textContent='⚡ تكيّفي — MQTT نشط';
+            kaMode.style.color='var(--cyan,#00d4ff)';
+          }else{
+            kaDot.style.background='var(--purple,#a855f7)';
+            kaMode.textContent='🔄 فترة عادية';
+            kaMode.style.color='var(--purple,#a855f7)';
+          }
+        }
+        if(kaLast){
+          if(ka.lastPingAt!=null){
+            var ago=Math.round((Date.now()-Number(ka.lastPingAt))/1000);
+            var ok=ka.lastPingOk;
+            var icon=ok?'✅':'❌';
+            if(ago<60) kaLast.textContent=icon+' منذ '+ago+'ث';
+            else if(ago<3600) kaLast.textContent=icon+' منذ '+Math.floor(ago/60)+'د';
+            else kaLast.textContent=icon+' منذ '+Math.floor(ago/3600)+'س';
+            kaLast.style.color=ok?'var(--green,#22c55e)':'var(--red,#ef4444)';
+          }else{
+            kaLast.textContent='لم يُنفَّذ بعد';
+            kaLast.style.color='var(--text3)';
+          }
+        }
+        if(kaNext&&ka.nextPingAt){
+          var remMs=Math.max(0,Number(ka.nextPingAt)-Date.now());
+          var h=Math.floor(remMs/3600000);
+          var m=Math.floor((remMs%3600000)/60000);
+          kaNext.textContent='الـPing القادم: '+(h>0?h+'س '+m+'د':m+'د');
+        }else if(kaNext){
+          kaNext.textContent='ينتظر جدولة Ping...';
+        }
+      }catch(_){}
+
       const ts = document.getElementById('sh-ts');
       if(ts) ts.textContent = 'آخر تحديث: '+new Date().toLocaleTimeString('ar-EG');
     } catch(_){}

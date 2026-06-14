@@ -1,45 +1,5 @@
 [
   {
-    "startTs": 1781301188035,
-    "startDate": "2026-06-12T21:53:08.035Z",
-    "endTs": null,
-    "uptimeMs": null,
-    "exitCode": null,
-    "sessionNum": 1
-  },
-  {
-    "startTs": 1781301823276,
-    "startDate": "2026-06-12T22:03:43.276Z",
-    "endTs": null,
-    "uptimeMs": null,
-    "exitCode": null,
-    "sessionNum": 1
-  },
-  {
-    "startTs": 1781301964909,
-    "startDate": "2026-06-12T22:06:04.909Z",
-    "endTs": null,
-    "uptimeMs": null,
-    "exitCode": null,
-    "sessionNum": 1
-  },
-  {
-    "startTs": 1781471685319,
-    "startDate": "2026-06-14T21:14:45.319Z",
-    "endTs": 1781471703792,
-    "uptimeMs": 18472,
-    "exitCode": 1,
-    "sessionNum": 1
-  },
-  {
-    "startTs": 1781471733806,
-    "startDate": "2026-06-14T21:15:33.806Z",
-    "endTs": 1781471749591,
-    "uptimeMs": 15785,
-    "exitCode": 1,
-    "sessionNum": 2
-  },
-  {
     "startTs": 1781472349696,
     "startDate": "2026-06-14T21:25:49.696Z",
     "endTs": 1781472371973,
@@ -74,6 +34,46 @@
   {
     "startTs": 1781473895508,
     "startDate": "2026-06-14T21:51:35.508Z",
+    "endTs": 1781473909655,
+    "uptimeMs": 14147,
+    "exitCode": 1,
+    "sessionNum": 2
+  },
+  {
+    "startTs": 1781474117078,
+    "startDate": "2026-06-14T21:55:17.078Z",
+    "endTs": 1781474126162,
+    "uptimeMs": 9084,
+    "exitCode": 1,
+    "sessionNum": 1
+  },
+  {
+    "startTs": 1781474156187,
+    "startDate": "2026-06-14T21:55:56.187Z",
+    "endTs": 1781474160986,
+    "uptimeMs": 4799,
+    "exitCode": 1,
+    "sessionNum": 2
+  },
+  {
+    "startTs": 1781474761036,
+    "startDate": "2026-06-14T22:06:01.036Z",
+    "endTs": 1781474770383,
+    "uptimeMs": 9347,
+    "exitCode": 1,
+    "sessionNum": 3
+  },
+  {
+    "startTs": 1781474967315,
+    "startDate": "2026-06-14T22:09:27.315Z",
+    "endTs": 1781474973170,
+    "uptimeMs": 5855,
+    "exitCode": 1,
+    "sessionNum": 1
+  },
+  {
+    "startTs": 1781475003196,
+    "startDate": "2026-06-14T22:10:03.196Z",
     "endTs": null,
     "uptimeMs": null,
     "exitCode": null,

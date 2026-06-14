@@ -33,9 +33,12 @@ let notiTimer    = null;
 let primingTimer = null;
 let isSaving     = false;
 
-let _nextPingAt  = null;
-let _nextNotiAt  = null;
-let _nextSaveAt  = null;
+let _nextPingAt       = null;
+let _nextNotiAt       = null;
+let _nextSaveAt       = null;
+let _lastPingAt       = null;
+let _lastPingOk       = null;   // true = success, false = fail, null = not yet run
+let _adaptiveModeActive = false; // true when MQTT recently alive → stretched interval
 
 function log(level, msg) {
   try {
@@ -363,12 +366,16 @@ async function doPing() {
       }
     }
 
+    _lastPingAt = Date.now();
+    _lastPingOk = success;
     if (success) {
       global.lastPingActivity = Date.now();
       await doSaveCookies("post-ping");
     }
   } catch (e) {
     log("warn", `doPing unexpected error: ${e.message || e}`);
+    _lastPingAt = Date.now();
+    _lastPingOk = false;
   }
 }
 
@@ -450,9 +457,11 @@ function schedulePing() {
   if (adaptive && recentMqttMs > 0 && Date.now() - recentMqttMs < 5 * 60 * 1000) {
     // Bot is active — stretch ping interval up to 2× to avoid over-pinging
     delay = getRandomMs(minMin * 2, maxMin * 2);
+    _adaptiveModeActive = true;
     log("info", `Next ping in ${Math.round(delay / 60000)} min (adaptive — MQTT active).`);
   } else {
     delay = getRandomMs(minMin, maxMin);
+    _adaptiveModeActive = false;
     log("info", `Next ping in ${Math.round(delay / 60000)} min.`);
   }
 
@@ -548,10 +557,13 @@ function stopKeepAlive() {
 
 function getTimers() {
   return {
-    nextPingAt:  _nextPingAt,
-    nextDtsgAt:  global._dtsgNextAt || null,
-    nextNotiAt:  _nextNotiAt,
-    nextSaveAt:  _nextSaveAt,
+    nextPingAt:      _nextPingAt,
+    nextDtsgAt:      global._dtsgNextAt || null,
+    nextNotiAt:      _nextNotiAt,
+    nextSaveAt:      _nextSaveAt,
+    lastPingAt:      _lastPingAt,
+    lastPingOk:      _lastPingOk,
+    adaptiveActive:  _adaptiveModeActive,
   };
 }
 
