@@ -1,13 +1,5 @@
 [
   {
-    "startTs": 1781473895508,
-    "startDate": "2026-06-14T21:51:35.508Z",
-    "endTs": 1781473909655,
-    "uptimeMs": 14147,
-    "exitCode": 1,
-    "sessionNum": 2
-  },
-  {
     "startTs": 1781474117078,
     "startDate": "2026-06-14T21:55:17.078Z",
     "endTs": 1781474126162,
@@ -78,5 +70,13 @@
     "uptimeMs": 7177,
     "exitCode": 1,
     "sessionNum": 2
+  },
+  {
+    "startTs": 1781476673153,
+    "startDate": "2026-06-14T22:37:53.153Z",
+    "endTs": 1781476686019,
+    "uptimeMs": 12866,
+    "exitCode": 1,
+    "sessionNum": 1
   }
 ]
