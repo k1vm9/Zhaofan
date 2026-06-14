@@ -184,6 +184,18 @@ async function doHealthCheck() {
         `يتطلب تدخلاً يدوياً — افحص cookies / tier.`
       );
     }
+    // ── DAVID merge: start HTTP poller as last-resort keepalive ──────────
+    // MQTT is confirmed dead. Start the HTTP poller so the bot stays
+    // somewhat alive (session keepalive + thread-change detection) while
+    // the operator uploads fresh cookies via the panel.
+    try {
+      const poller = global._customPoller;
+      const api    = global._botApi || global._customPollerApi;
+      if (poller && api && !poller.isActive()) {
+        log('info', 'Starting HTTP poller as MQTT fallback (DAVID mode)...');
+        poller.startPoller(api, 8000);
+      }
+    } catch (_) {}
     return;
   }
 

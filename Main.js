@@ -223,7 +223,12 @@ function startBot2() {
 
   log('BOT2', 'Starting secondary bot (Tier 2)...');
 
-  botChild2 = spawn(process.execPath, ['ZAO.js'], {
+  botChild2 = spawn(process.execPath, [
+    '--max-old-space-size=400',
+    '--gc-interval=100',
+    '--optimize-for-size',
+    'ZAO.js',
+  ], {
     cwd:   __dir,
     stdio: ['ignore', 'pipe', 'pipe'],
     shell: false,
@@ -259,12 +264,19 @@ function startBot2() {
   });
 
   botChild2.on('close', code => {
+    const uptime2 = Date.now() - botStart2;
     botChild2 = null;
     appendLog(`[BOT2] ZAO.js Tier-2 exited with code ${code}`);
     if (isStopping) return;
     if (readTierModes()['2'] !== 'active') return;
+    if (code === 0) {
+      if (pendingRestart2) clearTimeout(pendingRestart2);
+      pendingRestart2 = setTimeout(startBot2, 2_000);
+      return;
+    }
+    if (uptime2 >= STABLE_MS) restarts2 = 0;
     restarts2++;
-    const delay = restarts2 === 1 ? 30_000 : 10 * 60 * 1000;
+    const delay = Math.min(30_000 * Math.pow(1.8, restarts2 - 1), 20 * 60 * 1000);
     log('BOT2', `Tier-2 crash #${restarts2} — restarting in ${Math.round(delay / 1000)}s`);
     if (pendingRestart2) clearTimeout(pendingRestart2);
     pendingRestart2 = setTimeout(startBot2, delay);
@@ -349,7 +361,7 @@ function startInstaBot() {
       return;
     }
     instaRestarts++;
-    const delay = instaRestarts === 1 ? 30_000 : 10 * 60 * 1000;
+    const delay = Math.min(30_000 * Math.pow(1.8, instaRestarts - 1), 20 * 60 * 1000);
     log('INSTA', `Crash #${instaRestarts} — restarting in ${Math.round(delay / 1000)}s`);
     instaStartPending = setTimeout(startInstaBot, delay);
   });
@@ -495,7 +507,12 @@ function startBot() {
 
   restoreCookies();
 
-  botChild = spawn(process.execPath, ['ZAO.js'], {
+  botChild = spawn(process.execPath, [
+    '--max-old-space-size=400',
+    '--gc-interval=100',
+    '--optimize-for-size',
+    'ZAO.js',
+  ], {
     cwd:   __dir,
     stdio: ['ignore', 'pipe', 'pipe'],
     shell: false,

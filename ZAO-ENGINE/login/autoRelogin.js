@@ -99,10 +99,11 @@ const TIERS = new Proxy([], {
   set(_, prop, value) { getTiers()[prop] = value; return true; },
 });
 
-let lastAttempt   = 0;
-let retryCount    = 0;
-let isAttempting  = false;
-let currentTierIdx = 0;  // index into TIERS[]
+let lastAttempt      = 0;
+let retryCount       = 0;
+let isAttempting     = false;
+let currentTierIdx   = 0;  // index into TIERS[]
+let exhaustionBackoffMs = 0; // exponential backoff after all tiers exhausted
 
 function log(level, msg) {
   try {
@@ -423,8 +424,16 @@ async function autoRelogin(api, reason) {
       retryCount = 0;
       log("warn", `Tier ${activeTier} exhausted. Advancing to Tier ${TIERS[currentTierIdx].tier}...`);
     } else {
-      const retryMs = _getCooldownMs(); // default 3 minutes
-      log("error", `All ${TIERS.length} account tiers exhausted — retrying from Tier 1 in ${Math.round(retryMs / 60000)} minutes.`);
+      // Exponential backoff: 3min → 5.4min → 9.7min → ... → 30min cap
+      // Prevents hammering Facebook with rapid failed logins which causes IP bans.
+      const BASE_EXHAUSTION_MS = _getCooldownMs(); // default 3 min
+      if (exhaustionBackoffMs === 0) {
+        exhaustionBackoffMs = BASE_EXHAUSTION_MS;
+      } else {
+        exhaustionBackoffMs = Math.min(exhaustionBackoffMs * 1.8, 30 * 60 * 1000);
+      }
+      const retryMs = exhaustionBackoffMs;
+      log("error", `All ${TIERS.length} account tiers exhausted — retrying from Tier 1 in ${Math.round(retryMs / 60000)} minutes (backoff).`);
       notifyAdmins(
         api,
         `⛔ ALL ACCOUNT TIERS FAILED\n\n` +
@@ -436,7 +445,7 @@ async function autoRelogin(api, reason) {
       currentTierIdx = 0;
       retryCount     = 0;
       lastAttempt    = Date.now(); // cooldown starts now → next attempt after retryMs
-      // Self-schedule: try again after the cooldown without relying on external triggers
+      // Self-schedule: try again after the backoff without relying on external triggers
       setTimeout(async () => {
         if (!isAttempting) {
           log("info", `Scheduled retry after full exhaustion — starting fresh from Tier 1.`);
@@ -488,7 +497,8 @@ async function autoRelogin(api, reason) {
     const freshState = newApi.getAppState ? newApi.getAppState() : [];
     saveState(stateFullPath, altFullPath, freshState);
 
-    retryCount                = 0;
+    retryCount          = 0;
+    exhaustionBackoffMs = 0; // reset exponential backoff on success
     global.activeAccountTier  = tierInfo.tier;
     global.activeStateFile    = stateFullPath;
     global.activeAltFile      = altFullPath;

@@ -271,6 +271,7 @@ global['getText'] = function(...args) {
   const getLang = global['language'];
   const [moduleName, keyName, ...rest] = args;
 
+  if (!moduleName || typeof moduleName !== 'string') return `[getText] undefined module — key: ${keyName}`;
   if (!getLang[moduleName]) return `${moduleName} - Not found key language: ${keyName}`;
   if (!getLang[moduleName][keyName]) return `${moduleName} - Not found key language: ${keyName}`;
 
@@ -2581,6 +2582,15 @@ async function onBot({ models }) {
     // the transport is established, preventing "Not connected to MQTT" rejections.
     if (!global._mqttReady) global._mqttReady = true;
 
+    // Track per-thread/user activity for memory manager pruning
+    try {
+      const mm = global._memoryManager;
+      if (mm) {
+        if (message && message.threadID) mm.onThreadActivity(message.threadID);
+        if (message && message.senderID) mm.onUserActivity(message.senderID);
+      }
+    } catch (_) {}
+
     // Skip low-value event types
     if (['typ', 'read_receipt', 'presence'].some(t => t == message['type'])) return;
 
@@ -2632,6 +2642,26 @@ async function onBot({ models }) {
     logger.log([
       { message: '[ KEEP-ALIVE ]: ', color: ['red', 'cyan'] },
       { message: `فشل تشغيل نظام إبقاء الجلسة: ${e.message}`, color: 'white' }
+    ]);
+  }
+
+  // ── HTTP Poller (MQTT fallback from DAVID-FINAL) ──────────
+  // Starts automatically if MQTT health check exhausts restarts.
+  // Keeps lastMqttActivity fresh so the bot doesn't go totally dark.
+  try {
+    global._customPoller = require('./ZAO-ENGINE/customPoller');
+    global._customPollerApi = _api;
+  } catch (e) { /* non-fatal */ }
+
+  // ── Memory Manager (stale Map eviction) ──────────────────
+  try {
+    const memMgr = require('./ZAO-ENGINE/memoryManager');
+    memMgr.start();
+    global._memoryManager = memMgr;
+  } catch (e) {
+    logger.log([
+      { message: '[ MEM-MGR ]: ', color: ['red', 'cyan'] },
+      { message: `Failed to start memory manager: ${e.message}`, color: 'white' }
     ]);
   }
 
