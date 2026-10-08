@@ -1,50 +1,43 @@
-# ZAO Bot — Facebook Messenger bot with a web-based admin dashboard
+# Djamel-Fca Messenger bot — Replit runtime
 
 ## Run & Operate
-- **Start**: `npm start` (runs `node Main.js`)
-- **Port**: 5000 (web panel)
-- **Panel password**: set `PANEL_PASSWORD` env var (default: `SainxSain`)
-- **Bot config**: `ZAO-SETTINGS.json`
-- **Facebook session**: `ZAO-STATE.json` (AppState / cookies)
+- **Start**: `npm start` (runs `index.js`, which supervises the Djamel-Fca runtime and the independent Instagram process)
+- **Runtime**: Node.js 22
+- **Dashboard / preview**: port 5000
+- **Dashboard password**: set the `DASHBOARD_PASSWORD` Replit Secret
+- **Djamel-Fca config**: private `config.json`; use `config.example.json` as the safe template
+- **Djamel-Fca Facebook session**: private `sessions/DJAMEL-FCA-STATE.json`
+- **Original ZAO settings/session**: `ZAO-SETTINGS.json` and `sessions/ZAO-STATE.json` remain untouched for rollback
 
 ## Stack
-- **Runtime**: Node.js 20.x
-- **Web panel**: Express + express-session (SSR, no frontend framework)
-- **Bot API**: Built-in HTTP server on port 3001 (internal only)
-- **Database**: SQLite3 via Sequelize ORM (default); optional MongoDB via Mongoose
-- **Facebook API**: `@neoaz07/nkxfca` (unofficial Facebook Chat API over MQTT)
-- **Tier support**: 5 Facebook accounts (tiers 1-5); configurable via `tierLimit` in ZAO-SETTINGS.json
+- **Runtime**: Djamel-Fca Architecte core with the Djamel cookie/session, message, media, polling, dashboard, and protection layers
+- **FCA transport**: the existing `@neoaz07/nkxfca` package, wrapped by `Djamel-fca`; the archive's `@dongdev/fca-unofficial` release was blocked by Replit's package security policy
+- **Dashboard**: Express + Socket.IO with password login and a Replit-compatible UI
+- **Database**: Djamel core JSON store under ignored `database/data/`
+- **Instagram**: the existing `INSTA.js` process continues independently on port 3002
 
 ## Where things live
-- `Main.js` — master launcher, watchdog, web panel HTTP server on port 5000
-- `ZAO.js` — bot child process; Facebook login, command loading, MQTT
-- `SCRIPTS/ZAO-CMDS/` — command modules (one file per command)
-- `SCRIPTS/ZAO-EVTS/` — event handlers
-- `webpanel/zao-server.js` — Express SSR panel (12 tabs)
-- `webpanel/zao-devhub.js` — AI DevHub (5 agents)
-- `includes/` — core library: login, labyrinth (E2EE), protection, utils
-- `DB/` — Sequelize/Mongoose models and controllers
-- `ZAO-SETTINGS.json` — all bot configuration (source of truth)
-- `ZAO-STATE.json` — active Facebook session cookies (tier 1)
-- `data/` — runtime state (active tier, group cache, etc.)
-- `backups/` — timestamped cookie snapshots
+- `index.js` — process supervisor for Djamel-Fca and the independent Instagram bot
+- `core-runtime-source.js` — active Facebook login, command, listener, dashboard, and protection runtime
+- `Djamel-fca/` — Djamel cookie parsing, FCA helpers, and media API
+- `src/` — Djamel engine, compatible command bridge, dashboard, media, database, and protection code
+- `SCRIPTS/ZAO-CMDS/` — existing ZAO commands; compatible modules load through the adapter
+- `Main.js`, `ZAO.js`, `ZAO-ENGINE/`, `DB/`, and `webpanel/` — retained old ZAO implementation; not launched by `npm start`
+- `sessions/ZAO-STATE.json` — original tracked session; not modified by the active runtime
+- `sessions/DJAMEL-FCA-STATE.json` — private copied session used by Djamel-Fca
 
 ## Architecture decisions
-- **Two-process watchdog**: `Main.js` spawns `ZAO.js` as a child process so the web panel stays alive even if the bot crashes and restarts
-- **Custom auth**: Panel uses its own session-token auth (no third-party provider); password set via `PANEL_PASSWORD` env var
-- **Atomic writes**: `utils/atomicWrite.js` protects cookie and settings files from corruption on concurrent writes
-- **Tier system**: Multiple Facebook accounts supported; auto-fallback on login failure
-- **Optional API keys**: External service keys (YouTube, Wolfram, weather, etc.) are optional and configured in `ZAO-SETTINGS.json` — bot works without them
+- **Active architecture**: Djamel-Fca is the Facebook runtime; the original ZAO runtime remains in the workspace but is not started by the Replit workflow.
+- **Command compatibility**: command permissions, aliases, replies, reactions, events, and basic user/thread data are adapted. Modules that require ZAO-only engine state are skipped rather than silently run against missing services.
+- **Session safety**: the active runtime writes only its private session copy. The original tracked ZAO session is retained unchanged.
+- **Dashboard authentication**: dashboard API calls require an expiring in-memory token obtained with `DASHBOARD_PASSWORD`.
 
 ## Product
-- Facebook Messenger chatbot responding to ~13 active commands + **Instagram bot** (ZAO-INSTA) running in parallel
-- Real-time web admin panel with 13 Facebook tabs + **ZAO-INSTA sub-panel** (4 pages: overview, threads, commands, settings)
-- Anti-suspension stealth engine (human typing simulation, user-agent rotation, read receipt randomization)
-- End-to-end encryption support via Labyrinth (Signal Protocol / Double Ratchet)
-- MQTT health monitoring with backoff-based reconnection and auto-restart
-- Persistent restart counter and restart history (last 3) stored in `data/restart-stats.json` and `data/restart-history.json`
-- System uptime tracked from first boot in `data/first-start.json` — survives panel/bot restarts
-- Cookie retry loop: when all 5 tiers exhausted, auto-retries every 3 minutes instead of giving up
+- Messenger bot using Djamel-Fca login/session and media helpers
+- Dashboard sections for overview, commands, admins, session, settings, and logs
+- Compatible ZAO commands are loaded from the existing command folder
+- Instagram bot remains a separate child process
+- ZAO-only tier switching, Labyrinth E2EE, and old ZAO dashboard routes are not part of the active Djamel runtime
 
 ## User preferences
 - Simple, everyday language in responses
@@ -61,13 +54,11 @@
 - **Activation**: enter Instagram username + password in panel → ZAO-INSTA → الإعدادات
 
 ## Gotchas
-- The bot needs a valid Facebook AppState (session cookies) in `ZAO-STATE.json` to connect — without it the bot logs a login failure but the web panel still runs
-- API keys for optional integrations (YouTube, Wolfram Alpha, weather, SimSimi, etc.) are reported as missing on startup — this is normal and non-fatal
-- Port 3001 is internal (bot API); only port 5000 is exposed externally
-- `PANEL_PASSWORD` env var controls dashboard access; default is `SainxSain`
-- Tier files for tiers 4 and 5 (`ZAO-STATE4.json`, `ZAO-STATE5.json`, `alt4.json`, `alt5.json`) exist as empty placeholders — upload valid cookie JSON to activate them, then set `tierLimit` in the Tier Settings tab
-- `data/first-start.json` is written once on the very first run and never overwritten — it's the base for "total system uptime"
-- All documentation is now merged into `ZAO.md` (6047 lines); `replit.md` is the short project overview
+- The dashboard serves on port 5000 for the Replit preview. The original Railway split-port settings are not used by this workflow.
+- Facebook login requires a valid AppState in `sessions/DJAMEL-FCA-STATE.json`; the dashboard remains available when Facebook is offline.
+- `DASHBOARD_PASSWORD` must be saved in Replit Secrets before dashboard sign-in will work. The sample `CHANGE_ME` value is rejected.
+- The archive's `@dongdev/fca-unofficial` package is not installed because Replit's security policy blocked it; the compatible Djamel wrapper uses the existing FCA library instead.
+- Some ZAO commands that depend on ZAO-only engines or globals are intentionally skipped by the command adapter.
 
 ## Pointers
 - Workflows skill: `.local/skills/workflows/SKILL.md`

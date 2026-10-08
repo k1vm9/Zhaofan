@@ -1,18 +1,24 @@
 {
   "name": "zao-bot",
   "version": "1.9.0",
-  "description": "ZAO Facebook Messenger Bot with web admin panel",
-  "main": "Main.js",
+  "description": "Djamel-Fca Messenger bot foundation with compatible ZAO commands",
+  "main": "index.js",
   "scripts": {
-    "start": "node Main.js"
+    "start": "node index.js",
+    "test": "node --test",
+    "lint": "node --check index.js && node --check core-runtime-source.js"
   },
   "engines": {
-    "node": ">=20.0.0"
+    "node": ">=22.0.0"
   },
   "overrides": {
-    "form-data": "^4.0.5"
+    "form-data": "^4.0.5",
+    "proxy-addr": "^2.0.8",
+    "tar": "^7.5.22"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0",
+    "@distube/ytdl-core": "^4.16.12",
     "@faker-js/faker": "^10.4.0",
     "@neoaz07/nkxfca": "^1.0.10",
     "adm-zip": "^0.5.17",
@@ -30,9 +36,11 @@
     "express-fileupload": "^1.5.2",
     "express-rate-limit": "^8.5.2",
     "express-session": "^1.19.0",
+    "ffmpeg-static": "^5.3.0",
     "form-data": "^4.0.5",
     "freeport": "^1.0.5",
     "fs-extra": "^11.3.5",
+    "gif-encoder": "^0.7.2",
     "googleapis": "^171.4.0",
     "gradient-string": "^3.0.0",
     "graphql-query-to-json": "^2.0.6",
@@ -57,12 +65,16 @@
     "qrcode": "^1.5.4",
     "request": "^2.88.2",
     "sequelize": "^6.37.8",
+    "sharp": "^0.34.4",
+    "socket.io": "^4.8.3",
+    "spotify-url-info": "^3.3.3",
     "sqlite3": "^6.0.1",
     "string-similarity": "^4.0.4",
     "tough-cookie": "^6.0.1",
     "undici": "^7.27.2",
     "user-agents": "^2.1.86",
     "websocket-stream": "^5.5.2",
+    "youtube-dl-exec": "^3.1.15",
     "youtubei.js": "^17.0.1",
     "yt-search": "^2.13.1"
   }

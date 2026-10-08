@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Djamel-Fca Control</title>
+  <link rel="stylesheet" href="/assets/css/core.css">
+</head>
+<body>
+  <main class="page">
+    <section id="loginView" class="login-wrap" aria-labelledby="loginTitle">
+      <form id="loginForm" class="login-card">
+        <div class="brand-mark" aria-hidden="true">D</div>
+        <p class="eyebrow">CORE BY DJAMEL</p>
+        <h1 id="loginTitle">Djamel-Fca Control</h1>
+        <p class="muted">Sign in to manage the bot runtime.</p>
+        <label for="loginPassword">Dashboard password</label>
+        <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
+        <button class="button primary wide" type="submit">Sign in</button>
+        <p id="loginMessage" class="notice" role="status" aria-live="polite"></p>
+      </form>
+    </section>
+
+    <section id="appView" class="app-shell" hidden>
+      <header class="topbar">
+        <a class="brand" href="/" aria-label="Djamel-Fca home">
+          <span class="brand-mark small" aria-hidden="true">D</span>
+          <span><strong>Djamel-Fca</strong><small>Architecte Core</small></span>
+        </a>
+        <div class="top-actions">
+          <span id="connectionState" class="connection"><i></i> Checking</span>
+          <button id="logoutButton" class="button subtle" type="button">Sign out</button>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <nav class="sidebar" aria-label="Dashboard sections">
+          <p class="nav-label">BOT CONTROL</p>
+          <button class="nav-item active" type="button" data-view="overview">Overview</button>
+          <button class="nav-item" type="button" data-view="commands">Commands</button>
+          <button class="nav-item" type="button" data-view="admins">Admins</button>
+          <button class="nav-item" type="button" data-view="session">Facebook session</button>
+          <button class="nav-item" type="button" data-view="settings">Settings</button>
+          <button class="nav-item" type="button" data-view="logs">Runtime logs</button>
+          <div class="sidebar-footer">Djamel-fca · Messenger runtime</div>
+        </nav>
+
+        <div class="main-content">
+          <section id="view-overview" class="view">
+            <div class="heading-row">
+              <div><p class="eyebrow">SYSTEM</p><h1>Overview</h1><p class="muted">Runtime and protection status.</p></div>
+              <button id="restartButton" class="button primary" type="button">Reconnect Facebook</button>
+            </div>
+            <div class="stat-grid">
+              <article class="stat-card"><span class="stat-label">Bot status</span><strong id="botStatus">Loading</strong><small id="botIdentity">Waiting for runtime</small></article>
+              <article class="stat-card"><span class="stat-label">Commands loaded</span><strong id="commandCount">—</strong><small>Djamel and compatible ZAO commands</small></article>
+              <article class="stat-card"><span class="stat-label">Uptime</span><strong id="uptimeValue">—</strong><small>Since the current runtime boot</small></article>
+              <article class="stat-card"><span class="stat-label">Memory</span><strong id="memoryValue">—</strong><small>JavaScript heap in use</small></article>
+            </div>
+            <article class="panel-card">
+              <div class="panel-heading"><div><h2>Runtime</h2><p class="muted">Djamel-Fca is the active Facebook engine. The original ZAO session and settings remain available for rollback.</p></div></div>
+              <div id="overviewMessage" class="notice" role="status" aria-live="polite"></div>
+            </article>
+          </section>
+
+          <section id="view-commands" class="view" hidden>
+            <div class="heading-row"><div><p class="eyebrow">BOT CONTROL</p><h1>Commands</h1><p class="muted">Commands that loaded successfully in this runtime.</p></div><button id="reloadCommands" class="button subtle" type="button">Refresh</button></div>
+            <article class="panel-card table-wrap"><table><thead><tr><th>Command</th><th>Category</th><th>Access</th><th>Description</th></tr></thead><tbody id="commandRows"><tr><td colspan="4" class="muted">Loading…</td></tr></tbody></table></article>
+          </section>
+
+          <section id="view-admins" class="view" hidden>
+            <div class="heading-row"><div><p class="eyebrow">ACCESS</p><h1>Admins</h1><p class="muted">Facebook IDs are kept as strings to avoid changing long IDs.</p></div></div>
+            <form id="adminsForm" class="panel-card form-grid">
+              <label>Owner ID<input id="ownerID" inputmode="numeric" autocomplete="off"></label>
+              <label>Bot admin IDs, one per line<textarea id="adminIDs" rows="6" spellcheck="false"></textarea></label>
+              <label>Super-admin IDs, one per line<textarea id="superAdminIDs" rows="4" spellcheck="false"></textarea></label>
+              <div class="form-actions"><button class="button primary" type="submit">Save admins</button><span id="adminsMessage" class="notice" role="status"></span></div>
+            </form>
+          </section>
+
+          <section id="view-session" class="view" hidden>
+            <div class="heading-row"><div><p class="eyebrow">ACCOUNT</p><h1>Facebook session</h1><p class="muted">Paste a valid AppState or supported cookie format. The existing ZAO session file is left unchanged.</p></div></div>
+            <form id="sessionForm" class="panel-card form-grid">
+              <label>AppState / cookies<textarea id="sessionValue" rows="10" autocomplete="off" spellcheck="false" required></textarea></label>
+              <div class="notice warning">Submitting replaces the Djamel-Fca session copy and starts a new Facebook login.</div>
+              <div class="form-actions"><button class="button primary" type="submit">Save session and reconnect</button><span id="sessionMessage" class="notice" role="status"></span></div>
+            </form>
+          </section>
+
+          <section id="view-settings" class="view" hidden>
+            <div class="heading-row"><div><p class="eyebrow">CONFIGURATION</p><h1>Settings</h1><p class="muted">Edit the Djamel-Fca runtime configuration as JSON. Dashboard credentials are not returned or editable here.</p></div></div>
+            <form id="settingsForm" class="panel-card form-grid">
+              <label>Runtime configuration<textarea id="configValue" rows="22" spellcheck="false" required></textarea></label>
+              <div class="form-actions"><button class="button primary" type="submit">Save settings</button><span id="settingsMessage" class="notice" role="status"></span></div>
+            </form>
+          </section>
+
+          <section id="view-logs" class="view" hidden>
+            <div class="heading-row"><div><p class="eyebrow">DIAGNOSTICS</p><h1>Runtime logs</h1><p class="muted">Recent messages from the bot and dashboard process.</p></div><button id="refreshLogs" class="button subtle" type="button">Refresh logs</button></div>
+            <pre id="logOutput" class="log-output" aria-live="polite">Loading…</pre>
+          </section>
+        </div>
+      </div>
+    </section>
+  </main>
+  <script src="/assets/js/core.js" defer></script>
+</body>
+</html>

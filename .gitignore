@@ -42,6 +42,12 @@ build/Release
 node_modules/
 jspm_packages/
 
+# Djamel-Fca runtime credentials/config
+config.json
+account.txt
+sessions/DJAMEL-FCA-STATE.json
+database/data/
+
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/
 
