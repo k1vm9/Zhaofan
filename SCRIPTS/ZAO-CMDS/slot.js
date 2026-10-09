@@ -1,5 +1,6 @@
 const fs = require("fs-extra");
 const path = require("path");
+const { atomicWriteJsonSync } = require("../../utils/atomicWrite");
 
 const SLOT_FILE = path.join(__dirname, "../../data/slot.json");
 const STARTING_BALANCE = 500;
@@ -17,7 +18,7 @@ function loadData() {
 function saveData(data) {
   try {
     fs.ensureDirSync(path.dirname(SLOT_FILE));
-    fs.writeFileSync(SLOT_FILE, JSON.stringify(data, null, 2), "utf8");
+    atomicWriteJsonSync(SLOT_FILE, data);
   } catch (e) { console.error("[slot.js:save]", e.message); }
 }
 

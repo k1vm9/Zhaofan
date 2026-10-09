@@ -59,7 +59,9 @@ module.exports.run = async function ({ api, event }) {
   const heapTot  = _fmtMem(mem.heapTotal);
   const rss      = _fmtMem(mem.rss);
 
-  const cmdCount = global['client']?.commands?.size ?? '—';
+  const cmdCount = global.client?.commands
+    ? new Set(global.client.commands.values()).size
+    : '—';
 
   let mqttStatus = '—';
   try {
@@ -70,27 +72,8 @@ module.exports.run = async function ({ api, event }) {
     }
   } catch (_) {}
 
-  let stealthStatus = '—';
-  try {
-    const stv2 = require('../../ZAO-ENGINE/stealthEngineV2');
-    stealthStatus = stv2.isRunning() ? '🟢 يعمل' : '🔴 متوقف';
-  } catch (_) {
-    try {
-      const stv2 = require('../ZAO-ENGINE/stealthEngineV2');
-      stealthStatus = stv2.isRunning() ? '🟢 يعمل' : '🔴 متوقف';
-    } catch (_) {}
-  }
-
-  const tierFile = (() => {
-    try {
-      const d = require('fs').readFileSync('data/activeTier.json', 'utf8');
-      const t = JSON.parse(d);
-      return `Tier ${t.tier ?? '?'}`;
-    } catch (_) { return 'Tier 1'; }
-  })();
-
   const lines = [
-    `🏓 ZAO Bot — فحص الصحة`,
+    `🏓 Djamel-Fca — فحص الصحة`,
     ``,
     `⚡ الاستجابة : ${rtt}ms  ${rttLabel}`,
     `⏱️ مدة التشغيل: ${uptime}`,
@@ -100,8 +83,8 @@ module.exports.run = async function ({ api, event }) {
     `   RSS  : ${rss}`,
     ``,
     `📡 MQTT      : ${mqttStatus}`,
-    `🛡️ Stealth   : ${stealthStatus}`,
-    `🔑 الحساب   : ${tierFile}`,
+    `🔑 Facebook : ${global._botApi ? '🟢 متصل' : '🔴 غير متصل'}`,
+    `⚙️ Runtime  : Djamel-Fca`,
     `📋 الأوامر   : ${cmdCount} أمر`,
     `⚙️ Node.js   : ${process.version}`,
   ];

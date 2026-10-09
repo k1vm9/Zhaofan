@@ -18,9 +18,8 @@ module.exports.onLoad = () => {
   global.lockBot = false;
 };
 
-module.exports.run = async function ({ api, event, permssion }) {
+module.exports.run = async function ({ api, event, args = [], permssion }) {
   const { threadID, messageID } = event;
-  const args = event.body.trim().split(/ +/).slice(1);
 
   if (permssion < 2) return api.sendMessage("⛔ هذا الأمر خاص بأدمن البوت فقط.", threadID, messageID);
   if (!args[0]) return api.sendMessage("📌 الاستخدام: قفل تفعيل | قفل ايقاف", threadID, messageID);

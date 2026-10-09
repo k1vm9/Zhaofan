@@ -1,16 +1,13 @@
 /**
- * Command: Anti-Detection Control Panel
- * Allows admins to view and manage anti-detection settings
+ * Djamel-Fca runtime status for the protections it actually provides.
+ * User-agent changes are applied at the next login, not to a live session.
  */
-
-const antiDetection = require('../../ZAO-ENGINE/AntiDetectionEnhanced');
-const rateLimiter = require('../../ZAO-ENGINE/EnhancedRateLimiter');
 
 module.exports = {
   config: {
     name: 'antdetect',
     hasPermssion: 2,
-    description: 'View and manage anti-detection settings',
+    description: 'View Djamel-Fca connection and message-protection settings',
     commandCategory: 'إدارة البوت',
     usages: '[status|settings|ua|presence]',
     cooldowns: 0,
@@ -18,71 +15,47 @@ module.exports = {
   
   run: async function({ message, args, api, event }) {
     const command = args[0]?.toLowerCase() || 'status';
-    
-    try {
-      switch (command) {
-        case 'status': {
-          const status = antiDetection.getStatus();
-          const rateLimitStatus = rateLimiter.getStatus();
-          
-          let msg = '🛡️ ANTI-DETECTION STATUS\n\n';
-          msg += `📱 Current User-Agent:\n${status.currentUA}\n\n`;
-          msg += `👤 Presence: ${status.currentPresence}\n\n`;
-          msg += `⚙️ Rate Limiting:\n`;
-          msg += `├ Threads Tracked: ${rateLimitStatus.threadsTracked}\n`;
-          msg += `├ Users Tracked: ${rateLimitStatus.usersTracked}\n`;
-          msg += `├ Global Queue: ${rateLimitStatus.globalQueue}\n`;
-          msg += `└ Burst Active: ${rateLimitStatus.burstActive ? '🔥 YES' : '✅ NO'}\n`;
-          
-          return api.sendMessage(msg, event.threadID);
-        }
-        
-        case 'ua': {
-          antiDetection.rotateUA();
-          const newUA = antiDetection.getCurrentUA();
-          return api.sendMessage(
-            `✅ User-Agent rotated:\n${newUA}`,
-            event.threadID
-          );
-        }
-        
-        case 'settings': {
-          const config = global.config?.rateLimiting || {};
-          
-          let msg = '⚙️ ANTI-DETECTION SETTINGS\n\n';
-          msg += `Per-Thread:\n`;
-          msg += `├ Max Messages: ${config.perThread?.maxMessages || 15}\n`;
-          msg += `├ Window: ${config.perThread?.windowMinutes || 5}min\n\n`;
-          msg += `Global:\n`;
-          msg += `├ Max Messages: ${config.global?.maxMessages || 50}\n`;
-          msg += `├ Window: ${config.global?.windowMinutes || 10}min\n\n`;
-          msg += `Per-User:\n`;
-          msg += `├ Max Commands: ${config.perUser?.maxCommands || 20}\n`;
-          msg += `├ Window: ${config.perUser?.windowMinutes || 5}min\n\n`;
-          msg += `Burst Cooling:\n`;
-          msg += `├ Trigger Count: ${config.burstCooling?.triggerCount || 3}\n`;
-          msg += `├ Min Cooling: ${config.burstCooling?.coolingMinMinutes || 2}min\n`;
-          msg += `└ Max Cooling: ${config.burstCooling?.coolingMaxMinutes || 6}min`;
-          
-          return api.sendMessage(msg, event.threadID);
-        }
-        
-        case 'help':
-        default: {
-          let msg = '🛡️ ANTI-DETECTION COMMANDS\n\n';
-          msg += '/antdetect status - Show current status\n';
-          msg += '/antdetect ua - Rotate user-agent\n';
-          msg += '/antdetect settings - Show current settings\n';
-          msg += '/antdetect help - Show this help\n';
-          
-          return api.sendMessage(msg, event.threadID);
-        }
-      }
-    } catch (error) {
+    const cfg = global.config || {};
+    const rateLimit = cfg.rateLimit || {};
+    const throttle = cfg.outgoingThrottle || {};
+
+    if (command === "ua") {
       return api.sendMessage(
-        `❌ Error: ${error.message}`,
-        event.threadID
+        "User-Agent is selected at Facebook login. Update facebookAccount.userAgent in the dashboard, then reconnect.",
+        event.threadID,
+        event.messageID,
       );
     }
+
+    if (command === "settings") {
+      return api.sendMessage(
+        `🛡️ Djamel-Fca protection settings\n\n` +
+        `Message limit: ${rateLimit.maxMessagesPerWindow || 8} per ${rateLimit.windowMs || 6000}ms\n` +
+        `Outgoing pacing: ${JSON.stringify(throttle)}\n` +
+        `Poll interval: ${cfg.pollIntervalMs || 6000}ms`,
+        event.threadID,
+        event.messageID,
+      );
+    }
+
+    if (command === "status") {
+      return api.sendMessage(
+        `🛡️ Djamel-Fca runtime\n\n` +
+        `Facebook: ${global._botApi ? "connected" : "offline"}\n` +
+        `Command flood limit: ${rateLimit.maxMessagesPerWindow || 8} messages / ${rateLimit.windowMs || 6000}ms\n` +
+        `Outgoing pacing: configured\n` +
+        `User-Agent: fixed for the current login`,
+        event.threadID,
+        event.messageID,
+      );
+    }
+
+    return api.sendMessage(
+      "/antdetect status — connection and protection summary\n" +
+      "/antdetect settings — active rate/pacing settings\n" +
+      "/antdetect ua — how to change the next login's User-Agent",
+      event.threadID,
+      event.messageID,
+    );
   }
 };

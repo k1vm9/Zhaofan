@@ -103,7 +103,7 @@ function registerCommand(commands, name, cmd) {
 
 const SUPPORTED_LEGACY_GLOBALS = new Set([
   "config", "client", "commands", "commandPrefix", "utils", "log", "ownerID",
-  "botUserID", "_botApi", "lastMqttActivity", "lastMqttOnlyActivity",
+  "botUserID", "_botApi", "lastMqttActivity", "lastMqttOnlyActivity", "data", "lockBot",
 ]);
 
 const SUPPORTED_LEGACY_DATA_KEYS = new Set([
@@ -111,17 +111,12 @@ const SUPPORTED_LEGACY_DATA_KEYS = new Set([
   "userData", "userName", "userBanned", "threadBanned", "threadAllowNSFW",
 ]);
 
-function getLegacyUnsupportedGlobals(source, { allowData = false } = {}) {
+function getLegacyUnsupportedGlobals(source) {
   const refs = [...source.matchAll(/\bglobal(?:\.([A-Za-z_$][\w$]*)|\[\s*(['"])([^'"]+)\2\s*\])/g)]
     .map(match => match[1] || match[3]);
-  const supported = allowData
-    ? new Set([...SUPPORTED_LEGACY_GLOBALS, "data"])
-    : SUPPORTED_LEGACY_GLOBALS;
-  const unsupported = refs.filter(ref => !supported.has(ref));
-  if (allowData) {
-    const dataRefs = [...source.matchAll(/\bglobal\.data\.([A-Za-z_$][\w$]*)/g)].map(match => match[1]);
-    unsupported.push(...dataRefs.filter(ref => !SUPPORTED_LEGACY_DATA_KEYS.has(ref)));
-  }
+  const unsupported = refs.filter(ref => !SUPPORTED_LEGACY_GLOBALS.has(ref));
+  const dataRefs = [...source.matchAll(/\bglobal\.data(?:\?\.|\.)([A-Za-z_$][\w$]*)/g)].map(match => match[1]);
+  unsupported.push(...dataRefs.filter(ref => !SUPPORTED_LEGACY_DATA_KEYS.has(ref)));
   return [...new Set(unsupported)];
 }
 
@@ -139,7 +134,7 @@ function loadLegacyEvents(dir) {
     const absPath = path.join(absDir, file);
     try {
       const source = fs.readFileSync(absPath, "utf8");
-      const unsupported = getLegacyUnsupportedGlobals(source, { allowData: true });
+      const unsupported = getLegacyUnsupportedGlobals(source);
       if (unsupported.length) {
         console.log(`  ↷ ${file}: event not carried over (runtime globals: ${unsupported.join(", ")})`);
         skipped++;

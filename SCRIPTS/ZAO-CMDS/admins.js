@@ -1,52 +1,22 @@
 const fs = require("fs-extra");
-const path = require("path");
-const { atomicWriteJsonSync } = require("../../utils/atomicWrite");
-const runtimePersist = require("../../ZAO-ENGINE/runtimePersist");
-
-const SETTINGS_PATH = path.join(process.cwd(), "ZAO-SETTINGS.json");
+const { CONFIG_PATH } = require("../../src/utils/runtimePaths");
+const { mergeLegacySettings } = require("../../src/utils/zaoCompatibility");
+const { extractAdminTargetIds, updateAdminIds } = require("../../src/utils/adminManagement");
 
 function loadSettings() {
-  return fs.readJsonSync(SETTINGS_PATH);
+  return fs.readJsonSync(CONFIG_PATH);
 }
 
 function saveSettings(cfg) {
-  // atomicWriteJsonSync writes to a temp file, fsyncs, then renames — so a
-  // crash mid-write can never leave ZAO-SETTINGS.json empty or half-written.
-  atomicWriteJsonSync(SETTINGS_PATH, cfg);
-}
-
-function uniqStrings(arr) {
-  const out = [];
-  const seen = new Set();
-  for (const v of arr) {
-    const s = String(v);
-    if (!s) continue;
-    if (seen.has(s)) continue;
-    seen.add(s);
-    out.push(s);
-  }
-  return out;
-}
-
-function extractTargetIds(event, args) {
-  const ids = new Set();
-
-  try {
-    if (event?.messageReply?.senderID) ids.add(String(event.messageReply.senderID));
-  } catch (_) {}
-
-  try {
-    if (event?.mentions && typeof event.mentions === "object") {
-      for (const k of Object.keys(event.mentions)) ids.add(String(k));
-    }
-  } catch (_) {}
-
-  for (const a of args) {
-    if (!a) continue;
-    if (/^\d{5,}$/.test(a)) ids.add(String(a));
-  }
-
-  return Array.from(ids);
+  const temp = `${CONFIG_PATH}.admin-${process.pid}-${Date.now()}`;
+  fs.ensureDirSync(require("path").dirname(CONFIG_PATH));
+  fs.writeFileSync(temp, JSON.stringify(cfg, null, 2), { encoding: "utf8", mode: 0o600 });
+  fs.renameSync(temp, CONFIG_PATH);
+  try { fs.chmodSync(CONFIG_PATH, 0o600); } catch (_) {}
+  global.GoatBot.config = cfg;
+  global.config = mergeLegacySettings(cfg);
+  global.ownerID = String(cfg.ownerID || "");
+  global.commandPrefix = cfg.prefix || "/";
 }
 
 module.exports.config = {
@@ -85,80 +55,56 @@ module.exports.run = async function ({ api, event, args, permssion }) {
   try {
     cfg = loadSettings();
   } catch (e) {
-    return api.sendMessage("❌ فشل قراءة ZAO-SETTINGS.json", threadID, messageID);
+    return api.sendMessage("❌ تعذرت قراءة إعدادات Djamel-Fca.", threadID, messageID);
   }
 
-  cfg.ADMINBOT = uniqStrings(cfg.ADMINBOT || []);
+  cfg.adminBot = Array.isArray(cfg.adminBot) ? cfg.adminBot.map(String) : [];
 
   if (sub === "list" || sub === "-l") {
-    const admins = cfg.ADMINBOT;
+    const admins = cfg.adminBot;
     if (!admins.length) return api.sendMessage("📭 لا يوجد أدمن حالياً.", threadID, messageID);
     return api.sendMessage("👑 أدمن البوت:\n" + admins.map((id, i) => `${i + 1}. ${id}`).join("\n"), threadID, messageID);
   }
 
-  const targetIds = extractTargetIds(event, args.slice(1));
+  const targetIds = extractAdminTargetIds(event, args.slice(1));
   if (!targetIds.length) {
     return api.sendMessage("⚠️ لازم تحدد UID أو تعمل منشن أو ترد على رسالة الشخص.", threadID, messageID);
   }
 
   if (sub === "add" || sub === "-a") {
-    const already = [];
-    const added = [];
-    for (const id of targetIds) {
-      if (cfg.ADMINBOT.includes(id)) already.push(id);
-      else {
-        cfg.ADMINBOT.push(id);
-        added.push(id);
-      }
-    }
-    cfg.ADMINBOT = uniqStrings(cfg.ADMINBOT);
+    const result = updateAdminIds(cfg.adminBot, "add", targetIds, { ownerID: cfg.ownerID, senderID });
+    cfg.adminBot = result.adminBot;
     try {
+      global._selfWriteConfig = true;
       saveSettings(cfg);
-      runtimePersist.setAdmins(cfg.ADMINBOT);
+      setTimeout(() => { global._selfWriteConfig = false; }, 3000);
     } catch (e) {
       return api.sendMessage("❌ فشل حفظ الإعدادات.", threadID, messageID);
     }
 
     let msg = "";
-    if (added.length) msg += "✅ تمت الإضافة:\n" + added.join("\n") + "\n\n";
-    if (already.length) msg += "⚠️ موجودين من قبل:\n" + already.join("\n");
+    if (result.added.length) msg += "✅ تمت الإضافة:\n" + result.added.join("\n") + "\n\n";
+    if (result.already.length) msg += "⚠️ موجودين من قبل:\n" + result.already.join("\n");
     msg = (msg.trim() || "⚠️ لم يتم أي تغيير.");
-    msg += runtimePersist.persistHint(cfg.ADMINBOT);
     return api.sendMessage(msg, threadID, messageID);
   }
 
   if (sub === "remove" || sub === "-r") {
-    const removed = [];
-    const notAdmin = [];
-
-    for (const id of targetIds) {
-      if (!cfg.ADMINBOT.includes(id)) notAdmin.push(id);
-      else {
-        // protect from removing yourself as the last admin
-        if (String(id) === String(senderID) && cfg.ADMINBOT.length === 1) {
-          notAdmin.push(id);
-          continue;
-        }
-        cfg.ADMINBOT.splice(cfg.ADMINBOT.indexOf(id), 1);
-        removed.push(id);
-      }
-    }
-
-    cfg.ADMINBOT = uniqStrings(cfg.ADMINBOT);
-    if (!cfg.ADMINBOT.length) cfg.ADMINBOT = uniqStrings([String(senderID)]);
+    const result = updateAdminIds(cfg.adminBot, "remove", targetIds, { ownerID: cfg.ownerID, senderID });
+    cfg.adminBot = result.adminBot;
 
     try {
+      global._selfWriteConfig = true;
       saveSettings(cfg);
-      runtimePersist.setAdmins(cfg.ADMINBOT);
+      setTimeout(() => { global._selfWriteConfig = false; }, 3000);
     } catch (e) {
       return api.sendMessage("❌ فشل حفظ الإعدادات.", threadID, messageID);
     }
 
     let msg = "";
-    if (removed.length) msg += "✅ تمت الإزالة:\n" + removed.join("\n") + "\n\n";
-    if (notAdmin.length) msg += "⚠️ غير أدمن/لم تتم إزالتهم:\n" + notAdmin.join("\n");
+    if (result.removed.length) msg += "✅ تمت الإزالة:\n" + result.removed.join("\n") + "\n\n";
+    if (result.notAdmin.length) msg += "⚠️ غير أدمن/لم تتم إزالتهم:\n" + result.notAdmin.join("\n");
     msg = (msg.trim() || "⚠️ لم يتم أي تغيير.");
-    msg += runtimePersist.persistHint(cfg.ADMINBOT);
     return api.sendMessage(msg, threadID, messageID);
   }
 };

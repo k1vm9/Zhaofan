@@ -47,6 +47,8 @@ config.json
 account.txt
 sessions/DJAMEL-FCA-STATE.json
 database/data/
+data/slot.json
+data/warn.json
 
 # Snowpack dependency directory (https://snowpack.dev/)
 web_modules/

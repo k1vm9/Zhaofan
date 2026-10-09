@@ -130,8 +130,8 @@ module.exports.run = async function ({ api, event, args }) {
       ? `HTTP ${err.response.status}`
       : (err.message || "خطأ غير معروف");
     try {
-      if (typeof global.loggeryuki?.warn === "function") {
-        global.loggeryuki.warn(`[pinterest] ${reason}`);
+      if (typeof global.log?.warn === "function") {
+        global.log.warn(`[pinterest] ${reason}`);
       }
     } catch (_) {}
     return api.sendMessage(`🚫 خطأ في جلب نتائج بنترست: ${reason}`, threadID, messageID);

@@ -387,22 +387,13 @@ async function buildImage() {
   curY += devH + gap;
 
   // System uptime + bot status card
-  const loginMethodLabel = (() => {
-    const m = global.loginMethod;
-    if (m === 'credentials')   return 'Credentials';
-    if (m === 'appstate-alt')  return 'Alt Cookies';
-    if (m)                     return 'Cookies';
-    return '—';
-  })();
-  const activeTierLabel = `Tier ${global.activeAccountTier || 1}`;
-  const renewMins  = (global.config && global.config.intervalGetNewCookieMinutes) || 1440;
-  const renewLabel = renewMins >= 60 ? `Every ${Math.round(renewMins / 60)}h` : `Every ${renewMins}m`;
+  const pollIntervalMs = Number(global.config?.pollIntervalMs || 6000);
 
   const specRows = [
     ["Uptime",          upStr],
-    ["Login",           `${loginMethodLabel}  (${activeTierLabel})`],
-    ["Cookie Refresh",  renewLabel],
-    ["Pings",           "Auto 8–18 min · Keep-Alive 40–80 min"],
+    ["Facebook",        global._botApi ? "Connected" : "Disconnected"],
+    ["Runtime",         "Djamel-Fca"],
+    ["Poll interval",   `${Math.round(pollIntervalMs / 1000)}s`],
   ];
 
   const upH = 220;

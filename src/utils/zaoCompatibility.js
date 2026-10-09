@@ -193,6 +193,7 @@ function initLegacyState(commands) {
   if (!Array.isArray(global.data.allThreadID)) global.data.allThreadID = [];
   if (!Array.isArray(global.data.allUserID)) global.data.allUserID = [];
   if (!Array.isArray(global.data.allCurrenciesID)) global.data.allCurrenciesID = [];
+  if (typeof global.lockBot !== "boolean") global.lockBot = false;
   const adapters = makeDataAdapters();
   global.Users = adapters.Users;
   global.Threads = adapters.Threads;

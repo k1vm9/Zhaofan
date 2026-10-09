@@ -276,7 +276,7 @@ async function onEventCmds(api, event, commands) {
   // /lock on is a true silent lock: non-admins are ignored before ANY chat hook
   // can answer. This prevents AI/chatmode or another onChat module from
   // accidentally replying while the public command layer is locked.
-  const publicLock = global.GoatBot?.config?.adminOnly?.enable !== false;
+  const publicLock = global.lockBot === true || global.GoatBot?.config?.adminOnly?.enable !== false;
   const prefix = global.GoatBot?.config?.prefix || "/";
   const trimmedBody = body.trimStart();
   if (publicLock && role < 2 && trimmedBody.startsWith(prefix)) return;

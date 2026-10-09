@@ -35,12 +35,12 @@ test("Djamel role is preferred, while compatible legacy commands default to publ
 
 test("unsupported ZAO globals are not silently accepted by the compatibility loader", () => {
   assert.deepEqual(
-    getLegacyUnsupportedGlobals("global.config.PREFIX; global._botApi.sendMessage(); global.GoatBot.config; global.data"),
-    ["GoatBot", "data"],
+    getLegacyUnsupportedGlobals("global.config.PREFIX; global._botApi.sendMessage(); global.GoatBot.config; global.data.missingService"),
+    ["GoatBot", "missingService"],
   );
   assert.deepEqual(getLegacyUnsupportedGlobals("global.client; global.commands; global.commandPrefix"), []);
   assert.deepEqual(
-    getLegacyUnsupportedGlobals("global.data.userName; global.data.missingService", { allowData: true }),
+    getLegacyUnsupportedGlobals("global.data.userName; global.lockBot; global.data.missingService"),
     ["missingService"],
   );
 });

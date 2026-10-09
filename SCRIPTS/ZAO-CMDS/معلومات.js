@@ -21,19 +21,13 @@ module.exports.run = async function ({ api, event }) {
   const m     = Math.floor((upSec % 3600) / 60);
   const s     = upSec % 60;
 
-  const cmdCount    = global.client?.commands?.size ?? "—";
+  const cmdCount    = global.client?.commands
+    ? new Set(global.client.commands.values()).size
+    : "—";
   const threadCount = global.data?.allThreadID?.length ?? "—";
-  const botName     = global.config?.BOTNAME || global.config?.BOT_NAME || "ZAO";
-  const prefix      = global.config?.PREFIX  || ".";
-  const adminCount  = (global.config?.ADMINBOT || []).length;
-
-  const tier        = global.activeAccountTier  || "—";
-  const loginMethod = global.loginMethod         || "—";
-  const methodLabel = loginMethod === "credentials"
-    ? "📧 بريد + كلمة مرور"
-    : loginMethod === "appstate-alt"
-    ? "🍪 كوكيز (alt)"
-    : "🍪 كوكيز (رئيسي)";
+  const botName     = global.config?.botName || global.config?.BOTNAME || "Djamel-Fca";
+  const prefix      = global.commandPrefix || global.config?.prefix || global.config?.PREFIX || ".";
+  const adminCount  = (global.config?.adminBot || global.config?.ADMINBOT || []).length;
 
   const freeMem  = (os.freemem()  / 1024 / 1024).toFixed(0);
   const totalMem = (os.totalmem() / 1024 / 1024).toFixed(0);
@@ -58,8 +52,8 @@ module.exports.run = async function ({ api, event }) {
     `💬 المحادثات: ${threadCount}`,
     `👑 الأدمن: ${adminCount}`,
     "",
-    `🔑 طريقة الدخول: ${methodLabel}`,
-    `📊 الطبقة النشطة: ${tier}`,
+    `🔑 Facebook: ${global._botApi ? "متصل" : "غير متصل"}`,
+    `⚙️ المحرك: Djamel-Fca`,
     "",
     `💾 الرام: ${usedMem}MB / ${totalMem}MB (${memPct}%)`,
     `🖥️  ${os.type()} | ${os.cpus().length} أنوية`,
