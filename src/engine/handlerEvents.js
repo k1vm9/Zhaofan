@@ -235,6 +235,25 @@ async function onEventCmds(api, event, commands) {
       }
     }
   }
+  const legacyEventType = event.logMessageType || event.type;
+  for (const eventModule of global.client?.events?.values?.() || []) {
+    const configuredTypes = Array.isArray(eventModule.config?.eventType)
+      ? eventModule.config.eventType
+      : [eventModule.config?.eventType].filter(Boolean);
+    if (!configuredTypes.includes(legacyEventType)) continue;
+    try {
+      await eventModule.run({
+        api,
+        event,
+        ...zaoCompatibility.getLegacyContextData(),
+        client: global.client,
+        globalData: global.db || {},
+        message: buildMessage(api, event),
+      });
+    } catch (error) {
+      global.log?.warn?.("ZAO-EVENT", `${eventModule.config.name}: ${error.message || error}`);
+    }
+  }
 
   if (type === "message_reaction" || type === "message_reaction_remove") {
     await handleLegacyReaction(api, event);

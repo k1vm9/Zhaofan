@@ -147,7 +147,7 @@
       const data = await apiRequest("/api/logs");
       const entries = data.logs || data.entries || data.items || [];
       const lines = Array.isArray(entries)
-        ? entries.map(entry => typeof entry === "string" ? entry : `${entry.ts ? `[${entry.ts}] ` : ""}${entry.text || entry.message || JSON.stringify(entry)}`)
+        ? entries.map(entry => typeof entry === "string" ? entry : `${entry.ts ? `[${entry.ts}] ` : ""}${entry.line || entry.text || entry.message || JSON.stringify(entry)}`)
         : [typeof entries === "string" ? entries : JSON.stringify(entries, null, 2)];
       output.textContent = lines.join("\n") || "No log entries yet.";
       output.scrollTop = output.scrollHeight;

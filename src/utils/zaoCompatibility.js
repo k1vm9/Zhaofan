@@ -20,8 +20,10 @@ function readLegacySettings() {
 function mergeLegacySettings(config = {}) {
   const old = readLegacySettings();
   const prefix = String(config.prefix || old.PREFIX || ".");
-  const ownerID = String(config.ownerID || old.OWNERID || "");
-  const adminBot = Array.isArray(config.adminBot) && config.adminBot.length
+  const ownerID = Object.hasOwn(config, "ownerID")
+    ? String(config.ownerID || "")
+    : String(old.OWNERID || "");
+  const adminBot = Array.isArray(config.adminBot)
     ? config.adminBot.map(String)
     : (Array.isArray(old.ADMINBOT) ? old.ADMINBOT.map(String) : []);
   const botName = config.botName && config.botName !== "My Bot"
@@ -38,7 +40,7 @@ function mergeLegacySettings(config = {}) {
     prefix,
     ownerID,
     adminBot,
-    superAdminBot: Array.isArray(config.superAdminBot) && config.superAdminBot.length
+    superAdminBot: Array.isArray(config.superAdminBot)
       ? config.superAdminBot.map(String)
       : (ownerID ? [ownerID] : []),
     botName,
@@ -239,6 +241,23 @@ function runLegacyLoadHooks(api, commands) {
       }
     } catch (error) {
       global.log?.warn?.("ZAO-COMPAT", `${cmd.config.name} onLoad: ${error.message}`);
+    }
+  }
+  for (const event of global.client?.events?.values?.() || []) {
+    if (typeof event.onLoad !== "function") continue;
+    try {
+      const result = event.onLoad({
+        api,
+        ...adapters,
+        models: {},
+        globalData: global.db || {},
+        client: global.client,
+      });
+      if (result && typeof result.then === "function") {
+        result.catch(error => global.log?.warn?.("ZAO-COMPAT", `${event.config.name} onLoad: ${error.message}`));
+      }
+    } catch (error) {
+      global.log?.warn?.("ZAO-COMPAT", `${event.config.name} onLoad: ${error.message}`);
     }
   }
 }

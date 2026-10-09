@@ -31,6 +31,7 @@ if (typeof loginFCA !== "function") {
 }
 const axios    = require("axios");
 const media    = require("./lib/media");
+const { parseCookieInput, dedup, cookiesToString, hasMandatory } = require("./lib/cookies");
 
 // ─── User-Agent Pool ──────────────────────────────────────────────────────────
 const UA_POOL = [
@@ -48,82 +49,6 @@ const UA_POOL = [
 let _uaIdx = Math.floor(Math.random() * UA_POOL.length);
 const getUA    = () => UA_POOL[_uaIdx];
 const rotateUA = () => { _uaIdx = (_uaIdx + 1) % UA_POOL.length; return UA_POOL[_uaIdx]; };
-
-// ─── Cookie Parser — supports 5 formats ──────────────────────────────────────
-
-function parseCookieInput(raw) {
-  if (!raw) return { cookies: [], raw: "" };
-  const text = String(raw).trim();
-
-  // 1. JSON Array (standard AppState)
-  if (text.startsWith("[")) {
-    try {
-      const arr = JSON.parse(text);
-      if (Array.isArray(arr) && arr.length && (arr[0]?.key || arr[0]?.name)) {
-        const mapped = arr.map(c => ({
-          key: c.key || c.name, value: c.value || "",
-          domain: c.domain || ".facebook.com", path: c.path || "/",
-          secure: c.secure ?? true, httpOnly: c.httpOnly ?? false, sameSite: c.sameSite || "None",
-        })).filter(c => c.key);
-        return { cookies: dedup(mapped), raw: text };
-      }
-    } catch (_) {}
-  }
-
-  // 2. c3c JSON Object { cookies: [...] }
-  if (text.startsWith("{")) {
-    try {
-      const obj = JSON.parse(text);
-      if (Array.isArray(obj.cookies)) {
-        const mapped = obj.cookies.map(c => ({
-          key: c.name || c.key || "", value: c.value || "",
-          domain: c.domain || ".facebook.com", path: c.path || "/",
-          secure: c.secure ?? true, httpOnly: c.httpOnly ?? false, sameSite: c.sameSite || "None",
-        })).filter(c => c.key);
-        return { cookies: dedup(mapped), raw: text };
-      }
-      // Single cookie obj
-      if (obj.key && obj.value) return { cookies: dedup([obj]), raw: text };
-      // Android fbsettings format: { "c_user": "123", "xs": "abc" }
-      const keys = ["c_user","xs","fr","wd","datr","sb","m_sess","spin"];
-      const found = Object.entries(obj).filter(([k]) => keys.some(kk => k === kk || k.toLowerCase() === kk));
-      if (found.length > 0) {
-        const mapped = found.map(([k,v]) => ({ key: k, value: String(v),
-          domain: ".facebook.com", path: "/", secure: true, httpOnly: false, sameSite: "None" }));
-        return { cookies: dedup(mapped), raw: text };
-      }
-    } catch (_) {}
-  }
-
-  // 3. Netscape / Header string: key=value; key2=value2
-  if (text.includes("=")) {
-    const pairs = text.split(/;\s*/g).filter(Boolean);
-    const mapped = pairs.map(p => {
-      const i = p.indexOf("=");
-      if (i < 1) return null;
-      return { key: p.slice(0,i).trim(), value: p.slice(i+1).trim(),
-               domain: ".facebook.com", path: "/", secure: true, httpOnly: false, sameSite: "None" };
-    }).filter(Boolean);
-    if (mapped.length > 0) return { cookies: dedup(mapped), raw: text };
-  }
-
-  return { cookies: [], raw: text };
-}
-
-function dedup(cookies) {
-  const seen = new Map();
-  for (const c of cookies) { if (c.key) seen.set(c.key, c); }
-  return [...seen.values()];
-}
-
-function cookiesToString(cookies) {
-  return cookies.map(c => `${c.key}=${c.value}`).join("; ");
-}
-
-function hasMandatory(cookies) {
-  const keys = new Set(cookies.map(c => c.key));
-  return keys.has("c_user") && keys.has("xs");
-}
 
 // ─── Session Validator ────────────────────────────────────────────────────────
 

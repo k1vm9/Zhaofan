@@ -18,7 +18,7 @@ function loadCommands(dirs) {
       log.warn("LOADER", `مجلد الأوامر غير موجود: ${absDir}`);
       continue;
     }
-    const files = fs.readdirSync(absDir).filter(f => f.endsWith(".js") && !f.startsWith("_"));
+    const files = fs.readdirSync(absDir).filter(f => f.endsWith(".js") && !f.startsWith("_") && f !== "index.js");
     const isLegacyZAO = path.relative(process.cwd(), absDir).split(path.sep).join("/") === "SCRIPTS/ZAO-CMDS";
 
     console.log();
@@ -106,10 +106,81 @@ const SUPPORTED_LEGACY_GLOBALS = new Set([
   "botUserID", "_botApi", "lastMqttActivity", "lastMqttOnlyActivity",
 ]);
 
-function getLegacyUnsupportedGlobals(source) {
+const SUPPORTED_LEGACY_DATA_KEYS = new Set([
+  "allThreadID", "allUserID", "allCurrenciesID", "threadInfo", "threadData",
+  "userData", "userName", "userBanned", "threadBanned", "threadAllowNSFW",
+]);
+
+function getLegacyUnsupportedGlobals(source, { allowData = false } = {}) {
   const refs = [...source.matchAll(/\bglobal(?:\.([A-Za-z_$][\w$]*)|\[\s*(['"])([^'"]+)\2\s*\])/g)]
     .map(match => match[1] || match[3]);
-  return [...new Set(refs.filter(ref => !SUPPORTED_LEGACY_GLOBALS.has(ref)))];
+  const supported = allowData
+    ? new Set([...SUPPORTED_LEGACY_GLOBALS, "data"])
+    : SUPPORTED_LEGACY_GLOBALS;
+  const unsupported = refs.filter(ref => !supported.has(ref));
+  if (allowData) {
+    const dataRefs = [...source.matchAll(/\bglobal\.data\.([A-Za-z_$][\w$]*)/g)].map(match => match[1]);
+    unsupported.push(...dataRefs.filter(ref => !SUPPORTED_LEGACY_DATA_KEYS.has(ref)));
+  }
+  return [...new Set(unsupported)];
+}
+
+function loadLegacyEvents(dir) {
+  const events = new Map();
+  const absDir = path.resolve(process.cwd(), dir);
+  if (!fs.existsSync(absDir)) return events;
+  const files = fs.readdirSync(absDir)
+    .filter(file => file.endsWith(".js") && !file.startsWith("_") && file !== "index.js")
+    .sort();
+  let skipped = 0;
+  let antioutLoaded = false;
+
+  for (const file of files) {
+    const absPath = path.join(absDir, file);
+    try {
+      const source = fs.readFileSync(absPath, "utf8");
+      const unsupported = getLegacyUnsupportedGlobals(source, { allowData: true });
+      if (unsupported.length) {
+        console.log(`  ↷ ${file}: event not carried over (runtime globals: ${unsupported.join(", ")})`);
+        skipped++;
+        continue;
+      }
+      delete require.cache[absPath];
+      const event = require(absPath);
+      const types = Array.isArray(event?.config?.eventType)
+        ? event.config.eventType
+        : (event?.config?.eventType ? [event.config.eventType] : []);
+      if (!event?.config?.name || typeof event.run !== "function" || !types.length) {
+        console.log(`  ↷ ${file}: event not carried over (incomplete event definition)`);
+        skipped++;
+        continue;
+      }
+      const name = String(event.config.name);
+      if (events.has(name)) {
+        console.log(`  ↷ ${file}: duplicate event name`);
+        skipped++;
+        continue;
+      }
+      const antiout = /anti[\s_-]?out|منع[\s_-]?الخروج/i.test(
+        `${file} ${name} ${event.config.description || ""}`,
+      );
+      if (antiout && antioutLoaded) {
+        console.log(`  ↷ ${file}: duplicate anti-out handler`);
+        skipped++;
+        continue;
+      }
+      if (antiout) antioutLoaded = true;
+      event.__legacyZAO = true;
+      event.__sourcePath = absPath;
+      events.set(name, event);
+      console.log(`  ✓ legacy event: ${name}`);
+    } catch (error) {
+      console.log(`  ✗ ${file}: ${error.message}`);
+      skipped++;
+    }
+  }
+  console.log(`  Legacy events loaded: ${events.size}${skipped ? `, skipped: ${skipped}` : ""}`);
+  return events;
 }
 
 function hotReloadCommand(absPath) {
@@ -127,4 +198,4 @@ function hotReloadCommand(absPath) {
   } catch (e) { return { ok: false, error: e.message }; }
 }
 
-module.exports = { loadCommands, hotReloadCommand, getLegacyUnsupportedGlobals, normalizeCommand };
+module.exports = { loadCommands, loadLegacyEvents, hotReloadCommand, getLegacyUnsupportedGlobals, normalizeCommand };

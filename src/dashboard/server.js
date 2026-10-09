@@ -15,6 +15,7 @@ const chalk      = require("chalk");
 const crypto     = require("crypto");
 const os         = require("os");
 const vm         = require("vm");
+const { rateLimit } = require("express-rate-limit");
 const zaoCompatibility = require("../utils/zaoCompatibility");
 
 const { ROOT, ACCOUNT_PATH, CONFIG_PATH } = require("../utils/runtimePaths");
@@ -167,7 +168,7 @@ function getStats() {
     totalCommands: stats.totalCommands,
     activeThreads: stats.activeThreads.size,
     activeUsers:   stats.activeUsers.size,
-    commands:      global.GoatBot?.commands?.size || 0,
+    commands:      new Set(global.GoatBot?.commands?.values?.() || []).size,
     botID:         global.GoatBot?.botID  || null,
     botName:       global.GoatBot?.config?.botName || "Djamel-Fca Architecte V1",
     memMB:         +(mem.heapUsed / 1048576).toFixed(1),
@@ -179,7 +180,7 @@ function getStats() {
 
 // ── Auth middleware ─────────────────────────────────────────────────────────────
 function auth(req, res, next) {
-  const tok = req.headers["x-core-token"] || req.query.token;
+  const tok = req.headers["x-core-token"];
   if (tok && validToken(tok)) return next();
   res.status(401).json({ ok: false, error: "Unauthorized" });
 }
@@ -188,7 +189,13 @@ function auth(req, res, next) {
 function startDashboard(port = 5000, healthPort = null) {
   const app   = express();
   _server     = http.createServer(app);
-  _io         = socketio(_server, { cors: { origin: "*" } });
+  _io         = socketio(_server, { cors: { origin: false } });
+  _io.use((socket, next) => {
+    const token = socket.handshake.auth?.token || socket.handshake.headers["x-core-token"];
+    if (token && validToken(token)) return next();
+    next(new Error("Unauthorized"));
+  });
+  app.set("trust proxy", 1);
 
   app.use(bodyParser.json({ limit: "5mb" }));
   app.use(bodyParser.urlencoded({ extended: true, limit: "5mb" }));
@@ -205,18 +212,23 @@ function startDashboard(port = 5000, healthPort = null) {
   });
 
   // ── Auth ────────────────────────────────────────────────────────────────────
-  app.post("/api/login", (req, res) => {
+  app.post("/api/login", rateLimit({
+    windowMs: 15 * 60 * 1000,
+    limit: 10,
+    standardHeaders: "draft-8",
+    legacyHeaders: false,
+  }), (req, res) => {
     const { password } = req.body;
     const expected = getDashPwd();
     if (expected && expected !== "CHANGE_ME" && password === expected) {
       const tok = genToken();
       res.json({ ok: true, token: tok });
     } else {
-      res.json({ ok: false, error: "كلمة السر خاطئة" });
+      res.status(401).json({ ok: false, error: "Invalid dashboard password or no password is configured." });
     }
   });
   app.post("/api/logout", auth, (req, res) => {
-    const tok = req.headers["x-core-token"] || req.query.token;
+    const tok = req.headers["x-core-token"];
     _tokens.delete(tok);
     res.json({ ok: true });
   });
@@ -252,6 +264,7 @@ function startDashboard(port = 5000, healthPort = null) {
       if (global.GoatBot) global.GoatBot.config = updated;
       global.config = zaoCompatibility.mergeLegacySettings(updated);
       global.commandPrefix = updated.prefix || "/";
+      global.ownerID = String(updated.ownerID || "");
       if (_io) _io.emit("config-reloaded", { ts: Date.now() });
       res.json({ ok: true });
     } catch (e) { res.json({ ok: false, error: e.message }); }
@@ -304,6 +317,8 @@ function startDashboard(port = 5000, healthPort = null) {
 
       if (global.GoatBot) global.GoatBot.config = cfg;
       global.config  = zaoCompatibility.mergeLegacySettings(cfg);
+      global.ownerID = String(cfg.ownerID || "");
+      global.commandPrefix = cfg.prefix || "/";
       if (_io) _io.emit("config-reloaded", { ts: Date.now() });
       res.json({ ok: true });
     } catch (e) { res.json({ ok: false, error: e.message }); }
@@ -315,9 +330,6 @@ function startDashboard(port = 5000, healthPort = null) {
     if (action === "restart") {
       res.json({ ok: true });
       setTimeout(() => { try { global.startBot?.(); } catch (_) {} }, 400);
-    } else if (action === "stop") {
-      res.json({ ok: true });
-      setTimeout(() => process.exit(0), 400);
     } else {
       res.json({ ok: false, error: "action غير معروف" });
     }

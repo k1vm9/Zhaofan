@@ -28,7 +28,7 @@
 
 ## Architecture decisions
 - **Active architecture**: Djamel-Fca is the Facebook runtime; the original ZAO runtime remains in the workspace but is not started by the Replit workflow.
-- **Command compatibility**: command permissions, aliases, replies, reactions, events, and basic user/thread data are adapted. Modules that require ZAO-only engine state are skipped rather than silently run against missing services.
+- **Compatibility**: command permissions, aliases, replies, reactions, supported group events, and basic user/thread data are adapted. Modules that require ZAO-only engine state are skipped rather than silently run against missing services.
 - **Session safety**: the active runtime writes only its private session copy. The original tracked ZAO session is retained unchanged.
 - **Dashboard authentication**: dashboard API calls require an expiring in-memory token obtained with `DASHBOARD_PASSWORD`.
 

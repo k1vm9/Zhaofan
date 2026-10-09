@@ -32,7 +32,7 @@ const moment   = require("moment-timezone");
 
 const DjamelFCA                   = require("./Djamel-fca");
 const { initGlobals }             = require("./src/engine/core");
-const { loadCommands }            = require("./src/engine/loader");
+const { loadCommands, loadLegacyEvents } = require("./src/engine/loader");
 const handlerEvents               = require("./src/engine/handlerEvents");
 const { startDashboard, getIO, interceptLogs } = require("./src/dashboard/server");
 const { initDB }                  = require("./src/utils/database");
@@ -421,6 +421,7 @@ process.on("SIGINT",  () => shutdown("SIGINT"));
     // 3. الأوامر
     global.GoatBot.commands = loadCommands(CMDS_DIRS);
     zaoCompatibility.initLegacyState(global.GoatBot.commands);
+    global.client.events = loadLegacyEvents(path.join(ROOT, "SCRIPTS", "ZAO-EVTS"));
     global.commands          = global.GoatBot.commands;
 
     // 4. تعريض startBot للوحة التحكم
