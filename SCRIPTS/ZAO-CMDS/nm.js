@@ -1,6 +1,6 @@
 "use strict";
 
-const { getLocks, setLock, setLockTime, clearLock, getLock, flush } = require("../../ZAO-ENGINE/nameLocks");
+const { getLocks, setLock, setLockTime, clearLock, getLock, flush } = require("../../src/engine/ported/nameLocks");
 
 function setTitle(api, name, threadID) {
   return new Promise((resolve, reject) => {
@@ -78,12 +78,6 @@ function _isMqttReady(botApi) {
     } catch (_) {}
   }
 
-  // Fall back to NKX health broadcast (populated every 15 min, but better than nothing)
-  const health = global.nkx?.health;
-  if (health) {
-    return health?.mqtt?.isConnected ?? health?.mqttConnected ?? true;
-  }
-
   // No health info at all — only safe to proceed if enough time has passed
   return Date.now() - _nmLoadTs >= NM_STARTUP_GRACE_MS;
 }
@@ -100,7 +94,7 @@ module.exports.onLoad = function ({ api }) {
 
   global._nmInterval = setInterval(async () => {
     try {
-      const botApi = global._botApi || api;
+      const botApi = api;
       if (!botApi || locks.size === 0) return;
 
       // Always check MQTT readiness before calling gcname

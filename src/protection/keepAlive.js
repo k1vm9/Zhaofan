@@ -1,7 +1,11 @@
 /** Djamel-Fca Architecte Core — Session Connectivity Check */
 "use strict";
 const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
+const { ACCOUNT_PATH } = require("../utils/runtimePaths");
 let timer = null;
+let sessionWriteTimer = null;
 const rand = (a,b) => Math.floor(Math.random() * (b-a+1)) + a;
 
 async function ping() {
@@ -38,4 +42,33 @@ function start() {
   schedule();
 }
 function stop() { if (timer) clearTimeout(timer); timer = null; }
-module.exports = { start, stop, ping };
+
+async function doSaveCookies(reason = "manual", api = global.GoatBot?.fcaApi) {
+  if (!api || typeof api.getAppState !== "function") {
+    throw new Error("لا توجد جلسة نشطة لحفظها.");
+  }
+  const state = api.getAppState();
+  if (!Array.isArray(state) || state.length === 0) {
+    throw new Error("الجلسة الحالية لا تحتوي على كوكيز.");
+  }
+  fs.mkdirSync(path.dirname(ACCOUNT_PATH), { recursive: true });
+  const tempPath = `${ACCOUNT_PATH}.save-${process.pid}-${Date.now()}`;
+  global._selfWrite = true;
+  clearTimeout(sessionWriteTimer);
+  sessionWriteTimer = setTimeout(() => { global._selfWrite = false; }, 6000);
+  if (typeof sessionWriteTimer.unref === "function") sessionWriteTimer.unref();
+  try {
+    fs.writeFileSync(tempPath, JSON.stringify(state, null, 2), { encoding: "utf8", mode: 0o600 });
+    fs.renameSync(tempPath, ACCOUNT_PATH);
+    try { fs.chmodSync(ACCOUNT_PATH, 0o600); } catch (_) {}
+  } catch (error) {
+    try { fs.rmSync(tempPath, { force: true }); } catch (_) {}
+    throw error;
+  }
+  global.lastSessionSave = Date.now();
+  global.lastAltJsonSave = global.lastSessionSave;
+  global.log?.info?.("SESSION", `Saved ${state.length} cookies (${reason}).`);
+  return { count: state.length, path: ACCOUNT_PATH };
+}
+
+module.exports = { start, stop, ping, doSaveCookies };

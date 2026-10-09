@@ -1,10 +1,3 @@
-const fs   = require("fs-extra");
-const path = require("path");
-const { atomicWriteFileSync } = (() => {
-  try { return require('../../utils/atomicWrite'); }
-  catch (_) { return { atomicWriteFileSync: fs.writeFileSync }; }
-})();
-
 module.exports = {
   config: {
     name:            "cookieupdate",
@@ -12,7 +5,7 @@ module.exports = {
     author:          "DJAMEL",
     cooldowns:       10,
     hasPermssion:    2,
-    description:     "حفظ الكوكيز الحية الآن في ZAO-STATE.json و alt.json",
+    description:     "حفظ الكوكيز الحية في ملف جلسة Djamel-Fca",
     commandCategory: "admin",
     guide:           "  {pn}",
     usePrefix:       true
@@ -27,29 +20,14 @@ module.exports = {
     }
 
     try {
-      const appState = api.getAppState();
-
-      if (!appState || !Array.isArray(appState) || appState.length === 0) {
-        return api.sendMessage("❌ لا توجد جلسة نشطة. هل البوت مسجّل الدخول؟", threadID, messageID);
-      }
-
-      const statePath = path.join(process.cwd(), global.config?.APPSTATEPATH || "ZAO-STATE.json");
-      const altPath   = path.join(process.cwd(), "alt.json");
-
-      const newData   = JSON.stringify(appState, null, 2);
-
-      atomicWriteFileSync(statePath, newData, "utf-8");
-      atomicWriteFileSync(altPath,   newData, "utf-8");
-
-      global["lastAltJsonSave"] = Date.now();
-
+      const { doSaveCookies } = require("../../src/protection/keepAlive");
+      const saved = await doSaveCookies("manual-command", api);
       const now = new Date().toLocaleString("ar-DZ");
-
       return api.sendMessage(
         `✅ تم حفظ الكوكيز بنجاح!\n\n` +
-        `🍪 عدد الكوكيز : ${appState.length}\n` +
+        `🍪 عدد الكوكيز : ${saved.count}\n` +
         `🕐 وقت الحفظ   : ${now}\n` +
-        `📁 الملفات     : ZAO-STATE.json & alt.json\n\n` +
+        `📁 ملف الجلسة  : ${require("../../src/utils/runtimePaths").ACCOUNT_PATH}\n\n` +
         `⚡.`,
         threadID,
         messageID

@@ -4,7 +4,7 @@ const fs    = require("fs-extra");
 const path  = require("path");
 const axios = require("axios");
 
-const { getLocks, getLock, setLock, setLockTime, clearLock, flush } = require("../../ZAO-ENGINE/groupImgLocks");
+const { getLocks, getLock, setLock, setLockTime, clearLock, flush } = require("../../src/engine/ported/groupImgLocks");
 
 const IMG_DIR = path.join(__dirname, "..", "..", "data", "groupimg");
 fs.ensureDirSync(IMG_DIR);
@@ -98,17 +98,11 @@ module.exports.onLoad = function ({ api }) {
   if (!global._groupImgNextApply) global._groupImgNextApply = new Map();
 
   global._groupImgInterval = setInterval(async () => {
-    const botApi = global._botApi || api;
+    const botApi = api;
     if (!botApi) return;
 
     const locks = getLocks();
     if (locks.size === 0) return;
-
-    const health = global.nkx?.health;
-    if (health) {
-      const mqttOk = health?.mqtt?.isConnected ?? health?.mqttConnected ?? true;
-      if (!mqttOk) return;
-    }
 
     const now = Date.now();
     for (const [threadID, lock] of locks.entries()) {

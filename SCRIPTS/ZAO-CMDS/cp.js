@@ -3,10 +3,10 @@
  * @debugger Djamel — Fixed handleEvent crash: senderID.toString() on undefined
  *   for log:* events. Added type guard and optional-chain safety on ADMINBOT.
  */
-const { getLock, setLock, clearLock, getLocks } = require("../../ZAO-ENGINE/nameLocks");
-const NickLocks  = require("../../ZAO-ENGINE/nicknameLocks");
-const GImgLocks  = require("../../ZAO-ENGINE/groupImgLocks");
-const NickProtect = require("../../ZAO-ENGINE/nickProtect");
+const { getLock, setLock, clearLock, getLocks } = require("../../src/engine/ported/nameLocks");
+const NickLocks  = require("../../src/engine/ported/nicknameLocks");
+const GImgLocks  = require("../../src/engine/ported/groupImgLocks");
+const NickProtect = require("../../src/engine/ported/nickProtect");
 const fs         = require("fs-extra");
 const pathMod    = require("path");
 const axios      = require("axios");
@@ -55,7 +55,7 @@ module.exports.config = {
 
 // [FIX] Always reach for the live api so tier-swaps don't strand calls
 // against a stale handle (mirrors the helper used in nicknames.js / nm.js).
-function _live(api) { return global._botApi || api; }
+function _live(api) { return api; }
 
 // [FIX] This FCA (@neoaz07/nkxfca) does NOT expose api.setTitle — the
 // group-name MQTT call is api.gcname(newName, threadID, callback). Wrap
@@ -141,7 +141,7 @@ function buildGroupMenu(selected, tid, statusMsg) {
 
   let m1Stats = null, m2Stats = null;
   try {
-    const { getLoopStats } = require("../../ZAO-ENGINE/motorSafeSend");
+    const { getLoopStats } = require("../../src/engine/ported/motorSafeSend");
     if (m1?.status) m1Stats = getLoopStats(tid);
     if (m2?.status) m2Stats = getLoopStats(tid);
   } catch (_) {}
@@ -217,7 +217,7 @@ function startMotor(api, threadID) {
   data.interval = null;
   data.status = true;
   try {
-    const { scheduleMotorLoop } = require("../../ZAO-ENGINE/motorSafeSend");
+    const { scheduleMotorLoop } = require("../../src/engine/ported/motorSafeSend");
     scheduleMotorLoop({
       api,
       threadID,
@@ -244,7 +244,7 @@ function startMotor2(api, threadID) {
     return (Date.now() - lastActive) < (Number(data.time) || 0) * 2;
   };
   try {
-    const { scheduleMotorLoop } = require("../../ZAO-ENGINE/motorSafeSend");
+    const { scheduleMotorLoop } = require("../../src/engine/ported/motorSafeSend");
     scheduleMotorLoop({
       api,
       threadID,

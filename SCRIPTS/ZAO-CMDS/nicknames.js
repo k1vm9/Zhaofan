@@ -20,7 +20,7 @@
  *   كنيات مقفولون        — list individually locked members in this group
  */
 
-const NickLocks = require("../../ZAO-ENGINE/nicknameLocks");
+const NickLocks = require("../../src/engine/ported/nicknameLocks");
 
 const CHUNK              = 50;
 const CLEAR_DELAY_MS     = 400; // legacy — not used for تنظيف anymore
@@ -31,7 +31,7 @@ const CLEAR_REST_MIN_MS  = 35000; // rest between chunks (min)
 const CLEAR_REST_MAX_MS  = 65000; // rest between chunks (max)
 
 function _delay(ms) { return new Promise(r => setTimeout(r, ms)); }
-function _live(api)  { return global._botApi || api; }
+function _live(api)  { return api; }
 
 function _botId(api) {
   try { return String(global.botUserID || (api.getCurrentUserID ? api.getCurrentUserID() : "")); }

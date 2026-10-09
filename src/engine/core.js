@@ -5,6 +5,7 @@
 "use strict";
 
 const path = require("path");
+const zaoCompatibility = require("../utils/zaoCompatibility");
 
 function initGlobals(config) {
   global.GoatBot = {
@@ -26,6 +27,50 @@ function initGlobals(config) {
     allThreadData:  {},
     reLoginBot:     () => {},
     _replyTimeout:  30 * 60 * 1000,
+  };
+
+  // State used by the command modules ported to Djamel-Fca. Keep it in
+  // the new runtime, rather than relying on ZAO.js globals.
+  Object.assign(global, {
+    angelIntervals: global.GoatBot.angelIntervals,
+    chatsSession: {},
+    divelMonitor: global.GoatBot.divelWatchers,
+    lastActivity: {},
+    lastAltJsonSave: null,
+    lastSessionSave: null,
+    motorData: {},
+    motorData2: {},
+    nicknameLocks: {},
+    repeatName: {},
+    zaoHistory: Object.create(null),
+    zaoWizard: new Map(),
+    zaoViewWizard: new Map(),
+    zaofanHistory: Object.create(null),
+    zaofanWizard: new Map(),
+    zaofanViewWizard: new Map(),
+    _angelRestored: false,
+    _groupImgNextApply: new Map(),
+    _groupImgInterval: null,
+    _labyrinth: null,
+    _nmNextApply: new Map(),
+    _nmInterval: null,
+    _randomizer: require("./ported/randomizer"),
+    _selfWriteConfig: false,
+    _silentMode: false,
+    __motorWatchdog1: null,
+    __motorWatchdog2: null,
+    __zaoHistorySweeper: null,
+    __zaofanHistorySweeper: null,
+    _mqttReady: false,
+  });
+  global._saveMotorState = () => require("./ported/motorPersist").motor1.persistAll(global.motorData);
+  global._saveMotor2State = () => require("./ported/motorPersist").motor2.persistAll(global.motorData2);
+  global.updateRuntimeConfig = nextConfig => {
+    global.GoatBot.config = nextConfig;
+    global.config = zaoCompatibility.mergeLegacySettings(nextConfig);
+    global.ownerID = String(nextConfig?.ownerID || "");
+    global.commandPrefix = nextConfig?.prefix || "/";
+    return global.config;
   };
 
   global.db = { allThreadData: [], allUserData: [] };

@@ -48,7 +48,7 @@ function getIntervals() {
 
 async function humanTypeSend(api, threadID, msg) {
   try {
-    const ht = require('../../ZAO-ENGINE/humanTyping');
+    const ht = require('../../src/protection/humanTyping');
     if (typeof ht.calcDelay === 'function' && typeof ht.simulateTyping === 'function') {
       const delay = ht.calcDelay(msg);
       if (delay > 0) await ht.simulateTyping(api, threadID, delay);
@@ -59,7 +59,7 @@ async function humanTypeSend(api, threadID, msg) {
   } catch (_) {}
 
   try {
-    const throttle = require('../../ZAO-ENGINE/outgoingThrottle');
+    const throttle = require('../../src/protection/outgoingThrottle');
     await throttle.check(threadID);
   } catch (_) {}
 
@@ -87,12 +87,7 @@ function restoreIntervals(api) {
   }
 
   if (restored > 0) {
-    try {
-      global.loggeryuki?.log([
-        { message: '[ ANGEL ]: ', color: ['red', 'cyan'] },
-        { message: `✅ Restored ${restored} auto-send interval(s) after restart`, color: 'white' }
-      ]);
-    } catch (_) {}
+    global.log?.info?.("ANGEL", `Restored ${restored} scheduled message(s) after restart.`);
   }
 }
 

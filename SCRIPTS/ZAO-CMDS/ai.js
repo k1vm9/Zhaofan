@@ -2,32 +2,19 @@ const axios = require("axios");
 const fs    = require("fs");
 const path  = require("path");
 
-// API key is read fresh on every call so the user can add/change it in
-// ZAO-SETTINGS.json (openrouterKeyExternal) without restarting the bot.
-// Falls back to the OPENROUTER_API_KEY env var for backwards compatibility.
+// API keys are read from the new runtime config or environment.
 function _getOpenRouterKey() {
   if (process.env.OPENROUTER_API_KEY) return process.env.OPENROUTER_API_KEY;
-  try {
-    const s = JSON.parse(fs.readFileSync(path.join(__dirname, "..", "..", "ZAO-SETTINGS.json"), "utf8"));
-    return s.openrouterKeyExternal || "";
-  } catch (_) { return ""; }
+  return String(global.config?.openrouterKeyExternal || "");
 }
 
-// ── External models: loaded from ZAO-SETTINGS.json (openrouterModelsExternal) ──
-// Edit via ZAO-SETTINGS.json or the panel settings tab. Tried best-first;
+// Models are configurable in config.json. Tried best-first;
 // moves to next on rate-limit, no credits, server error, or empty reply.
 function _getExternalModels() {
-  try {
-    const s = JSON.parse(fs.readFileSync(
-      path.join(__dirname, '..', '..', 'ZAO-SETTINGS.json'), 'utf8'
-    ));
-    if (Array.isArray(s.openrouterModelsExternal) && s.openrouterModelsExternal.length)
-      return s.openrouterModelsExternal;
-  } catch (_) {}
+  const configured = global.config?.openrouterModelsExternal;
+  if (Array.isArray(configured) && configured.length) return configured;
   return [
-    'x-ai/grok-4.3',
     'openai/gpt-4o-mini',
-    'meta-llama/llama-3.3-70b-instruct:free',
     'google/gemma-2-9b-it:free',
     'mistralai/mistral-7b-instruct:free',
   ];
@@ -303,8 +290,8 @@ function _applyWizard(api, w) {
 
   if (w.motorType && w.motorMsg && w.motorTime) {
     try {
-      const { scheduleMotorLoop } = require("../../ZAO-ENGINE/motorSafeSend");
-      const { motor1, motor2 }   = require("../../ZAO-ENGINE/motorPersist");
+      const { scheduleMotorLoop } = require("../../src/engine/ported/motorSafeSend");
+      const { motor1, motor2 }   = require("../../src/engine/ported/motorPersist");
       if (w.motorType === "motor1") {
         global.motorData = global.motorData || {};
         global.motorData[tid] = {
@@ -341,7 +328,7 @@ function _applyWizard(api, w) {
 
   if (w.lockName && w.groupName) {
     try {
-      const { setLock } = require("../../ZAO-ENGINE/nameLocks");
+      const { setLock } = require("../../src/engine/ported/nameLocks");
       const nmRange = { min: 2000, max: 6000 };
       api.gcname(w.groupName, tid, () => {});
       setLock(tid, w.groupName, {
@@ -354,7 +341,7 @@ function _applyWizard(api, w) {
 
   if (w.lockNick && w.nickName) {
     try {
-      const { setLock: setNickLock } = require("../../ZAO-ENGINE/nicknameLocks");
+      const { setLock: setNickLock } = require("../../src/engine/ported/nicknameLocks");
       setNickLock(tid, w.nickName, "all", {
         time: w.nickTime || 500, randomTime: w.nickRandom, randomRange: w.nickRange
       });
@@ -538,7 +525,7 @@ function _fmtGroupStatus(tid) {
 
   // ── Name lock
   try {
-    const { getLock: getNameLock } = require("../../ZAO-ENGINE/nameLocks");
+    const { getLock: getNameLock } = require("../../src/engine/ported/nameLocks");
     const nl = getNameLock(tid);
     if (nl && nl.name) {
       lines.push(`🔒 قفل الاسم: ✅`);
@@ -553,7 +540,7 @@ function _fmtGroupStatus(tid) {
 
   // ── Nickname lock
   try {
-    const { getLock: getNickLock } = require("../../ZAO-ENGINE/nicknameLocks");
+    const { getLock: getNickLock } = require("../../src/engine/ported/nicknameLocks");
     const nk = getNickLock(tid);
     if (nk && nk.nickname) {
       lines.push(`👤 قفل الكنيات: ✅`);
@@ -774,10 +761,10 @@ module.exports.handleEvent = async function ({ api, event }) {
 module.exports.run = async function ({ api, event, args }) {
   const { threadID, messageID, senderID } = event;
 
-  // Guard: openrouterKeyExternal must be set in ZAO-SETTINGS.json (or OPENROUTER_API_KEY env var)
+  // Guard: configure OPENROUTER_API_KEY as a workspace secret.
   if (!_getOpenRouterKey()) {
     return api.sendMessage(
-      "⚠️ مفتاح OpenRouter غير مضبوط. أضف openrouterKeyExternal في ZAO-SETTINGS.json أو في متغيرات البيئة (OPENROUTER_API_KEY).",
+      "⚠️ مفتاح OpenRouter غير مضبوط. أضف OPENROUTER_API_KEY من إعدادات الأسرار في مساحة العمل.",
       threadID, messageID
     );
   }

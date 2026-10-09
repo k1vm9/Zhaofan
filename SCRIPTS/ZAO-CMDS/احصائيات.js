@@ -48,20 +48,6 @@ function _ago(ts) {
   return _fmtMs(Date.now() - ts) + ' مضى';
 }
 
-function _readCookieInfo(filePath) {
-  try {
-    const fs = require('fs');
-    const path = require('path');
-    const p = path.isAbsolute(filePath) ? filePath : path.join(process.cwd(), filePath);
-    if (!fs.existsSync(p)) return { exists: false, cookies: 0, sizeKB: 0 };
-    const stat = fs.statSync(p);
-    const raw  = fs.readFileSync(p, 'utf8');
-    let cookies = 0;
-    try { const arr = JSON.parse(raw); cookies = Array.isArray(arr) ? arr.length : 0; } catch (_) {}
-    return { exists: true, cookies, sizeKB: Math.round(stat.size / 1024 * 10) / 10 };
-  } catch (_) { return { exists: false, cookies: 0, sizeKB: 0 }; }
-}
-
 module.exports.run = async function ({ api, event }) {
   const { threadID, messageID } = event;
   const cfg = global.config || {};
@@ -83,43 +69,28 @@ module.exports.run = async function ({ api, event }) {
 
   // Platform
   let platformLabel = 'غير معروف';
-  try { platformLabel = require('../../ZAO-ENGINE/utils/platformDetect').label; } catch (_) {}
+  try { platformLabel = require('../../src/engine/ported/platformDetect').label; } catch (_) {}
   lines.push(`🌐 المنصة        : ${platformLabel}`);
 
   // ── 2. FACEBOOK / SESSION ───────────────────────────────────────────────
   head('🔑 الجلسة والكوكيز');
   sep();
 
-  const appStatePath = cfg.APPSTATEPATH || 'ZAO-STATE.json';
-  const tierFiles = [
-    { label: 'Tier 1 (رئيسي)',  path: appStatePath },
-    { label: 'Tier 1 (alt)',    path: 'alt.json' },
-    { label: 'Tier 2',          path: 'ZAO-STATEX.json' },
-    { label: 'Tier 2 (alt)',    path: 'altx.json' },
-    { label: 'Tier 3',          path: 'ZAO-STATEV.json' },
-    { label: 'Tier 3 (alt)',    path: 'altv.json' },
-    { label: 'Tier 4',          path: 'ZAO-STATE4.json' },
-    { label: 'Tier 4 (alt)',    path: 'alt4.json' },
-    { label: 'Tier 5',          path: 'ZAO-STATE5.json' },
-    { label: 'Tier 5 (alt)',    path: 'alt5.json' },
-  ];
-  for (const t of tierFiles) {
-    const info = _readCookieInfo(t.path);
-    const icon = info.exists && info.cookies > 0 ? '🟢' : info.exists ? '🟡' : '⚫';
-    lines.push(`${icon} ${t.label.padEnd(16)}: ${info.exists && info.cookies > 0 ? `${info.cookies} كوكي — ${info.sizeKB} KB` : info.exists ? 'فارغ' : 'غير موجود'}`);
-  }
+  const appStatePath = require("../../src/utils/runtimePaths").ACCOUNT_PATH;
+  let cookieCount = 0;
+  let sessionKB = 0;
+  try {
+    const stat = require("fs").statSync(appStatePath);
+    sessionKB = (stat.size / 1024).toFixed(1);
+    const state = JSON.parse(require("fs").readFileSync(appStatePath, "utf8"));
+    cookieCount = Array.isArray(state) ? state.length : 0;
+  } catch (_) {}
+  const stateIcon = cookieCount > 0 ? "🟢" : "⚫";
+  lines.push(`${stateIcon} Djamel-Fca session: ${cookieCount} cookies — ${sessionKB} KB`);
+  lines.push(`📌 جلسة Djamel-Fca: ${global._botApi ? 'نشطة' : 'غير متصلة'}`);
 
-  // Active tier
-  let activeTier = '?';
-  try { activeTier = JSON.parse(require('fs').readFileSync('data/active-tier.json', 'utf8')).tier || '?'; } catch (_) {
-    try { activeTier = JSON.parse(require('fs').readFileSync('data/activeTier.json', 'utf8')).tier || '?'; } catch (_) {}
-  }
-  const tierLimit = (() => { try { return JSON.parse(require('fs').readFileSync('ZAO-SETTINGS.json','utf8')).tierLimit || 3; } catch(_) { return 3; } })();
-  lines.push(`📌 Tier النشط   : Tier ${activeTier} | الحد: ${tierLimit} تيرات`);
-
-  // Last alt save
-  const lastAlt = global['lastAltJsonSave'];
-  lines.push(`💾 آخر حفظ كوكيز: ${lastAlt ? _ago(lastAlt) : 'لم يحدث بعد'}`);
+  const lastSessionSave = global.lastSessionSave;
+  lines.push(`💾 آخر حفظ جلسة: ${lastSessionSave ? _ago(lastSessionSave) : 'لم يحدث بعد'}`);
 
   // System uptime and restart history
   head('🔄 إعادة التشغيل والتاريخ');
@@ -168,7 +139,7 @@ module.exports.run = async function ({ api, event }) {
   sep();
 
   let stealthSt = null;
-  try { stealthSt = require('../../ZAO-ENGINE/stealthEngineV2').getStatus(); } catch (_) {}
+  try { stealthSt = require('../../src/engine/ported/stealthEngineV2').getStatus(); } catch (_) {}
   if (stealthSt) {
     lines.push(`   الحالة        : ${stealthSt.running ? '🟢 يعمل' : '🔴 متوقف'}`);
     lines.push(`   طبقات الحماية : ${stealthSt.layers || 10}`);
@@ -240,8 +211,8 @@ module.exports.run = async function ({ api, event }) {
   try { motor2Active = Object.values(global.motorData2 || {}).filter(d => d?.status).length; } catch (_) {}
 
   let nameLockCount = 0, nickLockCount = 0;
-  try { const NL = require('../../ZAO-ENGINE/nameLocks');     nameLockCount = NL.getLocks().size; } catch (_) {}
-  try { const NCL = require('../../ZAO-ENGINE/nicknameLocks'); nickLockCount = NCL.getLocks().size; } catch (_) {}
+  try { const NL = require('../../src/engine/ported/nameLocks');     nameLockCount = NL.getLocks().size; } catch (_) {}
+  try { const NCL = require('../../src/engine/ported/nicknameLocks'); nickLockCount = NCL.getLocks().size; } catch (_) {}
 
   lines.push(`🔁 Motor 1 نشط  : ${motor1Active} مجموعة`);
   lines.push(`🔁 Motor 2 نشط  : ${motor2Active} مجموعة`);
@@ -253,7 +224,7 @@ module.exports.run = async function ({ api, event }) {
   sep();
 
   try {
-    const ls = require('../../ZAO-ENGINE/liveStats').getStats();
+    const ls = require('../../src/engine/ported/liveStats').getStats();
     lines.push(`✉️  رسائل (آخر ساعة): ${ls.msgsLastHour} | اليوم: ${ls.msgsToday}`);
     lines.push(`⚡ أوامر (آخر ساعة): ${ls.cmdsLastHour} | اليوم: ${ls.cmdsToday}`);
     lines.push(`❌ أخطاء (آخر ساعة): ${ls.errsLastHour}`);

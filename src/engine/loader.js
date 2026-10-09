@@ -104,6 +104,13 @@ function registerCommand(commands, name, cmd) {
 const SUPPORTED_LEGACY_GLOBALS = new Set([
   "config", "client", "commands", "commandPrefix", "utils", "log", "ownerID",
   "botUserID", "_botApi", "lastMqttActivity", "lastMqttOnlyActivity", "data", "lockBot",
+  "_selfWriteConfig", "updateRuntimeConfig", "angelIntervals", "_angelRestored", "chatsSession",
+  "divelMonitor", "lastActivity", "lastAltJsonSave", "lastSessionSave", "motorData", "motorData2",
+  "nicknameLocks", "repeatName", "zaoHistory", "zaoWizard", "zaoViewWizard",
+  "zaofanHistory", "zaofanWizard", "zaofanViewWizard", "_groupImgNextApply",
+  "_groupImgInterval", "_labyrinth", "_nmNextApply", "_nmInterval", "_randomizer",
+  "__motorWatchdog1", "__motorWatchdog2", "__zaoHistorySweeper", "__zaofanHistorySweeper",
+  "_silentMode", "_mqttReady", "_saveMotorState", "_saveMotor2State", "gc",
 ]);
 
 const SUPPORTED_LEGACY_DATA_KEYS = new Set([

@@ -1,12 +1,13 @@
 const fs   = require("fs-extra");
 const path = require("path");
+const { ACCOUNT_PATH } = require("../../src/utils/runtimePaths");
 
 module.exports.config = {
   name: "حسابات",
   version: "1.0.0",
   hasPermssion: 2,
   credits: "ZAO",
-  description: "عرض حالة ملفات الحسابات الثلاثة (كوكيز / كريدز / الحساب النشط)",
+  description: "عرض حالة جلسة Djamel-Fca الحالية",
   commandCategory: "النظام",
   usages: "حسابات",
   cooldowns: 5
@@ -20,80 +21,31 @@ module.exports.run = async function ({ api, event }) {
     return api.sendMessage("⛔ هذا الأمر خاص بأدمن البوت فقط.", threadID, messageID);
   }
 
-  const cwd = process.cwd();
-
-  const TIERS = [
-    {
-      tier: 1,
-      stateFile:  "ZAO-STATE.json",
-      altFile:    "alt.json",
-      credsFile:  "ZAO-STATEC.json"
-    },
-    {
-      tier: 2,
-      stateFile:  "ZAO-STATEX.json",
-      altFile:    "altx.json",
-      credsFile:  "ZAO-STATEXC.json"
-    },
-    {
-      tier: 3,
-      stateFile:  "ZAO-STATEV.json",
-      altFile:    "altv.json",
-      credsFile:  "ZAO-STATEVC.json"
-    }
-  ];
-
-  function fileInfo(filename) {
-    const full = path.join(cwd, filename);
+  const accountExists = fs.existsSync(ACCOUNT_PATH);
+  let cookieCount = 0;
+  let accountBytes = 0;
+  if (accountExists) {
     try {
-      if (!fs.existsSync(full)) return "❌ غير موجود";
-      const stat = fs.statSync(full);
-      const kb   = (stat.size / 1024).toFixed(1);
-      if (stat.size < 10) return `⚠️ فارغ (${kb}KB)`;
-      return `✅ موجود (${kb}KB)`;
-    } catch (_) {
-      return "⚠️ خطأ في القراءة";
-    }
+      accountBytes = fs.statSync(ACCOUNT_PATH).size;
+      const state = JSON.parse(fs.readFileSync(ACCOUNT_PATH, "utf8"));
+      cookieCount = Array.isArray(state) ? state.length : 0;
+    } catch (_) {}
   }
-
-  const activeTier   = global.activeAccountTier || "—";
-  const loginMethod  = global.loginMethod        || "—";
-  const activeState  = global.activeStateFile    ? path.basename(global.activeStateFile)  : "—";
-  const activeAlt    = global.activeAltFile       ? path.basename(global.activeAltFile)    : "—";
-
-  const methodLabel  = loginMethod === "credentials"
-    ? "📧 بريد + كلمة مرور"
-    : loginMethod === "appstate-alt"
-    ? "🍪 كوكيز (alt)"
-    : loginMethod === "appstate"
-    ? "🍪 كوكيز (رئيسي)"
-    : loginMethod;
+  const sessionState = global._botApi ? "online" : "offline";
+  const activeState = accountExists ? path.basename(ACCOUNT_PATH) : "غير موجود";
 
   const lines = [
     "┌───────────────────────────┐",
     "│   🔐 حالة ملفات الحسابات   │",
     "└───────────────────────────┘",
     "",
-    `✨ الحساب النشط: الطبقة ${activeTier}`,
-    `🔑 طريقة الدخول: ${methodLabel}`,
+    `✨ حالة الجلسة: ${sessionState}`,
     `📄 الملف الرئيسي: ${activeState}`,
-    `📄 الملف الاحتياطي: ${activeAlt}`,
+    `🍪 الكوكيز المحفوظة: ${cookieCount}`,
+    `📦 حجم الملف: ${(accountBytes / 1024).toFixed(1)} KB`,
     ""
   ];
-
-  for (const t of TIERS) {
-    const isActive = (t.tier === activeTier);
-    const mark = isActive ? "◀ نشط" : "";
-    lines.push(`${isActive ? "🟢" : "⚪"} ──── الطبقة ${t.tier} ${mark} ────`);
-    lines.push(`   🍪 ${t.stateFile}: ${fileInfo(t.stateFile)}`);
-    lines.push(`   🍪 ${t.altFile}: ${fileInfo(t.altFile)}`);
-    lines.push(`   📧 ${t.credsFile}: ${fileInfo(t.credsFile)}`);
-    lines.push("");
-  }
-
-  lines.push("💡 لإضافة كوكيز: استخدم الباحة أو ملف ZAO-STATE.json");
-  lines.push("💡 لإضافة كريدز: أنشئ ملف ZAO-STATEC.json بصيغة:");
-  lines.push('   {"email":"...","password":"..."}');
+  lines.push(`💡 لتحديث الجلسة: استخدم مسار حساب Djamel-Fca (${path.relative(process.cwd(), ACCOUNT_PATH)}).`);
 
   return api.sendMessage(lines.join("\n"), threadID, messageID);
 };

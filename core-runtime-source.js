@@ -129,6 +129,7 @@ function printBanner() {
 // ─── Stop listeners ────────────────────────────────────────────────────────────
 function stopListening() {
   stopPoller();
+  global._mqttReady = false;
   try { if (global._currentListener) { global._currentListener(); global._currentListener = null; } } catch (_) {}
   try { if (global._listenTimer) { clearTimeout(global._listenTimer); global._listenTimer = null; } } catch (_) {}
   try { if (global.GoatBot?.fcaApi?.ctx?.mqttClient) global.GoatBot.fcaApi.ctx.mqttClient.end(true); } catch (_) {}
@@ -159,6 +160,7 @@ function startPolling(api, attempt = 1, generation = global._connectionGeneratio
     }
     if (!started) {
       started = true;
+      global._mqttReady = false;
       log.ok("POLL", `نشط ✔ — UID: ${chalk.bold.green(api.getCurrentUserID())}`);
       const io = getIO();
       if (io) io.emit("bot-status", { status: "online", uid: api.getCurrentUserID() });
@@ -184,6 +186,7 @@ function startMqtt(api, attempt = 1, generation = global._connectionGeneration) 
   const stop = listenFn?.call(api, (err, event) => {
     if (generation !== global._connectionGeneration) return;
     if (err) {
+      global._mqttReady = false;
       clearTimeout(timer);
       const msg = String(err.error || err.message || err.type || err);
       log.warn("MQTT", `${msg} (${attempt}/${MAX})`);
@@ -193,6 +196,7 @@ function startMqtt(api, attempt = 1, generation = global._connectionGeneration) 
     }
     if (!mqttOk) {
       mqttOk = true;
+      global._mqttReady = true;
       clearTimeout(timer);
       global._listenTimer = null;
       log.ok("MQTT", `متصل ✔ — UID: ${chalk.bold.green(api.getCurrentUserID())}`);
@@ -361,6 +365,22 @@ async function startBot() {
       console.log();
 
       _loginLock = false;
+      const labyrinthConfig = global.GoatBot.config?.labyrinth || {};
+      if (labyrinthConfig.enabled === true) {
+        if (!String(labyrinthConfig.pin || "").trim()) {
+          log.warn("E2EE", "Labyrinth is enabled without a key-store PIN; initialization skipped to avoid plaintext key storage.");
+          global._labyrinth = null;
+        } else {
+          try {
+            await require("./src/engine/ported/labyrinth").init(api);
+          } catch (error) {
+            global._labyrinth = null;
+            log.warn("E2EE", `Labyrinth initialization failed: ${error.message || error}`);
+          }
+        }
+      } else {
+        global._labyrinth = null;
+      }
       startProtection(api);
       zaoCompatibility.runLegacyLoadHooks(api, global.GoatBot.commands);
       await new Promise(r => setTimeout(r, 1500));

@@ -64,6 +64,47 @@ async function getRole(senderID, event, api) {
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+const SILENT_CONTROL_NAMES = new Set(["صامت", "silent", "silentmode", "وضع_صامت", "كتم"]);
+const SILENT_OUTPUT_METHODS = new Set([
+  "sendMessage", "sendMessageWithAttachment", "sendMessageWithLocalAttachment",
+  "sendAttachment", "sendFile", "sendImage", "sendAudio", "sendVideo",
+  "sendSticker", "sendTypingIndicator", "reply", "editMessage",
+  "setMessageReaction", "unsendMessage",
+]);
+let silentMessageSequence = 0;
+
+function isSilentControl(event) {
+  const prefix = global.GoatBot?.config?.prefix || global.commandPrefix || "/";
+  const body = String(event?.body || "").trimStart();
+  if (!body.startsWith(prefix)) return false;
+  const name = body.slice(prefix.length).trim().split(/\s+/, 1)[0]?.toLowerCase();
+  return SILENT_CONTROL_NAMES.has(name);
+}
+
+function createSilentApi(api) {
+  return new Proxy(api, {
+    get(target, property) {
+      const original = Reflect.get(target, property, target);
+      if (typeof original !== "function") return original;
+      if (!SILENT_OUTPUT_METHODS.has(String(property))) return original.bind(target);
+      return (...args) => {
+        const messageID = `silent-${Date.now()}-${++silentMessageSequence}`;
+        const result = String(property) === "setMessageReaction" ||
+          String(property) === "unsendMessage" ||
+          String(property) === "sendTypingIndicator"
+          ? undefined
+          : { messageID };
+        const callback = [...args].reverse().find(value => typeof value === "function");
+        if (callback) {
+          try { callback(null, result); } catch (_) {}
+        }
+        global.log?.info?.("SILENT", `Suppressed ${String(property)} output.`);
+        return Promise.resolve(result);
+      };
+    },
+  });
+}
+
 function buildMessage(api, event) {
   return {
     // Djamel's humanTyping protection already delays sends; do not apply the
@@ -160,6 +201,7 @@ async function handleLegacyReaction(api, event) {
 // ─── Event handler ─────────────────────────────────────────────────────────────
 async function onEventCmds(api, event, commands) {
   if (!event || !api) return;
+  if (global._silentMode && !isSilentControl(event)) api = createSilentApi(api);
   global.lastMqttActivity = Date.now();
 
   const { type, senderID, threadID, body = "", messageID } = event;
@@ -366,3 +408,4 @@ async function onEventCmds(api, event, commands) {
 }
 
 module.exports = onEventCmds;
+module.exports.createSilentApi = createSilentApi;

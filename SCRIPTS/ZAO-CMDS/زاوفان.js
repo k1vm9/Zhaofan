@@ -241,8 +241,8 @@ function _applyWizard(api, w) {
 
   if (w.motorType && w.motorMsg && w.motorTime) {
     try {
-      const { scheduleMotorLoop } = require("../../ZAO-ENGINE/motorSafeSend");
-      const { motor1, motor2 }   = require("../../ZAO-ENGINE/motorPersist");
+      const { scheduleMotorLoop } = require("../../src/engine/ported/motorSafeSend");
+      const { motor1, motor2 }   = require("../../src/engine/ported/motorPersist");
       if (w.motorType === "motor1") {
         global.motorData = global.motorData || {};
         global.motorData[tid] = {
@@ -279,7 +279,7 @@ function _applyWizard(api, w) {
 
   if (w.lockName && w.groupName) {
     try {
-      const { setLock } = require("../../ZAO-ENGINE/nameLocks");
+      const { setLock } = require("../../src/engine/ported/nameLocks");
       const nmRange = { min: 2000, max: 6000 };
       api.gcname(w.groupName, tid, () => {});
       setLock(tid, w.groupName, {
@@ -292,7 +292,7 @@ function _applyWizard(api, w) {
 
   if (w.lockNick && w.nickName) {
     try {
-      const { setLock: setNickLock } = require("../../ZAO-ENGINE/nicknameLocks");
+      const { setLock: setNickLock } = require("../../src/engine/ported/nicknameLocks");
       setNickLock(tid, w.nickName, "all", {
         time: w.nickTime || 500, randomTime: w.nickRandom, randomRange: w.nickRange
       });
@@ -470,7 +470,7 @@ function _fmtGroupStatus(tid) {
   }
 
   try {
-    const { getLock: getNameLock } = require("../../ZAO-ENGINE/nameLocks");
+    const { getLock: getNameLock } = require("../../src/engine/ported/nameLocks");
     const nl = getNameLock(tid);
     if (nl && nl.name) {
       lines.push(`🔒 قفل الاسم: ✅`);
@@ -484,7 +484,7 @@ function _fmtGroupStatus(tid) {
   }
 
   try {
-    const { getLock: getNickLock } = require("../../ZAO-ENGINE/nicknameLocks");
+    const { getLock: getNickLock } = require("../../src/engine/ported/nicknameLocks");
     const nk = getNickLock(tid);
     if (nk && nk.nickname) {
       lines.push(`👤 قفل الكنيات: ✅`);
@@ -537,28 +537,18 @@ function _processViewWizard(api, event, text, w, senderID) {
 
 // ─── OPENROUTER BACKEND ───────────────────────────────────────────────────────
 function _loadExternalKey() {
-  try {
-    const settings = JSON.parse(
-      require("fs").readFileSync(require("path").join(__dirname, "..", "..", "ZAO-SETTINGS.json"), "utf8")
-    );
-    return settings.openrouterKeyExternal || "";
-  } catch (_) { return ""; }
+  return String(process.env.OPENROUTER_API_KEY || global.config?.openrouterKeyExternal || "");
 }
 
 function _getExternalModels() {
-  try {
-    const s = JSON.parse(require('fs').readFileSync(
-      require('path').join(__dirname, '..', '..', 'ZAO-SETTINGS.json'), 'utf8'
-    ));
-    if (Array.isArray(s.openrouterModelsExternal) && s.openrouterModelsExternal.length)
-      return s.openrouterModelsExternal;
-  } catch (_) {}
-  return ['openai/gpt-4o-mini', 'meta-llama/llama-3.3-70b-instruct:free', 'google/gemma-2-9b-it:free'];
+  const models = global.config?.openrouterModelsExternal;
+  if (Array.isArray(models) && models.length) return models;
+  return ['openai/gpt-4o-mini', 'meta-llama/llama-3.1-8b-instruct:free', 'google/gemma-2-9b-it:free', 'mistralai/mistral-7b-instruct:free'];
 }
 
 async function askAI(history, senderID) {
   const apiKey = _loadExternalKey();
-  if (!apiKey) throw new Error("openrouterKeyExternal غير موجود في ZAO-SETTINGS.json");
+  if (!apiKey) throw new Error("OPENROUTER_API_KEY is not configured.");
 
   const messages = [
     { role: "system", content: buildSystemPrompt(senderID) },

@@ -1,6 +1,6 @@
 module.exports.config = {
   name: "كوكيز",
-  aliases: ["cookieupdate", "savecookies"],
+  aliases: ["savecookies"],
   version: "1.1.0",
   hasPermssion: 2,
   credits: "ZAO",
@@ -19,12 +19,11 @@ module.exports.run = async function ({ api, event }) {
   }
 
   try {
-    const { doSaveCookies } = require("../../ZAO-ENGINE/keepAlive");
-    await doSaveCookies("manual-cmd");
+    const { doSaveCookies } = require("../../src/protection/keepAlive");
+    await doSaveCookies("manual-cmd", api);
     return api.sendMessage(
       "✅ تم حفظ الكوكيز بنجاح!\n" +
-      "📄 ZAO-STATE.json ✓\n" +
-      "📄 alt.json ✓",
+      "📄 ملف جلسة Djamel-Fca ✓",
       threadID,
       messageID
     );

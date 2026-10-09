@@ -121,7 +121,7 @@ module.exports.run = async function ({ api, event, args }) {
   if (!lab) {
     return api.sendMessage(
       "⚠️ Labyrinth E2EE is not active.\n" +
-      "Set labyrinth.enabled=true in ZAO-SETTINGS.json and restart.",
+      "Enable labyrinth.enabled and configure labyrinth.pin in config.json, then restart.",
       threadID, messageID
     );
   }
@@ -365,8 +365,8 @@ module.exports.run = async function ({ api, event, args }) {
   // ── selftest — comprehensive external round-trip test ─────────────────────
   if (action === "selftest") {
     try {
-      const DR   = require("../../ZAO-ENGINE/labyrinth/DoubleRatchet");
-      const X3DH = require("../../ZAO-ENGINE/labyrinth/X3DH");
+      const DR   = require("../../src/engine/ported/labyrinth/DoubleRatchet");
+      const X3DH = require("../../src/engine/ported/labyrinth/X3DH");
       const crypto = require("crypto");
 
       const results = [];

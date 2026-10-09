@@ -6,15 +6,11 @@ const path = require("path");
 const TARGETS = [
   { dir: path.join(process.cwd(), "cache") },
   { dir: path.join(process.cwd(), "SCRIPTS", "ZAO-CMDS", "cache") },
-  { dir: path.join(process.cwd(), "SCRIPTS", "Old-Commands", "cache") },
   { dir: path.join(process.cwd(), ".cache") }
 ];
 
 const PROTECTED = new Set([
-  "ZAO-STATE.json", "ZAO-STATEX.json", "ZAO-STATEV.json",
-  "alt.json", "altx.json", "altv.json",
-  "ZAO-STATEC.json", "ZAO-STATEXC.json", "ZAO-STATEVC.json",
-  "ZAO-SETTINGS.json", "fca-config.json"
+  "DJAMEL-FCA-STATE.json", "config.json"
 ]);
 
 function fmtBytes(n) {

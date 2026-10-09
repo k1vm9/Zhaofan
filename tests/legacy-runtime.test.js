@@ -96,6 +96,39 @@ test("the handler enforces public/admin permissions and Shindo's bot-wide lock",
   assert.equal(calls.filter(name => name === "public").length, 1);
 });
 
+test("silent mode executes commands without sending API output and still permits its own toggle", async () => {
+  let executions = 0;
+  const commands = new Map([
+    ["probe", {
+      config: { name: "probe", role: 0, cooldowns: 0 },
+      run: async ({ api, event }) => {
+        executions += 1;
+        await api.sendMessage("hidden response", event.threadID);
+      },
+    }],
+    ["silent", {
+      config: { name: "صامت", role: 0, cooldowns: 0 },
+      run: async ({ api, event }) => {
+        global._silentMode = false;
+        await api.sendMessage("silent mode disabled", event.threadID);
+      },
+    }],
+  ]);
+  resetRuntime({ commands });
+  global._silentMode = true;
+  const sent = [];
+  const api = makeApi(sent);
+
+  await onEventCmds(api, messageEvent({ id: "silent-hidden-1" }), commands);
+  assert.equal(executions, 1);
+  assert.equal(sent.length, 0);
+
+  await onEventCmds(api, messageEvent({ id: "silent-toggle-1", body: "!silent" }), commands);
+  assert.equal(sent.length, 1);
+  assert.equal(sent[0].content, "silent mode disabled");
+  global._silentMode = false;
+});
+
 test("Djamel and ZAO reply callbacks are dispatched to their matching handlers", async () => {
   const commands = new Map();
   resetRuntime({ commands });
@@ -180,10 +213,26 @@ test("previously skipped commands now use only supported runtime globals", () =>
   const paths = [
     "admins.js", "antdetect.js", "ping.js", "slot.js", "uptime.js",
     "warn.js", "Shindo.js", "pin.js", "معلومات.js",
+    "ai.js", "angel.js", "cookieupdate.js", "cp.js", "divel.js",
+    "e2ee.js", "engine.js", "mood.js", "motor2.js", "nicknames.js",
+    "nm.js", "presence.js", "sim.js", "احصائيات.js", "تنظيف.js",
+    "حسابات.js", "حماية.js", "زاوفان.js", "صامت.js", "صورة.js",
+    "كوكيز.js", "نكرار.js",
   ];
   for (const file of paths) {
     const source = fs.readFileSync(path.join(process.cwd(), "SCRIPTS", "ZAO-CMDS", file), "utf8");
     assert.deepEqual(getLegacyUnsupportedGlobals(source), [], `${file} uses an unsupported runtime global`);
     assert.equal(/require\s*\(\s*["'][^"']*ZAO-ENGINE\//.test(source), false, `${file} imports ZAO-ENGINE`);
+    if ([
+      "ai.js", "angel.js", "cookieupdate.js", "cp.js", "divel.js",
+      "e2ee.js", "engine.js", "mood.js", "motor2.js", "nicknames.js",
+      "nm.js", "presence.js", "sim.js", "احصائيات.js", "تنظيف.js",
+      "حسابات.js", "حماية.js", "زاوفان.js", "صامت.js", "صورة.js",
+      "كوكيز.js", "نكرار.js",
+    ].includes(file)) {
+      const command = require(path.join(process.cwd(), "SCRIPTS", "ZAO-CMDS", file));
+      assert.ok(command.config?.name, `${file} has no command name`);
+      assert.equal(typeof command.run, "function", `${file} has no command runner`);
+    }
   }
 });

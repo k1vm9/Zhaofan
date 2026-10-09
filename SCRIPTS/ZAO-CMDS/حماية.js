@@ -10,7 +10,7 @@
  * أي شخص آخر يغيّر كنية → تُعاد فوراً للقيمة المحفوظة.
  */
 
-const NickProtect = require("../../ZAO-ENGINE/nickProtect");
+const NickProtect = require("../../src/engine/ported/nickProtect");
 
 module.exports.config = {
   name:            "حماية",
@@ -28,7 +28,7 @@ module.exports.languages = { vi: {}, en: {} };
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
-function _live(api) { return global._botApi || api; }
+function _live(api) { return api; }
 
 function _isAdmin(userID) {
   const admins = global.config?.ADMINBOT || [];

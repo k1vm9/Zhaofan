@@ -20,11 +20,12 @@ module.exports.run = async function ({ api, event, args }) {
   const { threadID, messageID, senderID } = event;
 
   const arg = (args[0] || '').toLowerCase().trim();
+  const toggleHint = `${global.commandPrefix || '/'}صامت off`;
 
   if (arg === 'on' || arg === 'تفعيل' || arg === '1') {
     global._silentMode = true;
     return api.sendMessage(
-      '🔇 وضع الصمت مُفعَّل\n\nالبوت سيُنفِّذ الأوامر دون إرسال أي ردود للمحادثة.\nالردود ستظهر فقط في الكونسول.\n\nأرسل .صامت off للإيقاف.',
+      `🔇 وضع الصمت مُفعَّل\n\nالبوت سيُنفِّذ الأوامر دون إرسال أي ردود للمحادثة.\nالردود ستظهر فقط في الكونسول.\n\nأرسل ${toggleHint} للإيقاف.`,
       threadID, messageID
     );
   }
@@ -42,7 +43,7 @@ module.exports.run = async function ({ api, event, args }) {
   const state = global._silentMode;
   return api.sendMessage(
     state
-      ? '🔇 وضع الصمت مُفعَّل\n\nالبوت سيُنفِّذ الأوامر دون إرسال ردود للمحادثة.\n\nأرسل .صامت off للإيقاف.'
+      ? `🔇 وضع الصمت مُفعَّل\n\nالبوت سيُنفِّذ الأوامر دون إرسال ردود للمحادثة.\n\nأرسل ${toggleHint} للإيقاف.`
       : '🔊 وضع الصمت مُوقَف\n\nالبوت يعمل بشكل طبيعي الآن.',
     threadID, messageID
   );

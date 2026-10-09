@@ -13,10 +13,12 @@ function saveSettings(cfg) {
   fs.writeFileSync(temp, JSON.stringify(cfg, null, 2), { encoding: "utf8", mode: 0o600 });
   fs.renameSync(temp, CONFIG_PATH);
   try { fs.chmodSync(CONFIG_PATH, 0o600); } catch (_) {}
-  global.GoatBot.config = cfg;
-  global.config = mergeLegacySettings(cfg);
-  global.ownerID = String(cfg.ownerID || "");
-  global.commandPrefix = cfg.prefix || "/";
+  if (typeof global.updateRuntimeConfig === "function") global.updateRuntimeConfig(cfg);
+  else {
+    global.config = mergeLegacySettings(cfg);
+    global.ownerID = String(cfg.ownerID || "");
+    global.commandPrefix = cfg.prefix || "/";
+  }
 }
 
 module.exports.config = {
