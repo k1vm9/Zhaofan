@@ -20,7 +20,6 @@ const _platform = (() => {
 const PORT          = _platform.port;
 const BOT_API_PORT   = 3001;
 const BOT2_API_PORT  = 3003;
-const INSTA_API_PORT = 3002;
 const __dir          = __dirname;
 const ALT_PATH      = path.join(__dir, 'sessions', 'alt.json');
 const STATE_PATH    = path.join(__dir, 'sessions', 'ZAO-STATE.json');
@@ -78,18 +77,6 @@ const logBuffer  = [];
 const MAX_BUFFER = 1000;
 const sseClients = new Set();
 global._mainLogBuffer = logBuffer; // shared with AI Monitor (same process)
-
-// ─── Instagram bot state ───────────────────────────────────────────────────
-const instaLogBuffer  = [];
-const MAX_INSTA_BUFFER = 500;
-let instaChild   = null;
-let instaRestarts = 0;
-
-function appendInstaLog(line) {
-  const entry = { ts: new Date().toISOString(), text: line };
-  instaLogBuffer.push(entry);
-  if (instaLogBuffer.length > MAX_INSTA_BUFFER) instaLogBuffer.shift();
-}
 
 const _crashFP = (() => {
   try { return require('./ZAO-ENGINE/crashFingerprinter'); } catch (_) { return null; }
@@ -301,84 +288,6 @@ function checkSecondaryTier() {
   }
 }
 
-// ─── Instagram bot control ─────────────────────────────────────────────────────
-let instaStartPending = null;
-
-function startInstaBot() {
-  if (isStopping) return;
-  if (instaChild !== null) return;
-  if (instaStartPending) { clearTimeout(instaStartPending); instaStartPending = null; }
-
-  // Only start if credentials are configured
-  try {
-    const cfg = JSON.parse(fs.readFileSync(path.join(__dir, 'INSTA-SETTINGS.json'), 'utf-8'));
-    if (!cfg.username) {
-      log('INSTA', 'No Instagram credentials — API server will wait for config');
-    }
-  } catch (_) {}
-
-  instaChild = spawn(process.execPath, ['INSTA.js'], {
-    cwd:   __dir,
-    stdio: ['ignore', 'pipe', 'pipe'],
-    shell: false,
-    env:   { ...process.env, FORCE_COLOR: '1' },
-  });
-
-  log('INSTA', `ZAO-INSTA started — PID ${instaChild.pid}`);
-  appendInstaLog(`[INSTA-WATCHDOG] Started INSTA.js (PID ${instaChild.pid})`);
-
-  instaChild.stdout.on('data', chunk => {
-    const raw   = chunk.toString();
-    process.stdout.write(raw);
-    const clean = stripAnsi(raw);
-    clean.split('\n').forEach(line => { if (line.trim()) appendInstaLog(line.trim()); });
-  });
-
-  instaChild.stderr.on('data', chunk => {
-    const raw   = chunk.toString();
-    process.stderr.write(raw);
-    const clean = stripAnsi(raw);
-    clean.split('\n').forEach(line => { if (line.trim()) appendInstaLog('[ERR] ' + line.trim()); });
-  });
-
-  instaChild.on('error', err => {
-    instaChild = null;
-    log('INSTA', `Spawn error: ${err.message}`);
-    if (!isStopping) {
-      if (instaStartPending) clearTimeout(instaStartPending);
-      instaStartPending = setTimeout(startInstaBot, 30_000);
-    }
-  });
-
-  instaChild.on('close', code => {
-    instaChild = null;
-    appendInstaLog(`[INSTA-WATCHDOG] INSTA.js exited with code ${code}`);
-    if (isStopping) return;
-    if (instaStartPending) { clearTimeout(instaStartPending); instaStartPending = null; }
-
-    if (code === 0) {
-      instaStartPending = setTimeout(startInstaBot, 2_000);
-      return;
-    }
-    instaRestarts++;
-    const delay = Math.min(30_000 * Math.pow(1.8, instaRestarts - 1), 20 * 60 * 1000);
-    log('INSTA', `Crash #${instaRestarts} — restarting in ${Math.round(delay / 1000)}s`);
-    instaStartPending = setTimeout(startInstaBot, delay);
-  });
-}
-
-function restartInstaFn() {
-  if (instaChild) { try { instaChild.kill('SIGTERM'); } catch (_) {} }
-}
-
-function killInstaFn() {
-  if (instaStartPending) { clearTimeout(instaStartPending); instaStartPending = null; }
-  if (instaChild) {
-    try { instaChild.kill('SIGTERM'); } catch (_) {}
-    setTimeout(() => { if (instaChild) { try { instaChild.kill('SIGKILL'); } catch (_) {} } }, 3000);
-  }
-}
-
 // ─── Start webpanel (replaces old minimal panel/index.html server) ─────────────
 require('./webpanel/zao-server').start({
   logBuffer,
@@ -392,12 +301,6 @@ require('./webpanel/zao-server').start({
   unlockBotFn,
   port:         PORT,
   botApiPort:   BOT_API_PORT,
-  instaApiPort:  INSTA_API_PORT,
-  instaLogBuffer,
-  getInstaChild: () => instaChild,
-  getInstaRestarts: () => instaRestarts,
-  restartInstaFn,
-  killInstaFn,
   getBotChild2:     () => botChild2,
   getRestarts2:     () => restarts2,
   startBot2Fn:      startBot2,
@@ -662,11 +565,6 @@ function shutdown(signal) {
 
   if (pendingRestartTimer) { clearTimeout(pendingRestartTimer); pendingRestartTimer = null; }
   if (pendingRestart2)     { clearTimeout(pendingRestart2);     pendingRestart2 = null; }
-  if (instaStartPending)   { clearTimeout(instaStartPending);   instaStartPending = null; }
-
-  if (instaChild) {
-    try { instaChild.kill('SIGTERM'); } catch (_) {}
-  }
 
   if (botChild2) {
     try { botChild2.kill('SIGTERM'); } catch (_) {}

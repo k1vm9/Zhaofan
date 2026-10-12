@@ -115,19 +115,17 @@ function layout(title, body, activeTab = "", opts = {}) {
     ["github-files",  "M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18", "ملفات GitHub"],
     ["ai-users",      "M5.121 17.804A13.937 13.937 0 0112 16c2.5 0 4.847.655 6.879 1.804M15 10a3 3 0 11-6 0 3 3 0 016 0zm6 2a9 9 0 11-18 0 9 9 0 0118 0z", "شخصيات AI"],
     ["__sep__",       "", ""],
-    ["insta",         "M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z M15 13a3 3 0 11-6 0 3 3 0 016 0z", "ZAO-INSTA 📸"],
   ];
 
   const nav = tabs.map(([id, icon, label]) => {
     if (id === '__sep__') return `<div style="margin:8px 14px;border-top:1px solid rgba(255,255,255,.055)"></div>`;
-    const isInsta = id === 'insta';
     return `
-    <a href="/${id}" class="nav-item ${activeTab === id ? "active" : ""}" onclick="closeSidebar()" ${isInsta ? `style="${activeTab===id?'':'color:rgba(225,130,180,.85)'}"` : ''}>
-      <span class="nav-icon-wrap" ${isInsta ? `style="background:${activeTab===id?'linear-gradient(135deg,rgba(225,48,108,.25),rgba(131,58,180,.2))':'rgba(225,48,108,.07)'};border-color:rgba(225,48,108,.15)"` : ''}>
+    <a href="/${id}" class="nav-item ${activeTab === id ? "active" : ""}" onclick="closeSidebar()">
+      <span class="nav-icon-wrap">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="17" height="17"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.8" d="${icon}"/></svg>
       </span>
       <span class="nav-label">${label}</span>
-      ${activeTab === id ? `<span class="nav-active-bar" ${isInsta?'style="background:linear-gradient(180deg,#e1306c,#833ab4)"':''}></span>` : ""}
+      ${activeTab === id ? `<span class="nav-active-bar"></span>` : ""}
     </a>`;
   }).join("");
 
@@ -981,12 +979,8 @@ module.exports.start = function startPanel(options) {
     paths        = {}
   } = options;
 
-  // ─── Instagram bot integration ────────────────────────────────────────────
-  const INSTA_API_PORT   = options.instaApiPort   || 3002;
-  const instaLogBuffer   = options.instaLogBuffer  || [];
-  const getInstaChild    = options.getInstaChild   || (() => null);
-  const restartInstaFn   = options.restartInstaFn  || (() => {});
-  const killInstaFn      = options.killInstaFn     || (() => {});
+  // Instagram boot and its panel are removed; this panel only operates the
+  // Facebook runtime and the shared bot controls.
 
   // ─── Secondary bot (Tier 2) integration ───────────────────────────────────
   const getBotChild2  = options.getBotChild2  || (() => null);
@@ -2209,10 +2203,10 @@ const _auto=()=>document.getElementById('autoScroll').checked;
 const _SECTIONS={
   all:      ()=>true,
   login:    t=>/\\[\\s*Login\\s*\\]|\\[FCA-DIAG\\]|\\[PATCH\\]|\\[DIAG\\]|Tier \\d|AppState|loginHelper|credential|session/i.test(t),
-  messages: t=>/sendMessage|\\[MOTOR\\]|محرك|\\[INSTA:MSG\\]|\\[MSG\\]|received message|body:|message from/i.test(t),
+  messages: t=>/sendMessage|\\[MOTOR\\]|محرك|\\[MSG\\]|received message|body:|message from/i.test(t),
   errors:   t=>/❌|\\bERROR\\b|\\bError\\b|failed|exception/i.test(t),
   warnings: t=>/⚠️|\\bWARN\\b|warning|مفقود|missing/i.test(t),
-  system:   t=>/\\[ZAO\\]|\\[WATCHDOG\\]|\\[PROTECT\\]|\\[INSTA:BOOT\\]|\\[INSTA:CMD\\]|ZAO Is working|Platform:|Port:|PID|restart|started/i.test(t),
+  system:   t=>/\\[ZAO\\]|\\[WATCHDOG\\]|\\[PROTECT\\]|ZAO Is working|Platform:|Port:|PID|restart|started/i.test(t),
   mqtt:     t=>/MQTT|mqtt|RECONNECT|reconnect|\\[HEALTH\\]|ping|keepalive/i.test(t),
 };
 
@@ -7035,19 +7029,6 @@ document.querySelectorAll('.modal-overlay').forEach(m=>m.addEventListener('click
       res.json({ok:true});
     } catch(e) { res.status(500).json({error:e.message}); }
   });
-
-  // ─── ZAO-INSTA sub-panel ─────────────────────────────────────────────────────
-  try {
-    require('./zao-insta').mount(app, {
-      auth, layout, pageOpts,
-      instaApiPort:  INSTA_API_PORT,
-      instaLogBuffer,
-      getInstaChild,
-    });
-    console.log('[ZAO-INSTA] Sub-panel mounted ✓');
-  } catch (e) {
-    console.error('[ZAO-INSTA] Failed to mount sub-panel:', e.message);
-  }
 
   // ─── Start Server ─────────────────────────────────────────────────────────────
   const httpServer = http.createServer(app);

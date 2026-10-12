@@ -20,6 +20,20 @@ const zaoCompatibility = require("../utils/zaoCompatibility");
 
 const { ROOT, ACCOUNT_PATH, CONFIG_PATH } = require("../utils/runtimePaths");
 const CMDS_DIR     = path.join(ROOT, "src/commands");
+const LEGACY_CMDS_DIR = path.join(ROOT, "SCRIPTS", "ZAO-CMDS");
+const COMMAND_SOURCE_DIRS = [CMDS_DIR, LEGACY_CMDS_DIR];
+
+function resolveCommandFile(rawName) {
+  const name = String(rawName || "").trim();
+  if (!/^[\p{L}\p{N}_-]{1,80}$/u.test(name)) return null;
+  for (const dir of COMMAND_SOURCE_DIRS) {
+    const file = path.resolve(dir, `${name}.js`);
+    if (file.startsWith(`${path.resolve(dir)}${path.sep}`) && fs.existsSync(file) && fs.statSync(file).isFile()) {
+      return file;
+    }
+  }
+  return null;
+}
 
 let _io      = null;
 let _server  = null;
@@ -371,21 +385,19 @@ function startDashboard(port = 5000, healthPort = null) {
   });
 
   app.get("/api/commands/:name/source", auth, (req, res) => {
-    const name = req.params.name.toLowerCase().replace(/[^a-z0-9_-]/g, "");
-    const file = path.join(CMDS_DIR, `${name}.js`);
-    if (!fs.existsSync(file)) return res.json({ ok: false, error: "الأمر غير موجود" });
+    const file = resolveCommandFile(req.params.name);
+    if (!file) return res.json({ ok: false, error: "مصدر الأمر غير موجود أو اسمه غير صالح" });
     try {
       const code = fs.readFileSync(file, "utf8");
-      res.json({ ok: true, name, code });
+      res.json({ ok: true, name: path.basename(file, ".js"), code });
     } catch (e) { res.json({ ok: false, error: e.message }); }
   });
 
   app.post("/api/commands/:name/source", auth, (req, res) => {
-    const name = req.params.name.toLowerCase().replace(/[^a-z0-9_-]/g, "");
+    const file = resolveCommandFile(req.params.name);
     const { code } = req.body;
     if (!code || typeof code !== "string") return res.json({ ok: false, error: "الكود فارغ" });
-    const file = path.join(CMDS_DIR, `${name}.js`);
-    if (!file.startsWith(CMDS_DIR)) return res.json({ ok: false, error: "مسار غير صالح" });
+    if (!file) return res.json({ ok: false, error: "مصدر الأمر غير موجود أو اسمه غير صالح" });
     const oldCode = fs.existsSync(file) ? fs.readFileSync(file, "utf8") : null;
     try { validateCommandCode(code, file); }
     catch (syntaxErr) { return res.json({ ok: false, error: "خطأ في الكود: " + syntaxErr.message }); }
@@ -464,6 +476,39 @@ function startDashboard(port = 5000, healthPort = null) {
       }
       res.json({ ok: true, threads });
     } catch (e) { res.json({ ok: false, error: e.message }); }
+  });
+
+  // ── Angel schedules: shared with the /angel command ────────────────────────
+  function getAngelDashboard() {
+    const command = global.GoatBot?.commands?.get("angel");
+    return command?.dashboard || null;
+  }
+
+  app.get("/api/angel/schedules", auth, (_, res) => {
+    try {
+      const angel = getAngelDashboard();
+      if (!angel) return res.status(503).json({ ok: false, error: "أمر Angel غير محمّل في المحرك" });
+      res.json({ ok: true, schedules: angel.getSchedules() });
+    } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+  });
+
+  app.post("/api/angel/schedules", auth, (req, res) => {
+    try {
+      const angel = getAngelDashboard();
+      if (!angel) return res.status(503).json({ ok: false, error: "أمر Angel غير محمّل في المحرك" });
+      const schedule = angel.setSchedule(req.body, global.GoatBot?.fcaApi);
+      res.json({ ok: true, schedule });
+    } catch (e) { res.status(400).json({ ok: false, error: e.message }); }
+  });
+
+  app.delete("/api/angel/schedules/:threadID", auth, (req, res) => {
+    try {
+      const angel = getAngelDashboard();
+      if (!angel) return res.status(503).json({ ok: false, error: "أمر Angel غير محمّل في المحرك" });
+      const removed = angel.removeSchedule(req.params.threadID);
+      if (!removed) return res.status(404).json({ ok: false, error: "الجدول غير موجود" });
+      res.json({ ok: true });
+    } catch (e) { res.status(400).json({ ok: false, error: e.message }); }
   });
 
   // ── Command quick-update (rename / aliases / description) ───────────────────

@@ -6,7 +6,7 @@ NODE_VERSION = "20"
 NODE_ENV = "production"
 
 [deploy]
-startCommand = "node Main.js"
+startCommand = "npm start"
 restartPolicyType = "ALWAYS"
 restartPolicyMaxRetries = 10
 healthcheckPath = "/api/status"

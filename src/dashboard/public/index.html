@@ -1,10 +1,14 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="dark">
-  <title>Djamel-Fca Control</title>
+  <meta name="theme-color" content="#07080f">
+  <title>لوحة تحكم Djamel-Fca</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/core.css">
 </head>
 <body>
@@ -12,99 +16,180 @@
     <section id="loginView" class="login-wrap" aria-labelledby="loginTitle">
       <form id="loginForm" class="login-card">
         <div class="brand-mark" aria-hidden="true">D</div>
-        <p class="eyebrow">CORE BY DJAMEL</p>
-        <h1 id="loginTitle">Djamel-Fca Control</h1>
-        <p class="muted">Sign in to manage the bot runtime.</p>
+        <p class="eyebrow">DJAMEL-FCA · CORE</p>
+        <h1 id="loginTitle">لوحة التحكم</h1>
+        <p class="muted">سجّل الدخول لإدارة تشغيل البوت وأوامره.</p>
         <input class="visually-hidden" type="text" name="username" autocomplete="username" tabindex="-1" aria-hidden="true">
-        <label for="loginPassword">Dashboard password</label>
+        <label for="loginPassword">كلمة مرور اللوحة</label>
         <input id="loginPassword" name="password" type="password" autocomplete="current-password" required>
-        <button class="button primary wide" type="submit">Sign in</button>
+        <button class="button primary wide" type="submit">تسجيل الدخول</button>
         <p id="loginMessage" class="notice" role="status" aria-live="polite"></p>
       </form>
     </section>
 
     <section id="appView" class="app-shell" hidden>
       <header class="topbar">
-        <a class="brand" href="/" aria-label="Djamel-Fca home">
+        <a class="brand" href="/" aria-label="Djamel-Fca">
           <span class="brand-mark small" aria-hidden="true">D</span>
-          <span><strong>Djamel-Fca</strong><small>Architecte Core</small></span>
+          <span><strong>Djamel-Fca</strong><small>لوحة التحكم المركزية</small></span>
         </a>
         <div class="top-actions">
-          <span id="connectionState" class="connection"><i></i> Checking</span>
-          <button id="logoutButton" class="button subtle" type="button">Sign out</button>
+          <span id="connectionState" class="connection"><i></i><span>جارٍ الفحص</span></span>
+          <button id="refreshAll" class="button subtle" type="button">تحديث</button>
+          <button id="logoutButton" class="button subtle" type="button">خروج</button>
         </div>
       </header>
 
       <div class="workspace">
-        <nav class="sidebar" aria-label="Dashboard sections">
-          <p class="nav-label">BOT CONTROL</p>
-          <button class="nav-item active" type="button" data-view="overview">Overview</button>
-          <button class="nav-item" type="button" data-view="commands">Commands</button>
-          <button class="nav-item" type="button" data-view="admins">Admins</button>
-          <button class="nav-item" type="button" data-view="session">Facebook session</button>
-          <button class="nav-item" type="button" data-view="settings">Settings</button>
-          <button class="nav-item" type="button" data-view="logs">Runtime logs</button>
-          <div class="sidebar-footer">Djamel-fca · Messenger runtime</div>
+        <nav class="sidebar" aria-label="أقسام لوحة التحكم">
+          <p class="nav-label">إدارة البوت</p>
+          <button class="nav-item active" type="button" data-view="overview"><span class="nav-glyph">⌂</span>الرئيسية</button>
+          <button class="nav-item" type="button" data-view="messenger"><span class="nav-glyph">✉</span>المراسلة</button>
+          <button class="nav-item" type="button" data-view="angel"><span class="nav-glyph">✧</span>Angel</button>
+          <button class="nav-item" type="button" data-view="commands"><span class="nav-glyph">⌘</span>الأوامر</button>
+          <button class="nav-item" type="button" data-view="admins"><span class="nav-glyph">♙</span>المشرفون</button>
+          <button class="nav-item" type="button" data-view="session"><span class="nav-glyph">◈</span>جلسة فيسبوك</button>
+          <button class="nav-item" type="button" data-view="settings"><span class="nav-glyph">⚙</span>الإعدادات</button>
+          <button class="nav-item" type="button" data-view="logs"><span class="nav-glyph">≡</span>السجلات</button>
+          <div class="sidebar-footer"><span class="status-dot"></span> Djamel-Fca · Messenger</div>
         </nav>
 
         <div class="main-content">
           <section id="view-overview" class="view">
             <div class="heading-row">
-              <div><p class="eyebrow">SYSTEM</p><h1>Overview</h1><p class="muted">Runtime and protection status.</p></div>
-              <button id="restartButton" class="button primary" type="button">Reconnect Facebook</button>
+              <div><p class="eyebrow">نظرة عامة</p><h1>مركز التحكم</h1><p class="muted">حالة تشغيل Djamel-Fca وأدوات الإدارة الأساسية.</p></div>
+              <button id="restartButton" class="button primary" type="button">إعادة اتصال فيسبوك</button>
             </div>
             <div class="stat-grid">
-              <article class="stat-card"><span class="stat-label">Bot status</span><strong id="botStatus">Loading</strong><small id="botIdentity">Waiting for runtime</small></article>
-              <article class="stat-card"><span class="stat-label">Commands loaded</span><strong id="commandCount">—</strong><small>Djamel and compatible ZAO commands</small></article>
-              <article class="stat-card"><span class="stat-label">Uptime</span><strong id="uptimeValue">—</strong><small>Since the current runtime boot</small></article>
-              <article class="stat-card"><span class="stat-label">Memory</span><strong id="memoryValue">—</strong><small>JavaScript heap in use</small></article>
+              <article class="stat-card"><span class="stat-label">حالة البوت</span><strong id="botStatus">جارٍ التحميل</strong><small id="botIdentity">بانتظار المحرك</small></article>
+              <article class="stat-card"><span class="stat-label">الأوامر المحمّلة</span><strong id="commandCount">—</strong><small>الأوامر المتاحة في Djamel-Fca</small></article>
+              <article class="stat-card"><span class="stat-label">مدة التشغيل</span><strong id="uptimeValue">—</strong><small>منذ تشغيل المحرك الحالي</small></article>
+              <article class="stat-card"><span class="stat-label">الذاكرة</span><strong id="memoryValue">—</strong><small>استخدام ذاكرة JavaScript</small></article>
             </div>
-            <article class="panel-card">
-              <div class="panel-heading"><div><h2>Runtime</h2><p class="muted">Djamel-Fca is the active Facebook engine. The original ZAO session and settings remain available for rollback.</p></div></div>
-              <div id="overviewMessage" class="notice" role="status" aria-live="polite"></div>
-            </article>
+            <div class="overview-grid">
+              <article class="panel-card">
+                <div class="panel-heading"><div><p class="eyebrow">المحرك الحالي</p><h2>Djamel-Fca</h2><p class="muted">اللوحة مرتبطة بقاعدة Djamel-Fca، ولا تشغّل محرك ZAO القديم أو خدمة Instagram.</p></div><span class="engine-chip">FACEBOOK</span></div>
+                <div id="overviewMessage" class="notice" role="status" aria-live="polite"></div>
+              </article>
+              <article class="panel-card quick-card">
+                <p class="eyebrow">اختصارات</p><h2>إدارة سريعة</h2>
+                <div class="quick-links">
+                  <button type="button" data-view="messenger">فتح المراسلة</button>
+                  <button type="button" data-view="angel">إدارة Angel</button>
+                  <button type="button" data-view="commands">مراجعة الأوامر</button>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <section id="view-messenger" class="view" hidden>
+            <div class="heading-row"><div><p class="eyebrow">التواصل</p><h1>المراسلة</h1><p class="muted">عرض المحادثات النشطة وإرسال الرسائل من حساب البوت.</p></div><button id="refreshThreads" class="button subtle" type="button">تحديث المحادثات</button></div>
+            <div class="messenger-layout">
+              <aside class="panel-card thread-panel">
+                <div class="panel-heading compact"><div><h2>المحادثات</h2><p class="muted">المحادثات المعروفة للمحرك</p></div><span id="threadCount" class="count-pill">0</span></div>
+                <label class="search-label" for="threadSearch">بحث<input id="threadSearch" type="search" placeholder="اسم المحادثة أو المعرّف"></label>
+                <div id="threadList" class="thread-list" aria-live="polite"><p class="empty-state">جارٍ تحميل المحادثات…</p></div>
+              </aside>
+              <section class="panel-card conversation-panel" aria-label="المحادثة المحددة">
+                <div id="conversationEmpty" class="conversation-empty"><span class="empty-icon">✉</span><h2>اختر محادثة</h2><p class="muted">ستظهر الرسائل الجديدة التي وصلت منذ بدء تشغيل البوت.</p></div>
+                <div id="conversationBody" class="conversation-body" hidden>
+                  <div class="conversation-head">
+                    <div><h2 id="conversationName">—</h2><p id="conversationMeta" class="muted"></p></div>
+                    <button id="refreshMessages" class="button subtle small-button" type="button">تحديث</button>
+                  </div>
+                  <div id="messageList" class="message-list" aria-live="polite"></div>
+                  <form id="messageForm" class="message-form">
+                    <label class="visually-hidden" for="messageText">نص الرسالة</label>
+                    <textarea id="messageText" rows="2" maxlength="5000" placeholder="اكتب رسالة…" required></textarea>
+                    <button class="button primary" type="submit">إرسال</button>
+                  </form>
+                  <form id="groupTitleForm" class="group-title-form">
+                    <label for="groupTitle">تغيير اسم المجموعة</label>
+                    <div class="inline-fields"><input id="groupTitle" maxlength="100" placeholder="اسم المجموعة"><button class="button subtle" type="submit">حفظ الاسم</button></div>
+                    <span id="groupTitleMessage" class="notice" role="status"></span>
+                  </form>
+                </div>
+              </section>
+            </div>
+          </section>
+
+          <section id="view-angel" class="view" hidden>
+            <div class="heading-row"><div><p class="eyebrow">الرسائل المجدولة</p><h1>Angel</h1><p class="muted">إدارة الرسائل الدورية لكل محادثة، بنفس بيانات أمر Angel.</p></div><button id="refreshAngel" class="button subtle" type="button">تحديث الجداول</button></div>
+            <div class="angel-grid">
+              <form id="angelForm" class="panel-card form-grid">
+                <div><p class="eyebrow">إعداد جدول</p><h2 id="angelFormTitle">إضافة رسالة دورية</h2></div>
+                <label for="angelThreadID">المحادثة أو معرّفها
+                  <input id="angelThreadID" inputmode="numeric" autocomplete="off" placeholder="أدخل معرّف المحادثة" required>
+                </label>
+                <label for="angelThreadSelect">اختيار من المحادثات
+                  <select id="angelThreadSelect"><option value="">اكتب المعرّف يدوياً</option></select>
+                </label>
+                <label for="angelMessage">نص الرسالة
+                  <textarea id="angelMessage" rows="5" maxlength="2000" placeholder="الرسالة التي سيكررها البوت" required></textarea>
+                </label>
+                <label for="angelInterval">الفاصل بالدقائق (1–1440)
+                  <input id="angelInterval" type="number" min="1" max="1440" step="1" value="10" required>
+                </label>
+                <label class="check-row"><input id="angelActive" type="checkbox"><span>تفعيل الإرسال الدوري بعد الحفظ</span></label>
+                <div class="notice warning">عند التفعيل، سيرسل البوت هذه الرسالة تلقائياً إلى المحادثة كل فترة محددة. راجع النص والمعرّف قبل التشغيل.</div>
+                <div class="form-actions"><button class="button primary" type="submit">حفظ الجدول</button><button id="clearAngelForm" class="button subtle" type="button">مسح الحقول</button><span id="angelMessage" class="notice" role="status"></span></div>
+              </form>
+              <article class="panel-card schedules-panel">
+                <div class="panel-heading compact"><div><p class="eyebrow">الجداول المحفوظة</p><h2>الرسائل الدورية</h2></div><span id="angelCount" class="count-pill">0</span></div>
+                <div id="angelSchedules" class="schedule-list"><p class="empty-state">جارٍ تحميل الجداول…</p></div>
+              </article>
+            </div>
           </section>
 
           <section id="view-commands" class="view" hidden>
-            <div class="heading-row"><div><p class="eyebrow">BOT CONTROL</p><h1>Commands</h1><p class="muted">Commands that loaded successfully in this runtime.</p></div><button id="reloadCommands" class="button subtle" type="button">Refresh</button></div>
-            <article class="panel-card table-wrap"><table><thead><tr><th>Command</th><th>Category</th><th>Access</th><th>Description</th></tr></thead><tbody id="commandRows"><tr><td colspan="4" class="muted">Loading…</td></tr></tbody></table></article>
+            <div class="heading-row"><div><p class="eyebrow">إدارة البوت</p><h1>الأوامر</h1><p class="muted">الأوامر التي حمّلها محرك Djamel-Fca. التعديلات تُحفظ مع نسخة احتياطية.</p></div><button id="reloadCommands" class="button subtle" type="button">تحديث</button></div>
+            <form id="newCommandForm" class="panel-card new-command-form">
+              <label for="newCommandName">إنشاء أمر جديد<input id="newCommandName" pattern="[a-zA-Z0-9_-]{2,40}" placeholder="مثال: hello" required></label>
+              <button class="button subtle" type="submit">إنشاء</button><span id="newCommandMessage" class="notice" role="status"></span>
+            </form>
+            <article class="panel-card table-wrap"><table><thead><tr><th>الأمر</th><th>القسم</th><th>الصلاحية</th><th>الوصف</th><th>الإجراء</th></tr></thead><tbody id="commandRows"><tr><td colspan="5" class="muted">جارٍ التحميل…</td></tr></tbody></table></article>
+            <form id="commandEditor" class="panel-card form-grid editor-panel" hidden>
+              <div class="panel-heading"><div><p class="eyebrow">محرر المصدر</p><h2 id="editorTitle">تعديل أمر</h2><p class="muted">سيُعاد تحميل الأمر بعد فحص صياغة JavaScript.</p></div><button id="closeEditor" class="button subtle" type="button">إغلاق</button></div>
+              <textarea id="commandSource" rows="24" spellcheck="false" required></textarea>
+              <div class="form-actions"><button class="button primary" type="submit">حفظ وتحميل الأمر</button><span id="editorMessage" class="notice" role="status"></span></div>
+            </form>
           </section>
 
           <section id="view-admins" class="view" hidden>
-            <div class="heading-row"><div><p class="eyebrow">ACCESS</p><h1>Admins</h1><p class="muted">Facebook IDs are kept as strings to avoid changing long IDs.</p></div></div>
+            <div class="heading-row"><div><p class="eyebrow">الصلاحيات</p><h1>المشرفون</h1><p class="muted">تُحفظ معرّفات فيسبوك كسلاسل نصية للحفاظ على الأرقام الطويلة.</p></div></div>
             <form id="adminsForm" class="panel-card form-grid">
-              <label>Owner ID<input id="ownerID" inputmode="numeric" autocomplete="off"></label>
-              <label>Bot admin IDs, one per line<textarea id="adminIDs" rows="6" spellcheck="false"></textarea></label>
-              <label>Super-admin IDs, one per line<textarea id="superAdminIDs" rows="4" spellcheck="false"></textarea></label>
-              <div class="form-actions"><button class="button primary" type="submit">Save admins</button><span id="adminsMessage" class="notice" role="status"></span></div>
+              <label>معرّف المالك<input id="ownerID" inputmode="numeric" autocomplete="off"></label>
+              <label>معرّفات مشرفي البوت، واحد في كل سطر<textarea id="adminIDs" rows="6" spellcheck="false"></textarea></label>
+              <label>معرّفات كبار المشرفين، واحد في كل سطر<textarea id="superAdminIDs" rows="4" spellcheck="false"></textarea></label>
+              <div class="form-actions"><button class="button primary" type="submit">حفظ الصلاحيات</button><span id="adminsMessage" class="notice" role="status"></span></div>
             </form>
           </section>
 
           <section id="view-session" class="view" hidden>
-            <div class="heading-row"><div><p class="eyebrow">ACCOUNT</p><h1>Facebook session</h1><p class="muted">Paste a valid AppState or supported cookie format. The existing ZAO session file is left unchanged.</p></div></div>
+            <div class="heading-row"><div><p class="eyebrow">الحساب</p><h1>جلسة فيسبوك</h1><p class="muted">أدخل AppState أو صيغة الكوكيز المدعومة لمحرك Djamel-Fca.</p></div></div>
             <form id="sessionForm" class="panel-card form-grid">
               <label>AppState / cookies<textarea id="sessionValue" rows="10" autocomplete="off" spellcheck="false" required></textarea></label>
-              <div class="notice warning">Submitting replaces the Djamel-Fca session copy and starts a new Facebook login.</div>
-              <div class="form-actions"><button class="button primary" type="submit">Save session and reconnect</button><span id="sessionMessage" class="notice" role="status"></span></div>
+              <div class="notice warning">الحفظ يستبدل نسخة جلسة Djamel-Fca ويبدأ تسجيل دخول جديد. لا يؤثر على ملفات جلسات ZAO القديمة.</div>
+              <div class="form-actions"><button class="button primary" type="submit">حفظ الجلسة وإعادة الاتصال</button><span id="sessionMessage" class="notice" role="status"></span></div>
             </form>
           </section>
 
           <section id="view-settings" class="view" hidden>
-            <div class="heading-row"><div><p class="eyebrow">CONFIGURATION</p><h1>Settings</h1><p class="muted">Edit the Djamel-Fca runtime configuration as JSON. Dashboard credentials are not returned or editable here.</p></div></div>
+            <div class="heading-row"><div><p class="eyebrow">التكوين</p><h1>الإعدادات</h1><p class="muted">تعديل إعدادات محرك Djamel-Fca بصيغة JSON. كلمة مرور اللوحة لا تظهر هنا.</p></div></div>
             <form id="settingsForm" class="panel-card form-grid">
-              <label>Runtime configuration<textarea id="configValue" rows="22" spellcheck="false" required></textarea></label>
-              <div class="form-actions"><button class="button primary" type="submit">Save settings</button><span id="settingsMessage" class="notice" role="status"></span></div>
+              <label>إعدادات التشغيل<textarea id="configValue" rows="22" spellcheck="false" required></textarea></label>
+              <div class="form-actions"><button class="button primary" type="submit">حفظ الإعدادات</button><span id="settingsMessage" class="notice" role="status"></span></div>
             </form>
           </section>
 
           <section id="view-logs" class="view" hidden>
-            <div class="heading-row"><div><p class="eyebrow">DIAGNOSTICS</p><h1>Runtime logs</h1><p class="muted">Recent messages from the bot and dashboard process.</p></div><button id="refreshLogs" class="button subtle" type="button">Refresh logs</button></div>
-            <pre id="logOutput" class="log-output" aria-live="polite">Loading…</pre>
+            <div class="heading-row"><div><p class="eyebrow">التشخيص</p><h1>السجلات</h1><p class="muted">آخر رسائل محرك البوت واللوحة.</p></div><button id="refreshLogs" class="button subtle" type="button">تحديث السجلات</button></div>
+            <pre id="logOutput" class="log-output" aria-live="polite">جارٍ التحميل…</pre>
           </section>
         </div>
       </div>
     </section>
   </main>
-  <script src="/assets/js/core.js" defer></script>
+  <script src="/assets/js/panel.js" defer></script>
 </body>
 </html>
