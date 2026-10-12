@@ -43,11 +43,9 @@ let _botUID    = null;   // set when api is known — avoids re-decrypting own m
 
 function _log(msg, level) {
   try {
-    if (global.loggeryuki) {
-      global.loggeryuki.log([
-        { message: "[ MQTT-E2EE-PATCH ]: ", color: ["red", "cyan"] },
-        { message: msg, color: level === "warn" ? "yellow" : "white" }
-      ]);
+    const method = level === "warn" || level === "error" ? level : "info";
+    if (typeof global.log?.[method] === "function") {
+      global.log[method]("MQTT-E2EE-PATCH", msg);
       return;
     }
   } catch (_) {}

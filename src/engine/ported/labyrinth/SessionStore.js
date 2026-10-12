@@ -19,11 +19,9 @@ const DR   = require("./DoubleRatchet");
 
 function _log(msg, level) {
   try {
-    if (global.loggeryuki) {
-      global.loggeryuki.log([
-        { message: "[ LABYRINTH-SESSION ]: ", color: ["red", "cyan"] },
-        { message: msg, color: level === "warn" ? "yellow" : "white" }
-      ]);
+    const method = level === "warn" || level === "error" ? level : "info";
+    if (typeof global.log?.[method] === "function") {
+      global.log[method]("LABYRINTH:SESSION", msg);
       return;
     }
   } catch (_) {}

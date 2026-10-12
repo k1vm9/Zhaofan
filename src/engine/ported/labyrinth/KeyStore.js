@@ -30,11 +30,9 @@ const SALT_LEN          = 32;
 
 function _log(msg, level) {
   try {
-    if (global.loggeryuki) {
-      global.loggeryuki.log([
-        { message: "[ LABYRINTH ]: ", color: ["red", "cyan"] },
-        { message: msg, color: level === "warn" ? "yellow" : "white" }
-      ]);
+    const method = level === "warn" || level === "error" ? level : "info";
+    if (typeof global.log?.[method] === "function") {
+      global.log[method]("LABYRINTH:KEYS", msg);
       return;
     }
   } catch (_) {}

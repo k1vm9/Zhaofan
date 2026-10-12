@@ -9,6 +9,7 @@
 - [npm install deadlock guard](npm-install-timeout.md) — both execSync npm install calls in ZAO.js (cmd+evt loaders) have timeout:90_000; without it a slow registry hangs the entire bot boot.
 - [Template literal JS escaping](template-literal-escaping.md) — zao-server.js and zao-devhub.js use backtick template literals to render client-side JS; \' becomes ' and \n becomes newline, breaking client JS parse.
 - [Labyrinth exit flush](labyrinth-exit-flush.md) — autoRelogin.js both process.exit(0) paths must await global._labyrinth.keyStore._flush() first; skip flush is silent and corrupts E2EE keys on partial write.
+- [Labyrinth key-storage safety](labyrinth-key-storage-safety.md) — only initialize the E2EE key store when a non-empty PIN is configured, so identity keys are never silently persisted in plaintext.
 - [48h session expiry fix](session-48h-fix.md) — keepAlive dtsg default was 48h (matched FB expiry window); changed to 6h; FRESH accounts need notificationVisit+autoMarkRead+simulateTyping enabled.
 - [Groups tab hang fix](groups-tab-hang.md) — /bot/groups sequential getThreadList calls (6s+5s=11s) exceeded 8s proxyToBot window; fixed by running INBOX and fallback tags in parallel via Promise.allSettled with 4.5s budget each.
 - [ZAO-ENGINE architecture](zao-engine-arch.md) — replaces /includes security layer; old includes/ archived as _includes/; all imports in ZAO.js/Main.js/SCRIPTS/webpanel now point to ./ZAO-ENGINE/.

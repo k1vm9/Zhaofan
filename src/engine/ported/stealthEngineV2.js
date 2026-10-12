@@ -46,11 +46,9 @@ const sleep = ms => new Promise(res => setTimeout(res, ms));
 
 function _log(level, msg) {
   try {
-    if (global.loggeryuki) {
-      global.loggeryuki.log([
-        { message: "[ STEALTH-V2 ]: ", color: ["red", "cyan"] },
-        { message: msg, color: level === "warn" ? "yellow" : level === "error" ? "red" : "white" }
-      ]);
+    const method = level === "warn" || level === "error" ? level : "info";
+    if (typeof global.log?.[method] === "function") {
+      global.log[method]("STEALTH-V2", msg);
       return;
     }
   } catch (_) {}

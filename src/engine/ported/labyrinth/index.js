@@ -35,11 +35,9 @@ const LIB_PREFIX    = "🔒E2EE:";
 
 function _log(msg, level) {
   try {
-    if (global.loggeryuki) {
-      global.loggeryuki.log([
-        { message: "[ LABYRINTH ]: ", color: ["red", "cyan"] },
-        { message: msg, color: level === "warn" ? "yellow" : level === "error" ? "red" : "white" }
-      ]);
+    const method = level === "warn" || level === "error" ? level : "info";
+    if (typeof global.log?.[method] === "function") {
+      global.log[method]("LABYRINTH", msg);
       return;
     }
   } catch (_) {}
